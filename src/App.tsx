@@ -1,11 +1,15 @@
+import Footer from '@/components/layout/Footer'
+import Header from '@/components/layout/Header'
+import SpreadSheet from '@/components/spreadsheet/SpreadSheet'
+
 function App() {
   return (
     <>
-      {/* 
-        Header
-        SpreadSheet (main)
-        Footer  
-      */}
+      <Header />
+      <main>
+        <SpreadSheet cols={10} rows={10} />
+      </main>
+      <Footer />
     </>
   )
 }

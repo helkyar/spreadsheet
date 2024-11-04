@@ -1,0 +1,30 @@
+#root {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  justify-content: space-between;
+}
+main {
+  flex-grow: 1;
+}
+* {
+  margin: 0;
+  padding: 0;
+}
+table {
+  width: 100%;
+}
+thead,
+.row-header {
+  background-color: var(--muted);
+  color: var(--muted-foreground);
+  text-align: center;
+  border: none;
+  padding: 0;
+}
+td {
+  border: 1px solid var(--border);
+  border-top: none;
+  border-right: none;
+  padding-inline: var(--padding);
+}
