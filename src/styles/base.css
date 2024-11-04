@@ -4,15 +4,19 @@
   flex-direction: column;
   justify-content: space-between;
 }
-main {
-  flex-grow: 1;
-}
 * {
   margin: 0;
   padding: 0;
 }
-table {
+main {
+  flex-grow: 1;
+  overflow: auto;
+}
+table,
+input,
+span {
   width: 100%;
+  height: 100%;
 }
 thead,
 .row-header {
@@ -20,11 +24,35 @@ thead,
   color: var(--muted-foreground);
   text-align: center;
   border: none;
-  padding: 0;
+}
+.row-header {
+  width: 2.5em;
 }
 td {
   border: 1px solid var(--border);
   border-top: none;
   border-right: none;
-  padding-inline: var(--padding);
+  position: relative;
+  min-width: 50px;
+}
+span,
+form {
+  position: absolute;
+  inset: 0;
+  vertical-align: middle;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+input {
+  border: 0;
+  opacity: 0;
+  cursor: default;
+  width: 100%;
+
+  &:focus {
+    opacity: 1;
+    outline: 2px solid var(--cell-outline);
+  }
 }

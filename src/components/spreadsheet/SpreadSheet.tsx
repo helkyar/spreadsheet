@@ -24,18 +24,16 @@ function SpreadSheet({ rows, cols }: PropTypes) {
       <thead>
         <tr>
           {getColumHeaderLabel(cols).map((columLabel) => (
-            <th>{columLabel}</th>
+            <th key={columLabel}>{columLabel}</th>
           ))}
         </tr>
       </thead>
       <tbody>
         {range(rows).map((x) => (
-          <tr>
-            <td className='row-header'>{x}</td>
+          <tr key={x}>
+            <td className='row-header'>{x + 1}</td>
             {range(cols).map((y) => (
-              <Cell x={x} y={y}>
-                {x}/{y}
-              </Cell>
+              <Cell key={`${x}/${y}`} x={x} y={y} />
             ))}
           </tr>
         ))}

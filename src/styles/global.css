@@ -12,21 +12,24 @@
     --border: hsl(240 5.9% 90%);
     --input: hsl(240 5.9% 90%);
 
+    --selected-cell-background: #09f;
+    --selected-cell-foreground: var(--foreground);
+    
     --card: hsl(0 0% 100%);
     --card-foreground: hsl(240 10% 3.9%);
-
+    
     --primary: hsl(240 5.9% 10%);
     --primary-foreground: hsl(0 0% 98%);
-
+    
     --secondary: hsl(240 4.8% 95.9%);
     --secondary-foreground: hsl(240 5.9% 10%);
-
+    
     --accent: hsl(240 4.8% 95.9%);
     --accent-foreground: hsl(240 5.9% 10%);
-
+    
     --destructive: hsl(0 84.2% 60.2%);
     --destructive-foreground: hsl(0 0% 98%);
-
+    
     --ring: hsl(240 10% 3.9%);
     
     --chart-5: hsl(27 87% 67%);
@@ -39,6 +42,7 @@
     
     --chart-4: hsl(43 74% 66%);
     
+    --cell-outline: #09f;
     --radius: 0.5rem;
     --padding: 0.5em;
   }
@@ -58,6 +62,9 @@
 
     --border: hsl(240 3.7% 15.9%);
     --input: hsl(240 3.7% 15.9%);
+    
+    --selected-cell-background: rgb(4, 117, 193);
+    --selected-cell-foreground: var(--foreground);
 
     --card: hsl(240 10% 3.9%);
     --card-foreground: hsl(0 0% 98%);
