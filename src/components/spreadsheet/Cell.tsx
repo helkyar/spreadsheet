@@ -1,9 +1,13 @@
-export default function Cell({ x, y }: { x: number; y: number }) {
-  const calculatedValue = x
-  const inputValue = y
+import { type Cell } from '@/logic/types'
+
+type CellProps = {
+  cellValues: Cell
+  onChange: ({ x, y, value }: { x: number; y: number; value: string }) => void
+}
+export default function Cell({ cellValues, onChange }: CellProps) {
   const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-    console.log('🚀 ~ handleBlur ~ e:', event.target.value)
-    // store data in matrix as inputValue
+    const value = event.target.value
+    onChange({ x: cellValues.x, y: cellValues.y, value })
   }
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -16,13 +20,13 @@ export default function Cell({ x, y }: { x: number; y: number }) {
 
   return (
     <td>
-      <span>{calculatedValue}</span>
+      <span>{cellValues.computedValue}</span>
       <form onSubmit={handleSubmit}>
         <input
           type='text'
           name='cellInput'
           onBlur={handleBlur}
-          defaultValue={inputValue}
+          defaultValue={cellValues.inputValue}
         />
       </form>
     </td>

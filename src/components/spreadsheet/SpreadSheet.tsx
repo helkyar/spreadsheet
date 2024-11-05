@@ -1,6 +1,9 @@
 import Cell from '@/components/spreadsheet/Cell'
+import { Cell as CellType } from '@/logic/types'
+import { createSpreadSheet } from '@/logic/SpreadSheet'
+import { useState } from 'react'
 
-const range = (length: number) => Array.from({ length }, (_, i) => i)
+// const range = (length: number) => Array.from({ length }, (_, i) => i)
 
 const getColumHeaderLabel = (length: number) =>
   Array.from({ length: length + 1 }, (_, i) => {
@@ -19,6 +22,27 @@ type PropTypes = {
 }
 
 function SpreadSheet({ rows, cols }: PropTypes) {
+  const [matrix, setMatrix] = useState<CellType[][]>(
+    createSpreadSheet({ rows, cols }).matrix
+  )
+
+  const handleUpdate = ({
+    x,
+    y,
+    value,
+  }: {
+    x: number
+    y: number
+    value: string
+  }) => {
+    setMatrix((prev) => {
+      const clone = [...prev]
+      clone[x][y].inputValue = value
+      clone[x][y].computedValue = value
+      return clone
+    })
+  }
+
   return (
     <table>
       <thead>
@@ -29,11 +53,15 @@ function SpreadSheet({ rows, cols }: PropTypes) {
         </tr>
       </thead>
       <tbody>
-        {range(rows).map((x) => (
+        {matrix?.map((row, x) => (
           <tr key={x}>
             <td className='row-header'>{x + 1}</td>
-            {range(cols).map((y) => (
-              <Cell key={`${x}/${y}`} x={x} y={y} />
+            {row.map((cell) => (
+              <Cell
+                key={`${cell.x}/${cell.y}`}
+                cellValues={cell}
+                onChange={handleUpdate}
+              />
             ))}
           </tr>
         ))}
