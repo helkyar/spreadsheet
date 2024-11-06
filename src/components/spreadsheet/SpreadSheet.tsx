@@ -1,6 +1,7 @@
 import Cell from '@/components/spreadsheet/Cell'
+import { useSpreadSheet } from '@/components/spreadsheet/logic/useSpreadSheet'
 
-const range = (length: number) => Array.from({ length }, (_, i) => i)
+// const range = (length: number) => Array.from({ length }, (_, i) => i)
 
 const getColumHeaderLabel = (length: number) =>
   Array.from({ length: length + 1 }, (_, i) => {
@@ -19,23 +20,23 @@ type PropTypes = {
 }
 
 function SpreadSheet({ rows, cols }: PropTypes) {
+  const { matrix } = useSpreadSheet({ rows, cols })
+
   return (
     <table>
       <thead>
         <tr>
           {getColumHeaderLabel(cols).map((columLabel) => (
-            <th>{columLabel}</th>
+            <th key={columLabel}>{columLabel}</th>
           ))}
         </tr>
       </thead>
       <tbody>
-        {range(rows).map((x) => (
-          <tr>
-            <td className='row-header'>{x}</td>
-            {range(cols).map((y) => (
-              <Cell x={x} y={y}>
-                {x}/{y}
-              </Cell>
+        {matrix?.map((row, x) => (
+          <tr key={x}>
+            <td className='row-header'>{x + 1}</td>
+            {row.map((cell) => (
+              <Cell key={`${cell.x}/${cell.y}`} cellValues={cell} />
             ))}
           </tr>
         ))}
