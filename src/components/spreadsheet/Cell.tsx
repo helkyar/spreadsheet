@@ -1,13 +1,12 @@
-import { type Cell } from '@/logic/types'
+import { type Cell } from '@/components/spreadsheet/logic/types'
 
 type CellProps = {
   cellValues: Cell
-  onChange: ({ x, y, value }: { x: number; y: number; value: string }) => void
 }
-export default function Cell({ cellValues, onChange }: CellProps) {
+export default function Cell({ cellValues }: CellProps) {
   const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     const value = event.target.value
-    onChange({ x: cellValues.x, y: cellValues.y, value })
+    cellValues.update(value)
   }
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
