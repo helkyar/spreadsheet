@@ -1,15 +1,13 @@
 import Cell from '@/components/Spreadsheet/components/Cell'
 import { getColumnsHeaderLabels } from '@/components/Spreadsheet/logic/getColumHeaderLabel'
-import { useSpreadSheet } from '@/components/Spreadsheet/logic/useSpreadSheet'
+import { Cell as CellTypes } from '@/components/Spreadsheet/logic/types'
 
 type PropTypes = {
-  rows: number
+  matrix: CellTypes[][]
   cols: number
 }
 
-function SpreadSheet({ rows, cols }: PropTypes) {
-  const { matrix } = useSpreadSheet({ rows, cols })
-
+function SpreadSheet({ matrix, cols }: PropTypes) {
   return (
     <table>
       <thead>

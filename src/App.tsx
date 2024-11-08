@@ -1,13 +1,19 @@
-import Footer from '@/components/layout/Footer'
-import Header from '@/components/layout/Header'
+import Footer from '@/components/Footer'
+import Header from '@/components/Header'
 import SpreadSheet from '@/components/Spreadsheet'
+import { useSpreadSheet } from '@/components/Spreadsheet/logic/useSpreadSheet'
+
+const cols = 10
+const rows = 10
 
 function App() {
+  const { matrix, save } = useSpreadSheet({ cols, rows })
+
   return (
     <>
-      <Header />
+      <Header onSave={save} />
       <main>
-        <SpreadSheet cols={10} rows={10} />
+        <SpreadSheet matrix={matrix} cols={cols} />
       </main>
       <Footer />
     </>
