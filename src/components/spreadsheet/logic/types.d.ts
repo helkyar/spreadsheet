@@ -4,4 +4,6 @@ export type Cell = {
   inputValue: string
   computedValue: string
   update: (value: string) => void
+  id: string
+  references: string[]
 }

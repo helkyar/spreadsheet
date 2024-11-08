@@ -1,3 +1,4 @@
+import { getAlphabeticalCode } from '@/components/spreadsheet/logic/getColumHeaderLabel'
 import { Cell } from '@/components/spreadsheet/logic/types'
 
 const EVAL_CODE = '='
@@ -7,9 +8,16 @@ type ConstructorParams = {
   rows: number
 }
 
+type PartialCell = {
+  x: number
+  y: number
+  inputValue: string
+}
+
 export default class SpreadSheet {
   matrix
   private _update = () => {}
+  private cellConstants = ''
 
   constructor({ cols, rows }: ConstructorParams) {
     this.matrix = this.createMatrix({ cols, rows })
@@ -25,27 +33,22 @@ export default class SpreadSheet {
           inputValue: '',
           computedValue: '',
           update: (value) => this.updateAll({ x, y, inputValue: value }),
-          // update: () => this.updateAll(),
+          id: `${getAlphabeticalCode(y)}${x + 1}`,
+          references: [],
         })
       )
     )
     return matrix
   }
 
-  private updateCell({ x, y, inputValue }: Partial<Cell>) {
-    if (x == null || y == null || !inputValue) return
-
-    if (inputValue.startsWith(EVAL_CODE)) {
-      const computedValue = this.evaluateInput(inputValue)
-      this.matrix[x][y].computedValue = computedValue
-      this.matrix[x][y].inputValue = inputValue
-    } else {
-      this.matrix[x][y].inputValue = inputValue
-      this.matrix[x][y].computedValue = inputValue
-    }
-  }
-
-  private updateAll(currentCellNewValues: Partial<Cell>) {
+  private updateAll(currentCellNewValues: PartialCell) {
+    const { x, y, inputValue } = currentCellNewValues
+    const isCyclicReferencePResent = this.generateReferenceArray(
+      this.matrix[x][y],
+      inputValue
+    )
+    if (isCyclicReferencePResent) return
+    this.generateCellConstantValues()
     this.updateCell(currentCellNewValues)
 
     this.matrix.forEach((row) => {
@@ -57,51 +60,73 @@ export default class SpreadSheet {
     this._update()
   }
 
-  private evaluateInput(input: string) {
-    let expression = input.slice(1, input.length)
-    try {
-      return eval(expression)
-    } catch {
-      let referencedExpression = ''
-      let idx = ''
-      let idy = ''
-      let id = ''
-      while (expression.length > 0) {
-        id = expression[0]
-        const charCode = expression.charCodeAt(0)
-
-        if (charCode <= 90 && charCode >= 65) idx = idx + (charCode - 65)
-        else if (Number.parseInt(id)) idy = idy + (Number.parseInt(id) - 1)
-        else {
-          const x = Number.parseInt(idx)
-          const y = Number.parseInt(idy)
-          const value = this.matrix[x][y].computedValue
-          referencedExpression = referencedExpression + value + id
-
-          idx = ''
-          idy = ''
-        }
-        if (expression.length === 1) {
-          const x = Number.parseInt(idx)
-          const y = Number.parseInt(idy)
-          const value = this.matrix[x][y].computedValue
-          referencedExpression = referencedExpression + value
-        }
-
-        expression = expression.slice(1, expression.length)
-      }
-      return eval(referencedExpression)
-    }
-    //if it's a reference
-    // get X from number
-    // get y from letter
-    // evaluate based con computedValue
-    //evaluate references
-    //evaluate cyclic references
+  generateCellConstantValues() {
+    this.cellConstants = `(function(){
+      ${this.matrix
+        .map((row) =>
+          row
+            .map(
+              (cell) =>
+                `const ${cell.id} = ${JSON.stringify(cell.computedValue)}`
+            )
+            .join('\n')
+        )
+        .join('\n')}
+      return %{expression}%
+    })()`
   }
+
+  private updateCell({ x, y, inputValue }: PartialCell) {
+    if (x == null || y == null) return
+
+    const computedValue = this.evaluateInput(inputValue)
+    this.matrix[x][y].computedValue = computedValue
+    this.matrix[x][y].inputValue = inputValue
+  }
+
+  private evaluateInput(input: string) {
+    if (!input.startsWith(EVAL_CODE)) return input
+    const expression = input.slice(1)
+
+    try {
+      const formula = this.cellConstants.replace('%{expression}%', expression)
+      return eval(formula)
+    } catch (error) {
+      return `##ERROR ${error}`
+    }
+  }
+
+  generateReferenceArray(updatedCell: Cell, value: string) {
+    let cyclic = false
+    let cellReferences: string[] = []
+    if (value.includes(updatedCell.id)) {
+      cyclic = true
+    } else {
+      const references = this.matrix.flatMap((row) =>
+        row.filter((cell) => value.includes(cell.id))
+      )
+      cellReferences = references.map((cell) => {
+        if (cell.references.includes(updatedCell.id)) {
+          cyclic = true
+        }
+        return cell.id
+      })
+    }
+    if (cyclic) {
+      this.matrix[updatedCell.x][updatedCell.y].computedValue =
+        '##ERROR: cyclic reference'
+      // FIX_ME: needed to avoid loosing shown error on blur
+      this.matrix[updatedCell.x][updatedCell.y].inputValue =
+        '##ERROR: cyclic reference'
+      this._update()
+      return true
+    }
+    this.matrix[updatedCell.x][updatedCell.y].references = cellReferences
+    return false
+  }
+
   setUpdateMethod(updater: () => void) {
     this._update = updater
   }
-  // reference other cells
   // avoid cyclic reference
 }
