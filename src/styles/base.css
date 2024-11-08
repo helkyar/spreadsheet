@@ -37,6 +37,7 @@ button {
 input {
   background-color: var(--muted);
   color: var(--muted-foreground);
+  /* FIX_ME: autocomplete input changes background forever */
   /* &:focus,
   &:focus-within {
     background-color: var(--muted);

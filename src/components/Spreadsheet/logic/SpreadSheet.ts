@@ -3,10 +3,9 @@ import { Cell } from '@/components/Spreadsheet/logic/types'
 
 const EVAL_CODE = '='
 
-type ConstructorParams = {
-  cols: number
-  rows: number
-}
+type ConstructorParams =
+  | { rows: number; cols: number; matrix: undefined }
+  | { matrix: Cell[][]; rows: undefined; cols: undefined }
 
 type PartialCell = {
   x: number
@@ -14,17 +13,37 @@ type PartialCell = {
   inputValue: string
 }
 
+type MatrixParams = {
+  rows: number
+  cols: number
+}
+
 export default class SpreadSheet {
   matrix
   private _update = () => {}
   private cellConstants = ''
 
-  constructor({ cols, rows }: ConstructorParams) {
-    this.matrix = this.createMatrix({ cols, rows })
+  constructor({ cols, rows, matrix }: ConstructorParams) {
+    this.matrix = this.createMatrix({ cols, rows, matrix } as ConstructorParams)
   }
 
-  private createMatrix({ cols, rows }: ConstructorParams) {
-    const matrix = Array.from({ length: rows }, (_, x) =>
+  private createMatrix({ cols, rows, matrix }: ConstructorParams) {
+    if (matrix) return this.createMatrixFromMatrix(matrix)
+    else return this.createMatrixFromNumbers({ rows, cols })
+  }
+
+  private createMatrixFromMatrix(matrix: Cell[][]) {
+    return matrix.map((rows) =>
+      rows.map((cell) => ({
+        ...cell,
+        update: (value: string) =>
+          this.updateAll({ x: cell.x, y: cell.y, inputValue: value }),
+      }))
+    )
+  }
+
+  private createMatrixFromNumbers({ rows, cols }: MatrixParams) {
+    return Array.from({ length: rows }, (_, x) =>
       Array.from(
         { length: cols },
         (_, y): Cell => ({
@@ -38,7 +57,6 @@ export default class SpreadSheet {
         })
       )
     )
-    return matrix
   }
 
   private updateAll(currentCellNewValues: PartialCell) {
