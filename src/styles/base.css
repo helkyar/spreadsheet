@@ -25,6 +25,9 @@ thead,
   text-align: center;
   border: none;
 }
+th {
+  padding: 0.5em 0;
+}
 .row-header {
   width: 2.5em;
 }

@@ -10,10 +10,10 @@ export function useSpreadSheet(matrix: Params) {
   const spreadsheet = useRef(new SpreadSheet(matrix))
 
   const [, setCount] = useState(0)
-  const render = () => setCount((c) => c + 1)
+  const updater = () => setCount((c) => c + 1)
 
   useEffect(() => {
-    return spreadsheet.current.subscribe(render)
+    return spreadsheet.current.setUpdateMethod(updater)
   }, [spreadsheet.current.matrix])
 
   return { matrix: spreadsheet.current.matrix }
