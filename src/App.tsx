@@ -1,6 +1,6 @@
 import Footer from '@/components/layout/Footer'
 import Header from '@/components/layout/Header'
-import SpreadSheet from '@/components/spreadsheet/SpreadSheet'
+import SpreadSheet from '@/components/Spreadsheet'
 
 function App() {
   return (
