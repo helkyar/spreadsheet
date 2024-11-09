@@ -7,13 +7,13 @@ const cols = 10
 const rows = 10
 
 function App() {
-  const { matrix, save } = useSpreadSheet({ cols, rows })
+  const { spreadsheet, matrix, save } = useSpreadSheet({ cols, rows })
 
   return (
     <>
       <Header onSave={save} />
       <main>
-        <SpreadSheet matrix={matrix} cols={cols} />
+        <SpreadSheet matrix={matrix} cols={cols} spreadsheet={spreadsheet} />
       </main>
       <Footer />
     </>

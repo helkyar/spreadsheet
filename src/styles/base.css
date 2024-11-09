@@ -93,7 +93,7 @@ td {
   min-width: 50px;
 }
 span,
-form {
+input {
   position: absolute;
   inset: 0;
   vertical-align: middle;
@@ -113,3 +113,12 @@ input {
     outline: 2px solid var(--cell-outline);
   }
 }
+/* TO_DO: add selection border */
+.selected {
+  background-color: var(--selected-cell-background);
+  color: var(--selected-cell-foreground);
+  /* border-right: 2px solid red; */
+}
+/* .selected + .selected {
+  border: none;
+} */

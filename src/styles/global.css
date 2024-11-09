@@ -11,7 +11,7 @@
   --border: hsl(240 5.9% 90%);
   --input: hsl(240 5.9% 90%);
 
-  --selected-cell-background: #09f;
+  --selected-cell-background: rgb(92, 189, 254);
   --selected-cell-foreground: var(--foreground);
 
   --card: hsl(0 0% 100%);
@@ -41,7 +41,7 @@
 
   --chart-4: hsl(43 74% 66%);
 
-  --cell-outline: #09f;
+  --cell-outline: rgb(10, 116, 187);
   --radius: 0.5em;
   --padding-lg: 1em;
   --padding-md: 0.5em;
@@ -65,7 +65,7 @@
   --border: hsl(240 3.7% 15.9%);
   --input: hsl(240 3.7% 15.9%);
 
-  --selected-cell-background: rgb(4, 117, 193);
+  --selected-cell-background: rgb(25, 120, 184);
   --selected-cell-foreground: var(--foreground);
 
   --card: hsl(240 10% 3.9%);

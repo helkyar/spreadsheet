@@ -27,5 +27,9 @@ export function useSpreadSheet({ rows, cols }: Params) {
     setMatrix(spreadsheet.current.matrix)
   }
 
-  return { matrix: spreadsheet.current.matrix, save }
+  return {
+    matrix: spreadsheet.current.matrix,
+    save,
+    spreadsheet: spreadsheet.current,
+  }
 }
