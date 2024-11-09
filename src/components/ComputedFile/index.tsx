@@ -1,7 +1,7 @@
 import Cell from '@/components/Spreadsheet/components/Cell'
 import { getColumnsHeaderLabels } from '@/components/Spreadsheet/logic/getColumHeaderLabel'
 import type SpreadSheetType from '@/components/Spreadsheet/logic/SpreadSheet'
-import { Cell as CellTypes } from '@/components/Spreadsheet/logic/types'
+import { Cell as CellTypes } from '@/components/Spreadsheet/data/types'
 import { useTable } from '@/components/Spreadsheet/logic/useTable'
 
 type PropTypes = {
@@ -56,9 +56,7 @@ function SpreadSheet({ matrix, cols, spreadsheet }: PropTypes) {
       <tbody>
         {matrix?.map((row, x) => (
           <tr key={x}>
-            <td onClick={handleSelectRow(x)} className='row-header'>
-              {x + 1}
-            </td>
+            <th onClick={handleSelectRow(x)}>{x + 1}</th>
             {row.map((cell) => (
               <Cell
                 key={`${cell.x}/${cell.y}`}
