@@ -1,4 +1,4 @@
-import { type Cell } from '@/components/Spreadsheet/logic/types'
+import { type Cell } from '@/components/Spreadsheet/data/types'
 
 type CellProps = {
   cellValues: Cell
