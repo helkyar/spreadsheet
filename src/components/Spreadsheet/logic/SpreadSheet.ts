@@ -37,7 +37,11 @@ export default class SpreadSheet {
       rows.map((cell) => ({
         ...cell,
         update: (value: string) =>
-          this.updateAll({ x: cell.x, y: cell.y, inputValue: value }),
+          this.updateCellAndActualize({
+            x: cell.x,
+            y: cell.y,
+            inputValue: value,
+          }),
       }))
     )
   }
@@ -51,7 +55,8 @@ export default class SpreadSheet {
           y,
           inputValue: '',
           computedValue: '',
-          update: (value) => this.updateAll({ x, y, inputValue: value }),
+          update: (value) =>
+            this.updateCellAndActualize({ x, y, inputValue: value }),
           id: `${getAlphabeticalCode(y)}${x + 1}`,
           references: [],
         })
@@ -59,24 +64,19 @@ export default class SpreadSheet {
     )
   }
 
-  private updateAll(currentCellNewValues: PartialCell) {
+  private updateCellAndActualize(currentCellNewValues: PartialCell) {
     const { x, y, inputValue } = currentCellNewValues
     const isCyclic = this.findCyclicReferences(this.matrix[x][y], inputValue)
     if (isCyclic) return
 
-    this.generateCellConstantValues()
+    // this order updates values before generating the constants
     this.updateCell(currentCellNewValues)
+    this.generateCellConstantValues()
 
-    this.matrix.forEach((row) => {
-      row.forEach((cell) => {
-        this.updateCell({ x: cell.x, y: cell.y, inputValue: cell.inputValue })
-      })
-    })
-
-    this._update()
+    this.updateAll()
   }
 
-  generateCellConstantValues() {
+  private generateCellConstantValues() {
     this.cellConstants = `(function(){
       ${this.matrix
         .map((row) =>
@@ -90,6 +90,16 @@ export default class SpreadSheet {
         .join('\n')}
       return %{expression}%
     })()`
+  }
+
+  private updateAll() {
+    this.matrix.forEach((row) => {
+      row.forEach((cell) => {
+        this.updateCell({ x: cell.x, y: cell.y, inputValue: cell.inputValue })
+      })
+    })
+
+    this._update()
   }
 
   private updateCell({ x, y, inputValue }: PartialCell) {
@@ -106,13 +116,14 @@ export default class SpreadSheet {
 
     try {
       const formula = this.cellConstants.replace('%{expression}%', expression)
+      if (!formula) return '' //first cell change doesn't generate a formula
       return eval(formula)
     } catch (error) {
       return `##ERROR ${error}`
     }
   }
 
-  findCyclicReferences(updatedCell: Cell, value: string) {
+  private findCyclicReferences(updatedCell: Cell, value: string) {
     let cyclic = false
     let cellReferences: string[] = []
     if (value.includes(updatedCell.id)) {
@@ -139,6 +150,26 @@ export default class SpreadSheet {
     }
     this.matrix[updatedCell.x][updatedCell.y].references = cellReferences
     return false
+  }
+
+  updateCellsValue(
+    cells: number[][],
+    method: 'remove' | 'add',
+    value?: string
+  ) {
+    if (method === 'remove') {
+      cells.forEach((cell) => {
+        this.matrix[cell[0]][cell[1]].inputValue = ''
+        this.matrix[cell[0]][cell[1]].computedValue = ''
+      })
+      this._update()
+    }
+    if (method === 'add' && value) {
+      cells.forEach((cell) => {
+        this.matrix[cell[0]][cell[1]].inputValue = value
+      })
+      this.updateAll()
+    }
   }
 
   setUpdateMethod(updater: () => void) {
