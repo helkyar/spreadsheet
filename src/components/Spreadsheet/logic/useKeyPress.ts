@@ -1,6 +1,11 @@
 import { inputTag, parentTag } from '@/components/Spreadsheet/data/constants'
 import { HTMLCell, HTMLInput } from '@/components/Spreadsheet/data/types'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
+
+// type TagsWithHandlers = [typeof parentTag, typeof inputTag]
+type TagsWithHandlers = typeof parentTag | typeof inputTag
+
+const allowedTagHandlers: TagsWithHandlers[] = [parentTag, inputTag]
 
 const keyGroups = {
   skip: ['Control', 'Alt', 'Shift', 'Escape'],
@@ -9,7 +14,6 @@ const keyGroups = {
   delete: ['Backspace', 'Delete'],
   navigation: ['ArrowLeft', 'ArrowDown', 'ArrowUp', 'ArrowRight'],
   execute: ['Enter'],
-  blur: ['Enter', 'Escape'],
   tab: ['Tab'],
 }
 
@@ -64,17 +68,13 @@ export function useKeyPress(
     },
     [selectedElements]
   )
-  useEffect(() => {
-    const keyDown = (event: KeyboardEvent) => {
-      if (!document.activeElement) return
 
-      if (selectedElements) {
-        if (keyGroups.tab.includes(event.key)) {
-          removeSelected()
-        }
-      }
-      // INPUT HTML ELEMENT
-      if (document.activeElement.tagName === inputTag) {
+  const eventHandlerByActiveElement: Record<
+    typeof parentTag | typeof inputTag,
+    (event: KeyboardEvent) => void
+  > = useMemo(
+    () => ({
+      [inputTag]: (event) => {
         const element = document.activeElement as HTMLInput
 
         if (keyGroups.execute.includes(event.key)) {
@@ -92,9 +92,8 @@ export function useKeyPress(
         else if (keyGroups.escape.includes(event.key)) {
           element.parentElement?.focus()
         }
-      }
-      // TD HTML ELEMENT
-      else if (document.activeElement.tagName === parentTag) {
+      },
+      [parentTag]: (event) => {
         const element = document.activeElement as HTMLCell
         // Focus input
         if (keyGroups.execute.includes(event.key)) {
@@ -126,10 +125,28 @@ export function useKeyPress(
           input.value = ''
           input.focus()
         }
+      },
+    }),
+    [removeSelected, selectedElements, updateSelectedCellsValues]
+  )
+
+  useEffect(() => {
+    const keyDown = (event: KeyboardEvent) => {
+      if (!document.activeElement) return
+
+      if (selectedElements) {
+        if (keyGroups.tab.includes(event.key)) {
+          removeSelected()
+        }
       }
+      const activeElement = document.activeElement.tagName as TagsWithHandlers
+      if (!allowedTagHandlers.includes(activeElement)) return
+
+      const handleEvent = eventHandlerByActiveElement[activeElement]
+      handleEvent(event)
     }
 
     document.addEventListener('keydown', keyDown)
     return () => document.removeEventListener('keydown', keyDown)
-  }, [selectedElements, removeSelected, updateSelectedCellsValues])
+  }, [eventHandlerByActiveElement, removeSelected, selectedElements])
 }
