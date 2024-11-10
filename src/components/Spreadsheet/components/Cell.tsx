@@ -1,4 +1,4 @@
-import { type Cell } from '@/components/Spreadsheet/logic/types'
+import { type Cell } from '@/components/Spreadsheet/data/types'
 
 type CellProps = {
   cellValues: Cell
@@ -9,25 +9,19 @@ export default function Cell({ cellValues, selected }: CellProps) {
     const value = event.target.value
     cellValues.update(value)
   }
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    const eventKeyBlur = ['Enter', 'Escape']
-    if (eventKeyBlur.includes(event.key)) event.currentTarget.blur()
-    // Arrow keys -> focus next input
-    // Shift + Arrow keys -> select
-    // Enter -> focus underneath input
-  }
 
   return (
     <td
       className={selected ? 'selected' : ''}
       data-x={cellValues.x}
       data-y={cellValues.y}
+      tabIndex={0}
     >
       <span>{cellValues.computedValue}</span>
       <input
+        tabIndex={-1}
         type='text'
         onBlur={handleBlur}
-        onKeyDown={handleKeyDown}
         defaultValue={cellValues.inputValue}
       />
     </td>

@@ -88,6 +88,12 @@ td {
   position: relative;
   min-width: 50px;
 }
+
+td:focus,
+td:active {
+  border: none;
+  outline: 2px solid var(--cell-outline);
+}
 span,
 input {
   position: absolute;

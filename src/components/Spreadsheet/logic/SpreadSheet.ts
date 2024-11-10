@@ -1,5 +1,5 @@
 import { getAlphabeticalCode } from '@/components/Spreadsheet/logic/getColumHeaderLabel'
-import { Cell } from '@/components/Spreadsheet/logic/types'
+import { Cell } from '@/components/Spreadsheet/data/types'
 
 const EVAL_CODE = '='
 
