@@ -1,7 +1,7 @@
 import { useLocalStorage } from '@/logic/useLocalStorage'
 import SpreadSheet from '@/components/Spreadsheet/logic/SpreadSheet'
 import { useEffect, useRef, useState } from 'react'
-import { Cell } from '@/components/Spreadsheet/logic/types'
+import { Cell } from '@/components/Spreadsheet/data/types'
 
 type Params = {
   rows: number
