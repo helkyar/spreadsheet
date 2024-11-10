@@ -1,4 +1,5 @@
-import { HTMLCell, parentTag } from '@/components/Spreadsheet/data/types'
+import { parentTag } from '@/components/Spreadsheet/data/constants'
+import { HTMLCell } from '@/components/Spreadsheet/data/types'
 import { useEffect } from 'react'
 
 export const useClipboard = (selectedElements: NodeListOf<HTMLCell>) => {

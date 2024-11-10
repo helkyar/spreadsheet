@@ -1,8 +1,5 @@
-import {
-  HTMLCell,
-  parentTag,
-  selected,
-} from '@/components/Spreadsheet/data/types'
+import { parentTag, selected } from '@/components/Spreadsheet/data/constants'
+import { HTMLCell } from '@/components/Spreadsheet/data/types'
 import { MouseEvent, useCallback, useEffect, useState } from 'react'
 
 export function useSelection() {

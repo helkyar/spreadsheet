@@ -1,5 +1,5 @@
 import { getAlphabeticalCode } from '@/components/Spreadsheet/logic/getColumHeaderLabel'
-import { Cell } from '@/components/Spreadsheet/data/types'
+import { Cell } from '@/context/matrix/data/types'
 
 const EVAL_CODE = '='
 
@@ -18,7 +18,7 @@ type MatrixParams = {
   cols: number
 }
 
-export default class SpreadSheet {
+export default class MatrixClient {
   matrix
   private _update = () => {}
   private cellConstants = ''

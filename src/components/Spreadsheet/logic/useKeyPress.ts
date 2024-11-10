@@ -1,9 +1,5 @@
-import {
-  HTMLCell,
-  HTMLInput,
-  inputTag,
-  parentTag,
-} from '@/components/Spreadsheet/data/types'
+import { inputTag, parentTag } from '@/components/Spreadsheet/data/constants'
+import { HTMLCell, HTMLInput } from '@/components/Spreadsheet/data/types'
 import { useCallback, useEffect } from 'react'
 
 const keyGroups = {
