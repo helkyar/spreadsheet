@@ -1,15 +1,11 @@
 import Cell from '@/components/Spreadsheet/components/Cell'
 import { getColumnsHeaderLabels } from '@/components/Spreadsheet/logic/getColumHeaderLabel'
-import { Cell as CellTypes } from '@/components/Spreadsheet/data/types'
 import { useTable } from './logic/useTable'
+import { useMatrix } from '@/context/matrix/MatrixProvider'
 
-type PropTypes = {
-  matrix: CellTypes[][]
-  cols: number
-}
-
-function SpreadSheet({ matrix, cols }: PropTypes) {
+function SpreadSheet() {
   const { removeSelection, selectColumn, selectRow } = useTable()
+  const { matrix } = useMatrix()
 
   // On mouse press & drag
   //    detect selected cells
@@ -27,7 +23,7 @@ function SpreadSheet({ matrix, cols }: PropTypes) {
     <table onClick={removeSelection}>
       <thead>
         <tr>
-          {getColumnsHeaderLabels(cols).map((columLabel, y) => (
+          {getColumnsHeaderLabels(matrix[0]?.length).map((columLabel, y) => (
             <th key={columLabel} onClick={selectColumn(y)}>
               {columLabel}
             </th>
