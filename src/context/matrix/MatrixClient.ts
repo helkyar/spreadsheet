@@ -232,10 +232,11 @@ export default class MatrixClient {
   }
 
   private evaluateInput(expression: string) {
+    if (expression.startsWith('##Error')) return expression
     try {
       return eval(expression)
     } catch (error) {
-      return `##ERROR ${error}`
+      return `##Error: ${error}`
     }
   }
 
@@ -243,17 +244,21 @@ export default class MatrixClient {
     refIndexArray: RefIndexArray[],
     expression: string
   ) {
+    let error = ''
     const formula = `(function(){
         ${refIndexArray
           ?.map((cell) => {
             const computedValue = this.matrix[cell.x][cell.y].computedValue
+            if (computedValue.toString().startsWith('##Error')) {
+              error = computedValue
+            }
             return `const ${cell.ref} = ${JSON.stringify(computedValue)}`
           })
           .join('\n')}
         return %{expression}%
       })()`
 
-    return formula.replace('%{expression}%', expression)
+    return formula.replace('%{expression}%', error ? error : expression)
   }
 
   private findCyclicReferences(newRef: UpdateList) {
@@ -263,7 +268,9 @@ export default class MatrixClient {
     if (isSelfRef) return true
 
     const isCyclic = this.listOfReferences.some((ref) => {
-      const referenced = ref.x === newRef.x && ref.y === newRef.y
+      const referenced = ref.refIndexArray.find(
+        (index) => index.x === newRef.x && index.y === newRef.y
+      )
       return (
         referenced &&
         newRef.refIndexArray.some(
