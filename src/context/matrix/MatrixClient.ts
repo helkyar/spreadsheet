@@ -1,60 +1,21 @@
+import { getIndexFromLabel } from '@/components/Spreadsheet/logic/getColumHeaderLabel'
 import {
-  getAlphabeticalCode,
-  getIndexFromLabel,
-} from '@/components/Spreadsheet/logic/getColumHeaderLabel'
-import { Cell } from '@/context/matrix/data/types'
+  Cell,
+  ConstructorParams,
+  CreateRefValues,
+  ListOfReferences,
+  MatrixParams,
+  PartialCell,
+  RefIndexArray,
+  ReturnedProcessInput,
+  UpdateCellValues,
+} from '@/context/matrix/data/types'
 const EVAL_CODE = '='
-
-type ConstructorParams =
-  | { rows: number; cols: number; matrix: undefined }
-  | { matrix: Cell[][]; rows: undefined; cols: undefined }
-
-type PartialCell = {
-  x: number
-  y: number
-  inputValue: string
-}
-
-type MatrixParams = {
-  rows: number
-  cols: number
-}
-
-type UpdateCellValues = {
-  x: number
-  y: number
-  inputValue?: string
-  expression: string
-}
-
-type CreateRefValues = {
-  x: number
-  y: number
-  refArray: RegExpMatchArray
-  expression: string
-}
-
-type RefIndexArray = {
-  x: number
-  y: number
-  ref: string
-}
-
-type ReturnedProcessInput =
-  | { expression: string; refArray: null }
-  | { expression: string; refArray: RegExpMatchArray }
-
-type UpdateList = {
-  refIndexArray: RefIndexArray[]
-  x: number
-  y: number
-  expression: string
-}
 
 export default class MatrixClient {
   matrix
   private _update = () => {}
-  private listOfReferences = [] as unknown as UpdateList[]
+  private listOfReferences = [] as unknown as ListOfReferences[]
   private timeoutId = 0
 
   constructor({ cols, rows, matrix }: ConstructorParams) {
@@ -98,8 +59,6 @@ export default class MatrixClient {
           computedValue: '',
           update: (value) =>
             this.updateCellAndActualize({ x, y, inputValue: value }),
-          id: `${getAlphabeticalCode(y)}${x + 1}`,
-          references: [],
         })
       )
     )
@@ -262,7 +221,7 @@ export default class MatrixClient {
     return formula.replace('%{expression}%', error ? error : expression)
   }
 
-  private findCyclicReferences(newRef: UpdateList) {
+  private findCyclicReferences(newRef: ListOfReferences) {
     const isSelfRef = newRef.refIndexArray.some(
       (ref) => ref.x === newRef.x && ref.y === newRef.y
     )
