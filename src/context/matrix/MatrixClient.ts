@@ -109,9 +109,9 @@ export default class MatrixClient {
     const { hasRef, expression, isCyclic, refIndexArray } =
       this.generateExpressionAndReferences(cellValues)
 
-    let finalExpression = expression
+    let finalExpression = ''
 
-    if (!hasRef) return { expression: finalExpression, ...cellValues }
+    if (!hasRef) return { expression, ...cellValues }
 
     if (isCyclic) {
       finalExpression = `##Error: cyclic reference`
@@ -145,8 +145,7 @@ export default class MatrixClient {
   }
 
   private processInputValue(input: string): ReturnedProcessInput {
-    if (!input.startsWith(EVAL_CODE))
-      return { expression: input, refArray: null }
+    if (!input.startsWith(EVAL_CODE)) return { expression: '', refArray: null }
     const expression = input.slice(1)
     const referencePattern = /([A-Z]{1,3}[0-9]{1,7})/g
     const referenceFound = expression.match(referencePattern)
@@ -226,7 +225,9 @@ export default class MatrixClient {
   private updateCell({ x, y, inputValue, expression }: UpdateCellValues) {
     if (x == null || y == null) return
 
-    const computedValue = this.evaluateInput(expression)
+    const computedValue = expression
+      ? this.evaluateInput(expression)
+      : inputValue
     this.matrix[x][y].computedValue = computedValue
     if (inputValue) this.matrix[x][y].inputValue = inputValue
   }
