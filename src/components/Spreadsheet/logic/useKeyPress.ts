@@ -57,7 +57,7 @@ export function useKeyPress(
     element.querySelector(inputTag) as HTMLInput
 
   const updateSelectedCellsValues = useCallback(
-    (value: string) => {
+    (value: string, element: HTMLCell | null) => {
       selectedElements.forEach((el) => {
         if (el.tagName !== parentTag) return
         const input = getInput(el)
@@ -65,6 +65,7 @@ export function useKeyPress(
         input.focus()
         input.blur()
       })
+      element?.focus()
     },
     [selectedElements]
   )
@@ -78,49 +79,35 @@ export function useKeyPress(
         const element = document.activeElement as HTMLInput
 
         if (keyGroups.execute.includes(event.key)) {
-          if (!selectedElements) {
-            const { x, y } = getCurrentCellCoordinates(
-              element.parentElement as HTMLCell
-            )
-            focusCell({ x: x + 1, y })
+          const tableCell = element.parentElement as HTMLCell
+          if (selectedElements) {
+            updateSelectedCellsValues(element.value, tableCell)
             return
           }
-          updateSelectedCellsValues(element.value)
-          element.parentElement?.focus()
-        }
-        //
-        else if (keyGroups.escape.includes(event.key)) {
+          const { x, y } = getCurrentCellCoordinates(tableCell)
+          focusCell({ x: x + 1, y })
+        } else if (keyGroups.escape.includes(event.key)) {
           element.parentElement?.focus()
         }
       },
       [parentTag]: (event) => {
         const element = document.activeElement as HTMLCell
-        // Focus input
+
         if (keyGroups.execute.includes(event.key)) {
           getInput(element)?.focus()
-        }
-        // Unselect cells if selected
-        else if (keyGroups.escape.includes(event.key) && selectedElements) {
+        } else if (keyGroups.escape.includes(event.key) && selectedElements) {
           removeSelected()
-        }
-        // Delete selected cells values
-        else if (keyGroups.delete.includes(event.key) && selectedElements) {
-          updateSelectedCellsValues('')
-          element.focus()
-        }
-        // Arrow navigation
-        else if (keyGroups.navigation.includes(event.key)) {
+        } else if (keyGroups.delete.includes(event.key) && selectedElements) {
+          updateSelectedCellsValues('', element)
+        } else if (keyGroups.navigation.includes(event.key)) {
           if (selectedElements) removeSelected()
           arrowNavigation(event, element)
-        }
-        // Skip Control to allow copy-paste
-        else if (
+        } else if (
           keyGroups.skip.includes(event.key) ||
           (event.ctrlKey && keyGroups.skipCombination.includes(event.key))
-        )
+        ) {
           return
-        // OverWrite input value
-        else {
+        } else {
           const input = getInput(element)
           input.value = ''
           input.focus()

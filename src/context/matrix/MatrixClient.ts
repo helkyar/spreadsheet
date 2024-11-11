@@ -1,6 +1,8 @@
-import { getAlphabeticalCode } from '@/components/Spreadsheet/logic/getColumHeaderLabel'
+import {
+  getAlphabeticalCode,
+  getIndexFromLabel,
+} from '@/components/Spreadsheet/logic/getColumHeaderLabel'
 import { Cell } from '@/context/matrix/data/types'
-
 const EVAL_CODE = '='
 
 type ConstructorParams =
@@ -18,10 +20,43 @@ type MatrixParams = {
   cols: number
 }
 
+type UpdateCellValues = {
+  x: number
+  y: number
+  inputValue?: string
+  expression: string
+}
+
+type CreateRefValues = {
+  x: number
+  y: number
+  refArray: RegExpMatchArray
+  expression: string
+}
+
+type RefIndexArray = {
+  x: number
+  y: number
+  ref: string
+}
+
+type ReturnedProcessInput =
+  | { expression: string; refArray: null }
+  | { expression: string; refArray: RegExpMatchArray }
+
+type UpdateList = {
+  refIndexArray: RefIndexArray[]
+  id: string
+  x: number
+  y: number
+  expression: string
+}
+
 export default class MatrixClient {
   matrix
   private _update = () => {}
-  private cellConstants = ''
+  private updateList = [] as unknown as UpdateList[]
+  private timeoutId = 0
 
   constructor({ cols, rows, matrix }: ConstructorParams) {
     this.matrix = this.createMatrix({ cols, rows, matrix } as ConstructorParams)
@@ -34,15 +69,22 @@ export default class MatrixClient {
 
   private createMatrixFromMatrix(matrix: Cell[][]) {
     return matrix.map((rows) =>
-      rows.map((cell) => ({
-        ...cell,
-        update: (value: string) =>
-          this.updateCellAndActualize({
-            x: cell.x,
-            y: cell.y,
-            inputValue: value,
-          }),
-      }))
+      rows.map((cell) => {
+        this.generateNewCellValues({
+          x: cell.x,
+          y: cell.y,
+          inputValue: cell.inputValue,
+        })
+        return {
+          ...cell,
+          update: (value: string) =>
+            this.updateCellAndActualize({
+              x: cell.x,
+              y: cell.y,
+              inputValue: value,
+            }),
+        }
+      })
     )
   }
 
@@ -64,119 +106,165 @@ export default class MatrixClient {
     )
   }
 
-  private updateCellAndActualize(currentCellNewValues: PartialCell) {
-    const { x, y, inputValue } = currentCellNewValues
-    const isCyclic = this.findCyclicReferences(this.matrix[x][y], inputValue)
-    if (isCyclic) return
+  private updateCellAndActualize(inputCellValues: PartialCell) {
+    const newCellValues = this.generateNewCellValues(inputCellValues)
+    const { refArray, expression } = newCellValues
+    newCellValues.expression = this.generateRefCellFormula(refArray, expression)
+    this.updateCell(newCellValues)
 
-    // this order updates values before generating the constants
-    this.updateCell(currentCellNewValues)
-    this.generateCellConstantValues()
-
-    this.updateAll()
+    this.debouncedUpdateAll()
   }
 
-  private generateCellConstantValues() {
-    this.cellConstants = `(function(){
-      ${this.matrix
-        .map((row) =>
-          row
-            .map(
-              (cell) =>
-                `const ${cell.id} = ${JSON.stringify(cell.computedValue)}`
-            )
-            .join('\n')
-        )
-        .join('\n')}
-      return %{expression}%
-    })()`
+  private debouncedUpdateAll(ms = 5) {
+    const id = this.timeoutId + 1
+    this.timeoutId = id
+
+    setTimeout(() => {
+      if (id !== this.timeoutId) return
+      this.updateAll()
+    }, ms)
+  }
+
+  private generateNewCellValues({ x, y, inputValue }: PartialCell) {
+    const newCellValues = {
+      x,
+      y,
+      inputValue,
+      expression: '',
+      refArray: null as unknown as RefIndexArray[],
+      cyclicError: '',
+    }
+    const { expression, refArray } = this.processInputValue(inputValue)
+    if (!refArray) {
+      const referenceIndex = this.updateList.findIndex(
+        (ref) => ref.x === x && ref.y === y
+      )
+      if (referenceIndex >= 0) this.updateList.splice(referenceIndex, 1)
+      newCellValues.expression = expression
+    } else {
+      const refValues = { x, y, refArray, expression }
+      const { refIndexArray, cyclic } = this.generateRefArray(refValues)
+      newCellValues.cyclicError = cyclic ? cyclic : ''
+      newCellValues.refArray =
+        refIndexArray || (null as unknown as RefIndexArray[])
+    }
+    return newCellValues
+  }
+
+  private processInputValue(input: string): ReturnedProcessInput {
+    if (!input.startsWith(EVAL_CODE))
+      return { expression: input, refArray: null }
+    const expression = input.slice(1)
+    const referencePattern = /([A-Z]{1,3}[0-9]{1,7})/g
+    const referenceFound = expression.match(referencePattern)
+    if (!referenceFound) return { expression, refArray: null }
+    return { expression, refArray: referenceFound }
   }
 
   private updateAll() {
-    this.matrix.forEach((row) => {
-      row.forEach((cell) => {
-        this.updateCell({ x: cell.x, y: cell.y, inputValue: cell.inputValue })
-      })
+    if (this.updateList.length === 0) return
+
+    this.updateList.forEach((ref) => {
+      const expression = this.generateRefCellFormula(
+        ref.refIndexArray,
+        ref.expression
+      )
+      this.updateCell({ x: ref.x, y: ref.y, expression })
     })
 
     this._update()
   }
 
-  private updateCell({ x, y, inputValue }: PartialCell) {
+  private updateCell({ x, y, inputValue, expression }: UpdateCellValues) {
     if (x == null || y == null) return
 
-    const computedValue = this.evaluateInput(inputValue)
+    const computedValue = this.evaluateInput(expression)
     this.matrix[x][y].computedValue = computedValue
-    this.matrix[x][y].inputValue = inputValue
+    if (inputValue) this.matrix[x][y].inputValue = inputValue
   }
 
-  private evaluateInput(input: string) {
-    if (!input.startsWith(EVAL_CODE)) return input
-    const expression = input.slice(1)
-
+  private evaluateInput(expression: string) {
     try {
-      const formula = this.cellConstants.replace('%{expression}%', expression)
-      if (!formula) return '' //first cell change doesn't generate a formula
-      return eval(formula)
+      return eval(expression)
     } catch (error) {
       return `##ERROR ${error}`
     }
   }
 
-  private findCyclicReferences(updatedCell: Cell, value: string) {
-    let cyclic = false
-    let cellReferences: string[] = []
-    if (value.includes(updatedCell.id)) {
-      cyclic = true
-    } else {
-      const references = this.matrix.flatMap((row) =>
-        row.filter((cell) => value.includes(cell.id))
-      )
-      cellReferences = references.map((cell) => {
-        if (cell.references.includes(updatedCell.id)) {
-          cyclic = true
-        }
-        return cell.id
-      })
+  private generateRefArray({ refArray, expression, x, y }: CreateRefValues) {
+    const refIndexArray = refArray.map((ref) => {
+      const yIndex = ref.match(/([A-Z]{1,3})/g)
+      const xIndex = ref.match(/([0-9]{1,7})/g)
+      return {
+        y: getIndexFromLabel(yIndex?.toString() || ''),
+        x: Number(xIndex) - 1,
+        ref,
+      }
+    })
+
+    const newReference = {
+      refIndexArray,
+      expression,
+      x,
+      y,
+      id: `${x}/${y}`,
     }
-    if (cyclic) {
-      this.matrix[updatedCell.x][updatedCell.y].computedValue =
-        '##ERROR: cyclic reference'
-      // FIX_ME: needed to avoid loosing shown error on blur
-      this.matrix[updatedCell.x][updatedCell.y].inputValue =
-        '##ERROR: cyclic reference'
-      this._update()
-      return true
+
+    const referenceIndex = this.updateList.findIndex(
+      (ref) => ref?.id === newReference.id
+    )
+    const isCyclic = this.findCyclicReferences(newReference)
+    if (isCyclic) {
+      if (referenceIndex >= 0) this.updateList.splice(referenceIndex, 1)
+      return { cyclic: '##Error: cyclic ref' }
     }
-    this.matrix[updatedCell.x][updatedCell.y].references = cellReferences
-    return false
+
+    if (referenceIndex >= 0) this.updateList[referenceIndex] = newReference
+    if (referenceIndex < 0) this.updateList.push(newReference)
+
+    return { refIndexArray }
   }
 
-  updateCellsValue(
-    cells: number[][],
-    method: 'remove' | 'add',
-    value?: string
+  private generateRefCellFormula(
+    refIndexArray: RefIndexArray[],
+    expression: string
   ) {
-    if (method === 'remove') {
-      cells.forEach((cell) => {
-        this.matrix[cell[0]][cell[1]].inputValue = ''
-        this.matrix[cell[0]][cell[1]].computedValue = ''
-      })
-      this._update()
-    }
-    if (method === 'add' && value) {
-      cells.forEach((cell) => {
-        this.matrix[cell[0]][cell[1]].inputValue = value
-      })
-      this.updateAll()
-    }
+    const formula = `(function(){
+        ${refIndexArray
+          ?.map((cell) => {
+            const computedValue = this.matrix[cell.x][cell.y].computedValue
+            return `const ${cell.ref} = ${JSON.stringify(computedValue)}`
+          })
+          .join('\n')}
+        return %{expression}%
+      })()`
+
+    return formula.replace('%{expression}%', expression)
+  }
+
+  private findCyclicReferences(newRef: UpdateList) {
+    const isSelfRef = newRef.refIndexArray.some(
+      (ref) => ref.x === newRef.x && ref.y === newRef.y
+    )
+    if (isSelfRef) return true
+
+    const isCyclic = this.updateList.some((ref) => {
+      const referenced = ref.x === newRef.x && ref.y === newRef.y
+      return (
+        referenced &&
+        newRef.refIndexArray.some(
+          (newRefIdx) => ref.x === newRefIdx.x && ref.y === newRefIdx.y
+        )
+      )
+    })
+    if (isCyclic) return true
+
+    return false
   }
 
   setUpdateMethod(updater: () => void) {
     this._update = updater
   }
-  // parse formula to extract cell references REGEX (A1+J2+AA93+23)->[A1, J2, AA93]
-  // get cell index based on that references
   // assign constants based on their computed values
   // create a list of cells with references and only update those
 }
