@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import { useLocalStorage } from '@/logic/useLocalStorage'
 
-const THEME_KEY = '_dark_theme_'
+export const THEME_KEY = '_dark_theme_'
 
 export function useToggleDarkTheme() {
   const [isDark, setIsDark] = useLocalStorage<boolean>({ key: THEME_KEY })

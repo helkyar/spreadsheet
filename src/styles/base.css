@@ -51,7 +51,7 @@ input {
   justify-content: end;
   gap: 2em;
 }
-.save,
+.save-btn,
 .dark-btn {
   height: 35px;
   width: 35px;
@@ -61,7 +61,7 @@ input {
     border-radius: 50%;
   }
 }
-.save svg {
+.save-btn svg {
   fill: var(--foreground);
 }
 
