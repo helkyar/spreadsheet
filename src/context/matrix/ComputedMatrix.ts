@@ -12,7 +12,7 @@ import {
 } from '@/context/matrix/data/types'
 const EVAL_CODE = '='
 
-export default class MatrixClient {
+export default class ComputedMatrix {
   matrix
   private _update = () => {}
   private listOfReferences = [] as unknown as ListOfReferences[]
@@ -92,13 +92,8 @@ export default class MatrixClient {
 
       return { hasRef: null, expression, isCyclic: false, refIndexArray: null }
     }
-
-    const { refIndexArray, isCyclic } = this.updateReferencesList({
-      refArray,
-      x,
-      y,
-      expression,
-    })
+    const referenceData = { x, y, refArray, expression, inputValue }
+    const { refIndexArray, isCyclic } = this.updateReferencesList(referenceData)
 
     return { hasRef: refArray, expression, isCyclic, refIndexArray }
   }
@@ -114,9 +109,7 @@ export default class MatrixClient {
 
   private updateReferencesList({
     refArray,
-    x,
-    y,
-    expression,
+    ...referenceData
   }: CreateRefValues) {
     const refIndexArray = refArray.map((ref) => {
       const yIndex = ref.match(/([A-Z]{1,3})/g)
@@ -130,9 +123,7 @@ export default class MatrixClient {
 
     const newReference = {
       refIndexArray,
-      expression,
-      x,
-      y,
+      ...referenceData,
     }
 
     const referenceIndex = this.listOfReferences.findIndex(
@@ -168,14 +159,13 @@ export default class MatrixClient {
   }
 
   private updateAll() {
-    if (this.listOfReferences.length === 0) return
-
     this.listOfReferences.forEach((ref) => {
-      const expression = this.generateRefCellFormula(
-        ref.refIndexArray,
-        ref.expression
+      const { expression, refIndexArray, ...refData } = ref
+      const newExpression = this.generateRefCellFormula(
+        refIndexArray,
+        expression
       )
-      this.updateCell({ x: ref.x, y: ref.y, expression })
+      this.updateCell({ ...refData, expression: newExpression })
     })
 
     this._update()
@@ -187,8 +177,10 @@ export default class MatrixClient {
     const computedValue = expression
       ? this.evaluateInput(expression)
       : inputValue
-    this.matrix[x][y].computedValue = computedValue
-    if (inputValue) this.matrix[x][y].inputValue = inputValue
+
+    const cell = this.matrix[x][y]
+    cell.computedValue = computedValue
+    cell.inputValue = inputValue
   }
 
   private evaluateInput(expression: string) {

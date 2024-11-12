@@ -28,23 +28,20 @@ export type PartialCell = Coordinates & {
   inputValue: string
 }
 
-export type UpdateCellValues = Coordinates & {
-  inputValue?: string
+export type UpdateCellValues = PartialCell & {
   expression: string
 }
 
-export type CreateRefValues = Coordinates & {
+export type CreateRefValues = UpdateCellValues & {
   refArray: RegExpMatchArray
-  expression: string
 }
 
 export type RefIndexArray = Coordinates & {
   ref: string
 }
 
-export type ListOfReferences = Coordinates & {
+export type ListOfReferences = UpdateCellValues & {
   refIndexArray: RefIndexArray[]
-  expression: string
 }
 
 export type ReturnedProcessInput =

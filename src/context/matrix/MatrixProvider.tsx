@@ -1,5 +1,5 @@
 import { Cell } from '@/context/matrix/data/types'
-import MatrixClient from '@/context/matrix/MatrixClient'
+import ComputedMatrix from '@/context/matrix/ComputedMatrix'
 import { MatrixContext } from '@/context/matrix/MatrixContext'
 import { useLocalStorage } from '@/logic/useLocalStorage'
 import { ReactNode, useContext, useEffect, useRef, useState } from 'react'
@@ -17,7 +17,7 @@ export const MatrixProvider = ({ children, rows, cols }: Params) => {
   const [matrix, setMatrix] = useLocalStorage<Cell[][]>({ key: LOCAL_KEY })
 
   const initialValues = matrix ? { matrix } : { rows, cols }
-  const spreadsheet = useRef(new MatrixClient(initialValues))
+  const spreadsheet = useRef(new ComputedMatrix(initialValues))
 
   const [, setCount] = useState(0)
   const updater = () => setCount((c) => c + 1)

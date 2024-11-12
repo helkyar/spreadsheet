@@ -9,12 +9,15 @@ export default function Header() {
   return (
     <header>
       <h1>Header - edit options</h1>
-      {/*TO_DO: Will be a section in the future */}
       <div className='utils'>
-        <button className='save' onClick={save}>
+        <button className='save-btn' name='save' onClick={save}>
           <Save />
         </button>
-        <button className='dark-btn' onClick={toggleDarkTheme}>
+        <button
+          className='dark-btn'
+          name='toggle-dark-theme'
+          onClick={toggleDarkTheme}
+        >
           {isDark ? <Sun /> : <Moon />}
         </button>
       </div>

@@ -1,10 +1,10 @@
 import Cell from '@/components/Spreadsheet/components/Cell'
 import { getColumnsHeaderLabels } from '@/components/Spreadsheet/logic/getColumHeaderLabel'
-import { useTable } from './logic/useTable'
+import { useTableEvents } from './logic/useTableEvents'
 import { useMatrix } from '@/context/matrix/MatrixProvider'
 
 function SpreadSheet() {
-  const { removeSelection, selectColumn, selectRow } = useTable()
+  const { removeSelection, selectColumn, selectRow } = useTableEvents()
   const { matrix } = useMatrix()
 
   // On mouse press & drag
