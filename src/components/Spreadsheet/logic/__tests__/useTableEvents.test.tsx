@@ -46,6 +46,7 @@ describe('useTableEvents hook tested through ui', () => {
     expect(isInputFocused).toBe(true)
     fireEvent.keyDown(document, { key: 'c' })
     fireEvent.keyDown(document, { key: 'Enter' })
+    // expect(screen.getAllByText('c').length).toBe(10)
   })
 
   it('should copy selected cells values to clipboard', async () => {
@@ -62,7 +63,7 @@ describe('useTableEvents hook tested through ui', () => {
     // expect(screen.getAllByText('c').length).toBe(10)
 
     fireEvent.keyDown(document, { key: 'Backspace' })
-    setTimeout(() => expect(screen.getAllByText('c').length).toBe(0), 50)
+    expect(screen.queryAllByText('c').length).toBe(0)
   })
 
   it('should paste clipboard values to selected cells', () => {
