@@ -6,14 +6,12 @@ import { useSelection } from '@/components/Spreadsheet/logic/useSelection'
 // setTimeout(() => element.parentElement.focus(), 0)
 
 export function useTableEvents() {
-  const { removeSelection, selectedElements, selectColumn, selectRow } =
-    useSelection()
+  const { removeSelection, selectedElements, ...selectors } = useSelection()
   useClipboard(selectedElements)
   useKeyPress(selectedElements, removeSelection)
 
   return {
-    selectColumn,
-    selectRow,
+    ...selectors,
     removeSelection,
   }
 }
