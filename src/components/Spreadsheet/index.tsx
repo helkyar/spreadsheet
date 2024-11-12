@@ -5,19 +5,9 @@ import { useMatrix } from '@/context/matrix/MatrixProvider'
 
 function SpreadSheet() {
   const { removeSelection, selectColumn, selectRow } = useTableEvents()
-  const { matrix } = useMatrix()
+  const { matrix, addRow, addColumn, removeColumn, removeRow } = useMatrix()
 
-  // On mouse press & drag
-  //    detect selected cells
-  //    remove "selected" className if exist
-  //    add "selected" className to every cell it goes over
-  //    add "selected" in a quadrilateral fashion
-  //    remove "selected" in a quadrilateral fashion
-  // On key press
-  //    Shift + Arrow ->
-  //      detect selected cells
-  //      remove "selected" className if it exists
-  //      add "selected" className in a quadrilateral fashion in the direction of the arrows
+  // Clean inputs
 
   return (
     <table onClick={removeSelection}>
@@ -25,7 +15,11 @@ function SpreadSheet() {
         <tr>
           {getColumnsHeaderLabels(matrix[0]?.length).map((columLabel, y) => (
             <th key={columLabel} onClick={selectColumn(y)}>
+              {y > 0 && (
+                <span className='remove-column' onClick={removeColumn(y - 1)} />
+              )}
               {columLabel}
+              <span className='add-column' onClick={addColumn(y)} />
             </th>
           ))}
         </tr>
@@ -33,13 +27,16 @@ function SpreadSheet() {
       <tbody>
         {matrix?.map((row, x) => (
           <tr key={x}>
-            <th onClick={selectRow(x)}>{x + 1}</th>
+            <th onClick={selectRow(x)}>
+              {x === 0 && (
+                <span className='add-row-first' onClick={addRow(x)} />
+              )}
+              <span className='add-row' onClick={addRow(x + 1)} />
+              {x + 1}
+              <span className='remove-row' onClick={removeRow(x)} />
+            </th>
             {row.map((cell) => (
-              <Cell
-                key={`${cell.x}/${cell.y}`}
-                cellValues={cell}
-                selected={false}
-              />
+              <Cell key={cell.id} cellValues={cell} selected={false} />
             ))}
           </tr>
         ))}

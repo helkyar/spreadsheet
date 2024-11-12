@@ -79,6 +79,7 @@ th {
   text-align: center;
   border: none;
   padding: var(--padding-md) 0;
+  position: relative;
 }
 
 td {
@@ -124,3 +125,25 @@ input {
 /* .selected + .selected {
   border: none;
 } */
+.add-column,
+.add-row,
+.remove-column,
+.remove-row,
+.add-row-first {
+  width: 10px;
+  height: 10px;
+  border: blue solid 1px;
+  margin-left: auto;
+}
+.remove-column,
+.remove-row {
+  margin-right: auto;
+  border: red solid 1px;
+}
+.add-row,
+.remove-row {
+  margin-top: auto;
+}
+.remove-row {
+  margin-bottom: auto;
+}

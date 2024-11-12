@@ -1,7 +1,9 @@
 import { getIndexFromLabel } from '@/components/Spreadsheet/logic/getColumHeaderLabel'
 import {
   Cell,
+  CellObject,
   ConstructorParams,
+  Coordinates,
   CreateRefValues,
   ListOfReferences,
   MatrixParams,
@@ -20,8 +22,9 @@ const EVAL_CODE = '='
 export default class ComputedMatrix {
   matrix
   private _update = () => {}
-  private listOfReferences = [] as unknown as ListOfReferences[]
+  private refList = [] as unknown as ListOfReferences[]
   private timeoutId = 0
+  private cellCount = 0
 
   constructor({ cols, rows, matrix }: ConstructorParams) {
     this.matrix = this.createMatrix({ cols, rows, matrix } as ConstructorParams)
@@ -40,15 +43,7 @@ export default class ComputedMatrix {
           y: cell.y,
           inputValue: cell.inputValue,
         })
-        return {
-          ...cell,
-          update: (value: string) =>
-            this.updateCellAndActualize({
-              x: cell.x,
-              y: cell.y,
-              inputValue: value,
-            }),
-        }
+        return this.generateCellObject(cell)
       })
     )
   }
@@ -57,16 +52,20 @@ export default class ComputedMatrix {
     return Array.from({ length: rows }, (_, x) =>
       Array.from(
         { length: cols },
-        (_, y): Cell => ({
-          x,
-          y,
-          inputValue: '',
-          computedValue: '',
-          update: (value) =>
-            this.updateCellAndActualize({ x, y, inputValue: value }),
-        })
+        (_, y): Cell => this.generateCellObject({ x, y })
       )
     )
+  }
+
+  private generateCellObject(cell: CellObject) {
+    return {
+      computedValue: '',
+      inputValue: '',
+      ...cell,
+      id: this.cellCount++,
+      update: (value: string, { x, y }: Coordinates) =>
+        this.updateCellAndActualize({ x, y, inputValue: value }),
+    }
   }
 
   private processUpdatedCellValues(cellValues: PartialCell) {
@@ -90,10 +89,10 @@ export default class ComputedMatrix {
     const { expression, refArray } = this.processInputValue(inputValue)
 
     if (!refArray) {
-      const referenceIndex = this.listOfReferences.findIndex(
+      const referenceIndex = this.refList.findIndex(
         (ref) => ref.x === x && ref.y === y
       )
-      if (referenceIndex >= 0) this.listOfReferences.splice(referenceIndex, 1)
+      if (referenceIndex >= 0) this.refList.splice(referenceIndex, 1)
 
       return { hasRef: null, expression, isCyclic: false, refIndexArray: null }
     }
@@ -134,17 +133,16 @@ export default class ComputedMatrix {
       ...referenceData,
     }
 
-    const referenceIndex = this.listOfReferences.findIndex(
+    const referenceIndex = this.refList.findIndex(
       (ref) => ref?.x === newReference.x && ref?.y === newReference.y
     )
     const isCyclic = this.findCyclicReferences(newReference)
 
     if (isCyclic) {
-      if (referenceIndex >= 0) this.listOfReferences.splice(referenceIndex, 1)
+      if (referenceIndex >= 0) this.refList.splice(referenceIndex, 1)
     } else {
-      if (referenceIndex >= 0)
-        this.listOfReferences[referenceIndex] = newReference
-      if (referenceIndex < 0) this.listOfReferences.push(newReference)
+      if (referenceIndex >= 0) this.refList[referenceIndex] = newReference
+      if (referenceIndex < 0) this.refList.push(newReference)
     }
     return { refIndexArray, isCyclic }
   }
@@ -167,7 +165,7 @@ export default class ComputedMatrix {
   }
 
   private updateAll() {
-    this.listOfReferences.forEach((ref) => {
+    this.refList.forEach((ref) => {
       const { expression, refIndexArray, ...refData } = ref
       const newExpression = this.generateRefCellFormula(
         refIndexArray,
@@ -181,7 +179,6 @@ export default class ComputedMatrix {
 
   private updateCell({ x, y, inputValue, expression }: UpdateCellValues) {
     if (x == null || y == null) return
-
     const computedValue = expression
       ? this.evaluateInput(expression)
       : inputValue
@@ -227,7 +224,7 @@ export default class ComputedMatrix {
     )
     if (isSelfRef) return true
 
-    const isCyclic = this.listOfReferences.some((ref) => {
+    const isCyclic = this.refList.some((ref) => {
       const referenced = ref.refIndexArray.find(
         (index) => index.x === newRef.x && index.y === newRef.y
       )
@@ -241,6 +238,76 @@ export default class ComputedMatrix {
     if (isCyclic) return true
 
     return false
+  }
+
+  addColumn(y: number) {
+    if (y < 0 || y > this.matrix[0].length) return
+
+    this.matrix.forEach((row, x) => {
+      row.forEach((cell) => {
+        if (cell.y >= y) cell.y++
+      })
+      const newCell = this.generateCellObject({ x, y })
+      row.splice(y, 0, newCell)
+    })
+
+    this.refList.forEach((ref) => {
+      if (ref.y >= y) ref.y++
+    })
+
+    this._update()
+  }
+
+  addRow(x: number) {
+    if (x < 0 || x > this.matrix.length) return
+
+    const newRow = Array.from({ length: this.matrix[0].length }, (_, y) =>
+      this.generateCellObject({ x, y })
+    )
+    this.matrix.forEach((row) => {
+      if (row[0].x >= x) row.forEach((cell) => cell.x++)
+    })
+    this.matrix.splice(x, 0, newRow)
+
+    this.refList.forEach((ref) => {
+      if (ref.x >= x) ref.x++
+    })
+
+    this._update()
+  }
+
+  removeColumn(y: number) {
+    if (y < 0 || y >= this.matrix.length) return
+
+    this.matrix.forEach((row) => {
+      row.splice(y, 1)
+      row.forEach((cell) => {
+        if (cell.y > y) cell.y--
+      })
+    })
+
+    this.refList = this.refList.filter((ref) => {
+      if (ref.y > y) ref.y--
+      return ref.y !== y
+    })
+
+    this._update()
+  }
+
+  removeRow(x: number) {
+    if (x < 0 || x >= this.matrix.length) return
+
+    this.matrix.splice(x, 1)
+    this.matrix.forEach((row) => {
+      if (row[0].x > x) row.forEach((cell) => cell.x--)
+    })
+
+    this.refList = this.refList.filter((ref) => {
+      if (ref.x > x) ref.x--
+      return ref.x !== x
+    })
+
+    this._update()
   }
 
   setUpdateMethod(updater: () => void) {

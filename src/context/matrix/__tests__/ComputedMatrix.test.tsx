@@ -24,7 +24,7 @@ describe('ComputedMatrix class', () => {
     const matrix = getMockMatrix()
 
     const cell = matrix[0][0]
-    cell.update('=3+2')
+    cell.update('=3+2', { x: 0, y: 0 })
     expect(cell.computedValue).toBe(5)
   })
 
@@ -32,7 +32,7 @@ describe('ComputedMatrix class', () => {
     const matrix = getMockMatrix()
 
     const cell = matrix[0][0]
-    cell.update('3+2')
+    cell.update('3+2', { x: 0, y: 0 })
     expect(cell.computedValue).toBe('3+2')
   })
 
@@ -42,38 +42,38 @@ describe('ComputedMatrix class', () => {
     const firstCell = matrix[0][0]
     const secondCell = matrix[1][0]
 
-    firstCell.update('=A1')
+    firstCell.update('=A1', { x: 0, y: 0 })
     expect(firstCell.computedValue).toContain('##Error: cyclic reference')
 
-    firstCell.update('=A2')
-    secondCell.update('=A1')
+    firstCell.update('=A2', { x: 0, y: 0 })
+    secondCell.update('=A1', { x: 1, y: 0 })
     expect(secondCell.computedValue).toContain('##Error: cyclic reference')
   })
 
   it('should update dependency array', () => {
     const computedMatrix = getMatrixInstance()
-    const references = () => computedMatrix['listOfReferences']
+    const references = () => computedMatrix['refList']
     const cell = computedMatrix.matrix[0][0]
 
     expect(references().length).toBe(0)
 
-    cell.update('=A2')
+    cell.update('=A2', { x: 0, y: 0 })
     expect(references().length).toBe(1)
     expect(references()[0].refIndexArray.length).toBe(1)
     expect(references()[0].refIndexArray[0].ref).toBe('A2')
 
-    cell.update('=A2+A2')
+    cell.update('=A2+A2', { x: 0, y: 0 })
     expect(references().length).toBe(1)
     expect(references()[0].refIndexArray.length).toBe(1)
     expect(references()[0].refIndexArray[0].ref).toBe('A2')
 
-    cell.update('=A2+B2')
+    cell.update('=A2+B2', { x: 0, y: 0 })
     expect(references().length).toBe(1)
     expect(references()[0].refIndexArray.length).toBe(2)
     expect(references()[0].refIndexArray[0].ref).toBe('A2')
     expect(references()[0].refIndexArray[1].ref).toBe('B2')
 
-    cell.update('')
+    cell.update('', { x: 0, y: 0 })
     expect(references().length).toBe(0)
   })
 
@@ -84,11 +84,11 @@ describe('ComputedMatrix class', () => {
     // @ts-expect-error updateAll is private
     vi.spyOn(computedMatrix, 'updateAll')
 
-    cell.update('a')
-    cell.update('b')
-    cell.update('c')
-    cell.update('d')
-    cell.update('e')
+    cell.update('a', { x: 0, y: 0 })
+    cell.update('b', { x: 0, y: 0 })
+    cell.update('c', { x: 0, y: 0 })
+    cell.update('d', { x: 0, y: 0 })
+    cell.update('e', { x: 0, y: 0 })
     await new Promise((resolve) => setTimeout(resolve, 10))
     expect(computedMatrix['updateAll']).toHaveBeenCalledOnce()
     expect(cell.computedValue).toBe('e')

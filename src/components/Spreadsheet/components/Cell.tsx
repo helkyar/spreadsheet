@@ -1,4 +1,4 @@
-import { type Cell } from '@/components/Spreadsheet/data/types'
+import { type Cell } from '@/context/matrix/data/types'
 
 type CellProps = {
   cellValues: Cell
@@ -7,7 +7,7 @@ type CellProps = {
 export default function Cell({ cellValues, selected }: CellProps) {
   const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     const value = event.target.value
-    cellValues.update(value)
+    cellValues.update(value, { x: cellValues.x, y: cellValues.y })
   }
 
   return (
