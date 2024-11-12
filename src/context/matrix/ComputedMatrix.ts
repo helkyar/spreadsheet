@@ -12,6 +12,11 @@ import {
 } from '@/context/matrix/data/types'
 const EVAL_CODE = '='
 
+//TO_DO: implement single responsibility principle
+//  -> parser for cell updates that returns computedValue and hasReference
+//  -> if reference is found, update listOfReferences
+//  -> id reference is not found, remove from listOfReferences
+
 export default class ComputedMatrix {
   matrix
   private _update = () => {}
@@ -24,7 +29,7 @@ export default class ComputedMatrix {
 
   private createMatrix({ cols, rows, matrix }: ConstructorParams) {
     if (matrix) return this.createMatrixFromMatrix(matrix)
-    else return this.createMatrixFromNumbers({ rows, cols })
+    return this.createMatrixFromNumbers({ rows, cols })
   }
 
   private createMatrixFromMatrix(matrix: Cell[][]) {
@@ -111,7 +116,10 @@ export default class ComputedMatrix {
     refArray,
     ...referenceData
   }: CreateRefValues) {
-    const refIndexArray = refArray.map((ref) => {
+    const sanitizedRefArray = refArray.filter(
+      (ref, i, self) => i === self.findIndex((r) => r === ref)
+    )
+    const refIndexArray = sanitizedRefArray.map((ref) => {
       const yIndex = ref.match(/([A-Z]{1,3})/g)
       const xIndex = ref.match(/([0-9]{1,7})/g)
       return {
