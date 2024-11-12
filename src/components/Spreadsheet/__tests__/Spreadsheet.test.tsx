@@ -29,29 +29,3 @@ describe('Spreadsheet component with context', () => {
 // Spreadsheet
 // Specific values are shown based on cell values
 // Input and input values are visible on click
-
-// Matrix
-// cyclic references
-// reference array (add, remove, update)
-// debounced update all
-// text inputs
-// computed inputs
-// referenced inputs
-// cells updates on input.blur() even without refArray
-
-// Table selection
-// click header selects column
-// click row header selects row
-// multiple clicks only select one row/column
-// certain keys remove selection
-// delete, deletes cells values if saved even on refresh
-
-// Table clipboard
-// copy column separated by \n row separated by \tab
-// paste same as copy
-
-// Table navigation
-// Arrows
-// Esc
-// Enter
-// Tab

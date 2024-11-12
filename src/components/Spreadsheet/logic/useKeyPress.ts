@@ -85,6 +85,8 @@ export function useKeyPress(
             return
           }
           const { x, y } = getCurrentCellCoordinates(tableCell)
+          // FIX_ME: double call to prevent out of bounds
+          focusCell({ x, y })
           focusCell({ x: x + 1, y })
         } else if (keyGroups.escape.includes(event.key)) {
           element.parentElement?.focus()

@@ -39,12 +39,11 @@ export function useSelection() {
   }
 
   const selectColumn = (index: number) => (event: MouseEvent<HTMLElement>) => {
-    if (index === 0) return //select all
     event.stopPropagation()
     oneCellSelection(event.currentTarget)
 
-    const columCells = $$(`tr td:nth-child(${index + 1})`)
-    addSelectedClassToElements(columCells)
+    if (index === 0) addSelectedClassToElements($$(parentTag))
+    else addSelectedClassToElements($$(`tr td:nth-child(${index + 1})`))
 
     setSelectedElements(getSelectedElements())
   }

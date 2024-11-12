@@ -126,3 +126,5 @@ describe('useTableEvents hook tested through ui', () => {
 
 // certain keys remove selection
 // Esc, Tab
+// Possible corner case, some keys don't work at specific cells
+//  -> test at least one cell from each corner
