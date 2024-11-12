@@ -6,6 +6,7 @@ import { MatrixProvider } from '@/context/matrix/MatrixProvider'
 import { beforeAll, describe, expect, it } from 'vitest'
 
 import { render, screen } from '@testing-library/react'
+import { parentTag } from '@/components/Spreadsheet/data/constants'
 
 describe('Spreadsheet component with context', () => {
   beforeAll(() => {
@@ -18,6 +19,7 @@ describe('Spreadsheet component with context', () => {
   it('should render the component with specified parameters from matrix', () => {
     expect(screen.getAllByText(/[A-J]/).length).toBe(10)
     expect(screen.getAllByText(/[0-9]{1,2}/).length).toBe(10)
+    expect(document.getElementsByTagName(parentTag).length).toBe(100)
     expect(screen.queryByText('K')).toBeFalsy()
     expect(screen.queryByText('0')).toBeFalsy()
     expect(screen.queryByText('11')).toBeFalsy()
@@ -25,9 +27,6 @@ describe('Spreadsheet component with context', () => {
 })
 
 // Spreadsheet
-// There is a header row with specific labels based on matrix length (firs one is blanc)
-// There is a column header with specific numbers based on matrix length
-// There is a specific number of cells based on matrix length
 // Specific values are shown based on cell values
 // Input and input values are visible on click
 

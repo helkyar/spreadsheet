@@ -11,8 +11,8 @@ export type MatrixContext = {
 }
 
 export type ConstructorParams =
-  | { rows: number; cols: number; matrix: undefined }
-  | { matrix: Cell[][]; rows: undefined; cols: undefined }
+  | { rows: number; cols: number; matrix?: undefined }
+  | { matrix: Cell[][]; rows?: undefined; cols?: undefined }
 
 export type MatrixParams = {
   rows: number
