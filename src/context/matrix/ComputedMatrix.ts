@@ -306,7 +306,6 @@ export default class ComputedMatrix {
 
   removeRow(x: number) {
     // FIX_ME: refList is pre-updated
-    console.log('🚀 ~ ComputedMatrix ~ removeRow ~ x:', this.refList)
     if (x < 0 || x >= this.matrix.length) return
 
     this.matrix.splice(x, 1)
