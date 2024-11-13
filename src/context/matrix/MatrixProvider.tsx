@@ -32,10 +32,6 @@ export const MatrixProvider = ({ children, rows, cols }: Params) => {
 
   const addColumn = (y: number) => (event?: MouseEvent) => {
     event?.stopPropagation()
-    console.log(
-      '🚀 ~ removeColumn ~ spreadsheet:',
-      spreadsheet.current['refList']
-    )
     spreadsheet.current.addColumn(y)
   }
   const addRow = (x: number) => (event?: MouseEvent) => {
