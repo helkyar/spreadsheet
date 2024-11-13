@@ -38,8 +38,8 @@ function SpreadSheet() {
               <AddCellsIcon onClick={addRow(x + 1)} isHorizontal />
               {x + 1}
             </th>
-            {row.map((cell) => (
-              <Cell key={cell.id} cellValues={cell} selected={false} />
+            {row.map((cell, y) => (
+              <Cell key={cell.id} cellValues={cell} x={x} y={y} />
             ))}
           </tr>
         ))}
