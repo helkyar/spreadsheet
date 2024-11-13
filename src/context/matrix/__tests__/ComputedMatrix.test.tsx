@@ -25,14 +25,14 @@ describe('ComputedMatrix class', () => {
     const matrix = getMockMatrix()
 
     const cell = matrix[0][0]
-    cell.update('=3+2', { x: 0, y: 0 })
+    cell.update('=3+2', cell.id)
     expect(cell.computedValue).toBe(5)
 
     const cell2 = matrix[0][1]
-    cell2.update('=A1+2', { x: 0, y: 1 })
+    cell2.update('=A1+2', cell2.id)
     expect(cell2.computedValue).toBe(7)
 
-    cell.update('=3+8', { x: 0, y: 0 })
+    cell.update('=3+8', cell.id)
     await new Promise((r) => setTimeout(r, 10))
     expect(cell2.computedValue).toBe(13)
   })
@@ -41,7 +41,7 @@ describe('ComputedMatrix class', () => {
     const matrix = getMockMatrix()
 
     const cell = matrix[0][0]
-    cell.update('3+2', { x: 0, y: 0 })
+    cell.update('3+2', cell.id)
     expect(cell.computedValue).toBe('3+2')
   })
 
@@ -52,15 +52,15 @@ describe('ComputedMatrix class', () => {
   it('should avoid cyclic reference', () => {
     const matrix = getMockMatrix()
 
-    const firstCell = matrix[0][0]
-    const secondCell = matrix[1][0]
+    const cell = matrix[0][0]
+    const cell2 = matrix[1][0]
 
-    firstCell.update('=A1', { x: 0, y: 0 })
-    expect(firstCell.computedValue).toContain('##Error: cyclic reference')
+    cell.update('=A1', cell.id)
+    expect(cell.computedValue).toContain('##Error: cyclic reference')
 
-    firstCell.update('=A2', { x: 0, y: 0 })
-    secondCell.update('=A1', { x: 1, y: 0 })
-    expect(secondCell.computedValue).toContain('##Error: cyclic reference')
+    cell.update('=A2', cell.id)
+    cell2.update('=A1', cell2.id)
+    expect(cell2.computedValue).toContain('##Error: cyclic reference')
   })
 
   it('should update dependency array', () => {
@@ -69,23 +69,23 @@ describe('ComputedMatrix class', () => {
 
     expect(references(computedMatrix).length).toBe(0)
 
-    cell.update('=A2', { x: 0, y: 0 })
+    cell.update('=A2', cell.id)
     expect(references(computedMatrix).length).toBe(1)
     expect(references(computedMatrix)[0].refIndexArray.length).toBe(1)
     expect(references(computedMatrix)[0].refIndexArray[0].ref).toBe('A2')
 
-    cell.update('=A2+A2', { x: 0, y: 0 })
+    cell.update('=A2+A2', cell.id)
     expect(references(computedMatrix).length).toBe(1)
     expect(references(computedMatrix)[0].refIndexArray.length).toBe(1)
     expect(references(computedMatrix)[0].refIndexArray[0].ref).toBe('A2')
 
-    cell.update('=A2+B2', { x: 0, y: 0 })
+    cell.update('=A2+B2', cell.id)
     expect(references(computedMatrix).length).toBe(1)
     expect(references(computedMatrix)[0].refIndexArray.length).toBe(2)
     expect(references(computedMatrix)[0].refIndexArray[0].ref).toBe('A2')
     expect(references(computedMatrix)[0].refIndexArray[1].ref).toBe('B2')
 
-    cell.update('', { x: 0, y: 0 })
+    cell.update('', cell.id)
     expect(references(computedMatrix).length).toBe(0)
   })
 
@@ -96,11 +96,11 @@ describe('ComputedMatrix class', () => {
     // @ts-expect-error updateAll is private
     vi.spyOn(computedMatrix, 'updateAll')
 
-    cell.update('a', { x: 0, y: 0 })
-    cell.update('b', { x: 0, y: 0 })
-    cell.update('c', { x: 0, y: 0 })
-    cell.update('d', { x: 0, y: 0 })
-    cell.update('e', { x: 0, y: 0 })
+    cell.update('a', cell.id)
+    cell.update('b', cell.id)
+    cell.update('c', cell.id)
+    cell.update('d', cell.id)
+    cell.update('e', cell.id)
     await new Promise((resolve) => setTimeout(resolve, 10))
     expect(computedMatrix['updateAll']).toHaveBeenCalledOnce()
     expect(cell.computedValue).toBe('e')
@@ -113,10 +113,10 @@ describe('ComputedMatrix class', () => {
     const cell3 = () => computedMatrix.matrix[0][1]
     const cell4 = () => computedMatrix.matrix[1][1]
 
-    cell().update('=A2', { x: 0, y: 0 }) // A1
-    cell2().update('=B1', { x: 1, y: 0 }) // A2 -> A1
-    cell3().update('=3+2', { x: 0, y: 1 }) // B1
-    cell4().update('=5+5', { x: 1, y: 1 }) // B2 -> B1
+    cell().update('=A2', cell().id) // A1
+    cell2().update('=B1', cell2().id) // A2 -> A1
+    cell3().update('=3+2', cell3().id) // B1
+    cell4().update('=5+5', cell4().id) // B2 -> B1
     expect(references(computedMatrix).length).toBe(2)
     await new Promise((r) => setTimeout(r, 10))
     expect(cell2().computedValue).toBe(5)
@@ -124,9 +124,9 @@ describe('ComputedMatrix class', () => {
 
     computedMatrix.removeRow(0)
     await new Promise((r) => setTimeout(r, 10))
-    // expect(references(computedMatrix).length).toBe(1)
+    expect(references(computedMatrix).length).toBe(1)
     expect(cell().inputValue).toBe('=B1')
-    // expect(cell().computedValue).toBe(10)
+    expect(cell().computedValue).toBe(10)
     expect(cell().id).toBe(2)
   })
   it('should remove references list if deleted and maintain relative reference when REMOVING col', async () => {
@@ -136,10 +136,10 @@ describe('ComputedMatrix class', () => {
     const cell3 = () => computedMatrix.matrix[0][1]
     const cell4 = () => computedMatrix.matrix[1][1]
 
-    cell().update('=3+2', { x: 0, y: 0 }) // A1
-    cell2().update('=A1', { x: 1, y: 0 }) // A2
-    cell3().update('=5+5', { x: 0, y: 1 }) // B1 -> A1
-    cell4().update('=A1', { x: 1, y: 1 }) // B2 -> A2
+    cell().update('=3+2', cell().id) // A1
+    cell2().update('=A1', cell2().id) // A2
+    cell3().update('=5+5', cell3().id) // B1 -> A1
+    cell4().update('=A1', cell4().id) // B2 -> A2
     expect(references(computedMatrix).length).toBe(2)
     await new Promise((r) => setTimeout(r, 10))
     expect(cell4().computedValue).toBe(5)
@@ -147,9 +147,9 @@ describe('ComputedMatrix class', () => {
 
     computedMatrix.removeColumn(0)
     await new Promise((r) => setTimeout(r, 10))
-    // expect(references(computedMatrix).length).toBe(1)
+    expect(references(computedMatrix).length).toBe(1)
     expect(cell2().inputValue).toBe('=A1')
-    // expect(cell2().computedValue).toBe(10)
+    expect(cell2().computedValue).toBe(10)
     expect(cell2().id).toBe(3)
   })
   it('should maintain references list with relative reference when ADDING row', async () => {
@@ -160,10 +160,10 @@ describe('ComputedMatrix class', () => {
     const cell4 = () => computedMatrix.matrix[1][1]
     const cell5 = () => computedMatrix.matrix[2][0]
 
-    cell().update('=B1', { x: 0, y: 0 }) // A1 -> A2
-    cell2().update('=B2', { x: 1, y: 0 }) // A2 -> A3
-    cell3().update('=3+2', { x: 0, y: 1 }) // B1 -> B2
-    cell4().update('=5+5', { x: 1, y: 1 }) // B2 -> B3
+    cell().update('=B1', cell().id) // A1 -> A2
+    cell2().update('=B2', cell2().id) // A2 -> A3
+    cell3().update('=3+2', cell3().id) // B1 -> B2
+    cell4().update('=5+5', cell4().id) // B2 -> B3
     expect(references(computedMatrix).length).toBe(2)
     await new Promise((r) => setTimeout(r, 10))
     expect(cell().computedValue).toBe(5)
@@ -189,10 +189,10 @@ describe('ComputedMatrix class', () => {
     const cell4 = () => computedMatrix.matrix[1][1]
     const cell5 = () => computedMatrix.matrix[1][2]
 
-    cell().update('=3+2', { x: 0, y: 0 }) // A1 -> B1
-    cell2().update('=A1', { x: 1, y: 0 }) // A2 -> B2
-    cell3().update('=5+5', { x: 0, y: 1 }) // B1 -> C1
-    cell4().update('=B1', { x: 1, y: 1 }) // B2 -> C2
+    cell().update('=3+2', cell().id) // A1 -> B1
+    cell2().update('=A1', cell2().id) // A2 -> B2
+    cell3().update('=5+5', cell3().id) // B1 -> C1
+    cell4().update('=B1', cell4().id) // B2 -> C2
     expect(references(computedMatrix).length).toBe(2)
     await new Promise((r) => setTimeout(r, 10))
     expect(cell2().computedValue).toBe(5)

@@ -33,7 +33,10 @@ export default class ComputedMatrix {
       rows,
       matrix,
     } as ConstructorParams)
+
+    if (this._matrix.length > 0) this.generateAllReferences()
   }
+
   get matrix() {
     return this._matrix
   }
@@ -44,34 +47,30 @@ export default class ComputedMatrix {
 
   private createMatrixFromMatrix(matrix: Cell[][]) {
     return matrix.map((rows) =>
-      rows.map((cell) => {
-        this.generateExpressionAndReferences({
-          x: cell.x,
-          y: cell.y,
-          inputValue: cell.inputValue,
-        })
-        return this.generateCellObject(cell)
-      })
+      rows.map((cell) => this.generateCellObject(cell))
     )
   }
 
   private createMatrixFromNumbers({ rows, cols }: MatrixParams) {
-    return Array.from({ length: rows }, (_, x) =>
-      Array.from(
-        { length: cols },
-        (_, y): Cell => this.generateCellObject({ x, y })
-      )
+    return Array.from({ length: rows }, () =>
+      Array.from({ length: cols }, (): Cell => this.generateCellObject())
     )
   }
 
-  private generateCellObject(cell: CellObject) {
+  private generateAllReferences() {
+    this._matrix.forEach((row) =>
+      row.forEach((cell) => this.generateExpressionAndReferences({ ...cell }))
+    )
+  }
+
+  private generateCellObject(cell?: CellObject) {
     return {
       computedValue: '',
       inputValue: '',
       ...cell,
       id: this.cellCount++,
-      update: (value: string, { x, y }: Coordinates) =>
-        this.updateCellAndActualize({ x, y, inputValue: value }),
+      update: (value: string, id: number) =>
+        this.updateCellAndActualize({ id, inputValue: value }),
     }
   }
 
@@ -92,19 +91,17 @@ export default class ComputedMatrix {
     return { expression: finalExpression, ...cellValues }
   }
 
-  private generateExpressionAndReferences({ x, y, inputValue }: PartialCell) {
+  private generateExpressionAndReferences({ id, inputValue }: PartialCell) {
     const { expression, refArray } = this.processInputValue(inputValue)
 
     if (!refArray) {
-      const referenceIndex = this.refList.findIndex(
-        (ref) => ref.x === x && ref.y === y
-      )
+      const referenceIndex = this.refList.findIndex((ref) => ref.id === id)
       if (referenceIndex >= 0) this.refList.splice(referenceIndex, 1)
 
       return { hasRef: null, expression, isCyclic: false, refIndexArray: null }
     }
 
-    const referenceData = { x, y, refArray, expression, inputValue }
+    const referenceData = { id, refArray, expression, inputValue }
     const { refIndexArray, isCyclic } = this.updateReferencesList(referenceData)
 
     return { hasRef: refArray, expression, isCyclic, refIndexArray }
@@ -142,7 +139,7 @@ export default class ComputedMatrix {
     }
 
     const referenceIndex = this.refList.findIndex(
-      (ref) => ref?.x === newReference.x && ref?.y === newReference.y
+      (ref) => ref.id === newReference.id
     )
     const isCyclic = this.findCyclicReferences(newReference)
 
@@ -173,6 +170,7 @@ export default class ComputedMatrix {
   }
 
   private updateAll() {
+    console.log('🚀 ~ ComputedMatrix ~ updateAll ~ this.refList:', this.refList)
     this.refList.forEach((ref) => {
       const { expression, refIndexArray, ...refData } = ref
       const newExpression = this.generateRefCellFormula(
@@ -185,15 +183,34 @@ export default class ComputedMatrix {
     this._update()
   }
 
-  private updateCell({ x, y, inputValue, expression }: UpdateCellValues) {
-    if (x == null || y == null) return
+  private updateCell({ id, inputValue, expression }: UpdateCellValues) {
     const computedValue = expression
       ? this.evaluateInput(expression)
       : inputValue
 
-    const cell = this.matrix[x][y]
+    const coords = this.findCellCoordinates(id)
+    if (!coords) {
+      this.refList = this.refList.filter((ref) => ref.id !== id)
+      return
+    }
+
+    const cell = this.matrix[coords.x][coords.y]
     cell.computedValue = computedValue
     cell.inputValue = inputValue
+  }
+
+  private findCellCoordinates(id: number) {
+    let coordinates: Coordinates = null as unknown as Coordinates
+    this.matrix.some((row, x) =>
+      row.some((cell, y) => {
+        if (cell.id === id) {
+          coordinates = { x, y }
+          return true
+        }
+        return false
+      })
+    )
+    return coordinates
   }
 
   private evaluateInput(expression: string) {
@@ -213,7 +230,8 @@ export default class ComputedMatrix {
     const formula = `(function(){
         ${refIndexArray
           ?.map((cell) => {
-            const computedValue = this.matrix[cell.x][cell.y].computedValue
+            const computedValue = this.matrix[cell.x]?.[cell.y]?.computedValue
+            if (!computedValue) return `const ${cell.ref} = ''`
             if (computedValue.toString().startsWith('##Error')) {
               error = computedValue
             }
@@ -228,18 +246,18 @@ export default class ComputedMatrix {
 
   private findCyclicReferences(newRef: ListOfReferences) {
     const isSelfRef = newRef.refIndexArray.some(
-      (ref) => ref.x === newRef.x && ref.y === newRef.y
+      (ref) => this.matrix[ref.x][ref.y].id === newRef.id
     )
     if (isSelfRef) return true
 
     const isCyclic = this.refList.some((ref) => {
       const referenced = ref.refIndexArray.find(
-        (index) => index.x === newRef.x && index.y === newRef.y
+        (refIdx) => this.matrix[refIdx.x][refIdx.y].id === newRef.id
       )
       return (
         referenced &&
         newRef.refIndexArray.some(
-          (newRefIdx) => ref.x === newRefIdx.x && ref.y === newRefIdx.y
+          (newRefIdx) => this.matrix[newRefIdx.x][newRefIdx.y].id === ref.id
         )
       )
     })
@@ -249,74 +267,43 @@ export default class ComputedMatrix {
   }
 
   addColumn(y: number) {
-    // FIX_ME: refList is pre-updated (NO IMPACT)
     if (y < 0 || y > this.matrix[0].length) return
 
-    this.matrix.forEach((row, x) => {
-      row.forEach((cell) => {
-        if (cell.y >= y) cell.y++
-      })
-      const newCell = this.generateCellObject({ x, y })
+    this.matrix.forEach((row) => {
+      const newCell = this.generateCellObject()
       row.splice(y, 0, newCell)
-    })
-
-    this.refList.forEach((ref) => {
-      if (ref.y >= y) ref.y++
     })
 
     this.updateAll()
   }
 
   addRow(x: number) {
-    // FIX_ME: refList is pre-updated (NO IMPACT)
     if (x < 0 || x > this.matrix.length) return
 
-    const newRow = Array.from({ length: this.matrix[0].length }, (_, y) =>
-      this.generateCellObject({ x, y })
+    const newRow = Array.from({ length: this.matrix[0].length }, () =>
+      this.generateCellObject()
     )
-    this.matrix.forEach((row) => {
-      if (row[0].x >= x) row.forEach((cell) => cell.x++)
-    })
     this.matrix.splice(x, 0, newRow)
-
-    this.refList.forEach((ref) => {
-      if (ref.x >= x) ref.x++
-    })
 
     this.updateAll()
   }
 
+  // INVESTIGATE: updating references in the creation of the matrix
+  // generates a crazy case where references are pre-updated before the change occurs
+  // example: addColumn(0) -> coordinates of references are updated before the column is added
   removeColumn(y: number) {
-    // FIX_ME: refList is pre-updated
     if (y < 0 || y >= this.matrix.length) return
     this.matrix.forEach((row) => {
       row.splice(y, 1)
-      row.forEach((cell) => {
-        if (cell.y > y) cell.y--
-      })
-    })
-
-    this.refList = this.refList.filter((ref) => {
-      if (ref.y > y) ref.y--
-      return ref.y !== y
     })
 
     this.updateAll()
   }
 
   removeRow(x: number) {
-    // FIX_ME: refList is pre-updated
     if (x < 0 || x >= this.matrix.length) return
 
     this.matrix.splice(x, 1)
-    this.matrix.forEach((row) => {
-      if (row[0].x > x) row.forEach((cell) => cell.x--)
-    })
-
-    this.refList = this.refList.filter((ref) => {
-      if (ref.x > x) ref.x--
-      return ref.x !== x
-    })
 
     this.updateAll()
   }

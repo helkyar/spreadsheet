@@ -2,21 +2,17 @@ import { type Cell } from '@/context/matrix/data/types'
 
 type CellProps = {
   cellValues: Cell
-  selected: boolean
+  x: number
+  y: number
 }
-export default function Cell({ cellValues, selected }: CellProps) {
+export default function Cell({ cellValues, x, y }: CellProps) {
   const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     const value = event.target.value
-    cellValues.update(value, { x: cellValues.x, y: cellValues.y })
+    cellValues.update(value, cellValues.id)
   }
 
   return (
-    <td
-      className={selected ? 'selected' : ''}
-      data-x={cellValues.x}
-      data-y={cellValues.y}
-      tabIndex={0}
-    >
+    <td data-x={x} data-y={y} tabIndex={0}>
       <span>{cellValues.computedValue}</span>
       <input
         tabIndex={-1}

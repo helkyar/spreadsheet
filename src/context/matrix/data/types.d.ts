@@ -1,11 +1,9 @@
 import { MouseEvent } from 'react'
 
 export type Cell = {
-  x: number
-  y: number
   inputValue: string
   computedValue: string
-  update: (value: string, obj: Coordinates) => void
+  update: (value: string, id: number) => void
   id: number
 }
 export type MatrixContext = {
@@ -31,12 +29,13 @@ export type Coordinates = {
   y: number
 }
 
-export type CellObject = Coordinates & {
+export type CellObject = {
   computedValue?: string
   inputValue?: string
 }
 
-export type PartialCell = Coordinates & {
+export type PartialCell = {
+  id: number
   inputValue: string
 }
 
