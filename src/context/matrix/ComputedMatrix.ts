@@ -18,18 +18,25 @@ const EVAL_CODE = '='
 //  -> parser for cell updates that returns computedValue and hasReference
 //  -> if reference is found, update listOfReferences
 //  -> id reference is not found, remove from listOfReferences
+//FIX_ME: all cells rerender on cell change (they shouldn't)
 
 export default class ComputedMatrix {
-  matrix
+  private _matrix: Cell[][]
   private _update = () => {}
   private refList = [] as unknown as ListOfReferences[]
   private timeoutId = 0
   private cellCount = 0
 
   constructor({ cols, rows, matrix }: ConstructorParams) {
-    this.matrix = this.createMatrix({ cols, rows, matrix } as ConstructorParams)
+    this._matrix = this.createMatrix({
+      cols,
+      rows,
+      matrix,
+    } as ConstructorParams)
   }
-
+  get matrix() {
+    return this._matrix
+  }
   private createMatrix({ cols, rows, matrix }: ConstructorParams) {
     if (matrix) return this.createMatrixFromMatrix(matrix)
     return this.createMatrixFromNumbers({ rows, cols })
@@ -96,6 +103,7 @@ export default class ComputedMatrix {
 
       return { hasRef: null, expression, isCyclic: false, refIndexArray: null }
     }
+
     const referenceData = { x, y, refArray, expression, inputValue }
     const { refIndexArray, isCyclic } = this.updateReferencesList(referenceData)
 
@@ -241,6 +249,7 @@ export default class ComputedMatrix {
   }
 
   addColumn(y: number) {
+    // FIX_ME: refList is pre-updated (NO IMPACT)
     if (y < 0 || y > this.matrix[0].length) return
 
     this.matrix.forEach((row, x) => {
@@ -255,10 +264,11 @@ export default class ComputedMatrix {
       if (ref.y >= y) ref.y++
     })
 
-    this._update()
+    this.updateAll()
   }
 
   addRow(x: number) {
+    // FIX_ME: refList is pre-updated (NO IMPACT)
     if (x < 0 || x > this.matrix.length) return
 
     const newRow = Array.from({ length: this.matrix[0].length }, (_, y) =>
@@ -273,12 +283,12 @@ export default class ComputedMatrix {
       if (ref.x >= x) ref.x++
     })
 
-    this._update()
+    this.updateAll()
   }
 
   removeColumn(y: number) {
+    // FIX_ME: refList is pre-updated
     if (y < 0 || y >= this.matrix.length) return
-
     this.matrix.forEach((row) => {
       row.splice(y, 1)
       row.forEach((cell) => {
@@ -291,10 +301,12 @@ export default class ComputedMatrix {
       return ref.y !== y
     })
 
-    this._update()
+    this.updateAll()
   }
 
   removeRow(x: number) {
+    // FIX_ME: refList is pre-updated
+    console.log('🚀 ~ ComputedMatrix ~ removeRow ~ x:', this.refList)
     if (x < 0 || x >= this.matrix.length) return
 
     this.matrix.splice(x, 1)
@@ -307,7 +319,7 @@ export default class ComputedMatrix {
       return ref.x !== x
     })
 
-    this._update()
+    this.updateAll()
   }
 
   setUpdateMethod(updater: () => void) {
