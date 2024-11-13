@@ -9,10 +9,10 @@ export type Cell = {
   id: number
 }
 export type MatrixContext = {
-  addColumn: (y: number) => (event: MouseEvent<HTMLElement>) => void
-  addRow: (x: number) => (event: MouseEvent<HTMLElement>) => void
-  removeColumn: (y: number) => (event: MouseEvent<HTMLElement>) => void
-  removeRow: (x: number) => (event: MouseEvent<HTMLElement>) => void
+  addColumn: (y: number) => (event?: MouseEvent) => void
+  addRow: (x: number) => (event?: MouseEvent) => void
+  removeColumn: (y: number) => (event?: MouseEvent) => void
+  removeRow: (x: number) => (event?: MouseEvent) => void
   matrix: Cell[][]
   save: () => void
 }

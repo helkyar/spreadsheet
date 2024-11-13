@@ -8,7 +8,7 @@ type TagsWithHandlers = typeof parentTag | typeof inputTag
 const allowedTagHandlers: TagsWithHandlers[] = [parentTag, inputTag]
 
 const keyGroups = {
-  skip: ['Control', 'Alt', 'Shift', 'Escape'],
+  skip: ['Control', 'Alt', 'Shift', 'Escape', 'Tab'],
   skipCombination: ['c', 'C', 'z', 'Z', 'v', 'V'],
   escape: ['Escape'],
   delete: ['Backspace', 'Delete'],

@@ -2,14 +2,7 @@ import { Cell } from '@/context/matrix/data/types'
 import ComputedMatrix from '@/context/matrix/ComputedMatrix'
 import { MatrixContext } from '@/context/matrix/MatrixContext'
 import { useLocalStorage } from '@/logic/useLocalStorage'
-import {
-  MouseEvent,
-  ReactNode,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { MouseEvent, ReactNode, useEffect, useRef, useState } from 'react'
 
 type Params = {
   rows: number
@@ -36,21 +29,21 @@ export const MatrixProvider = ({ children, rows, cols }: Params) => {
   const save = () => {
     setMatrix(spreadsheet.current.matrix)
   }
-  const addColumn = (y: number) => (event: MouseEvent<HTMLElement>) => {
-    event.stopPropagation()
+
+  const addColumn = (y: number) => (event?: MouseEvent) => {
+    event?.stopPropagation()
     spreadsheet.current.addColumn(y)
   }
-
-  const addRow = (x: number) => (event: MouseEvent<HTMLElement>) => {
-    event.stopPropagation()
+  const addRow = (x: number) => (event?: MouseEvent) => {
+    event?.stopPropagation()
     spreadsheet.current.addRow(x)
   }
-  const removeColumn = (y: number) => (event: MouseEvent<HTMLElement>) => {
-    event.stopPropagation()
+  const removeColumn = (y: number) => (event?: MouseEvent) => {
+    event?.stopPropagation()
     spreadsheet.current.removeColumn(y)
   }
-  const removeRow = (x: number) => (event: MouseEvent<HTMLElement>) => {
-    event.stopPropagation()
+  const removeRow = (x: number) => (event?: MouseEvent) => {
+    event?.stopPropagation()
     spreadsheet.current.removeRow(x)
   }
 
@@ -67,5 +60,3 @@ export const MatrixProvider = ({ children, rows, cols }: Params) => {
     <MatrixContext.Provider value={value}>{children}</MatrixContext.Provider>
   )
 }
-
-export const useMatrix = () => useContext(MatrixContext)

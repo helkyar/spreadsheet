@@ -19,8 +19,15 @@ header {
 }
 main {
   flex-grow: 1;
+  padding: 25px;
   overflow: auto;
 }
+
+table {
+  max-width: 100%;
+  overflow: auto;
+}
+
 button {
   background-color: var(--background);
   color: var(--foreground);
@@ -85,7 +92,7 @@ th {
 td {
   border: 1px solid var(--border);
   border-top: none;
-  border-right: none;
+  border-left: none;
   position: relative;
   min-width: 50px;
 }
@@ -120,30 +127,93 @@ input {
 .selected {
   background-color: var(--selected-cell-background);
   color: var(--selected-cell-foreground);
-  /* border-right: 2px solid red; */
 }
-/* .selected + .selected {
-  border: none;
-} */
+
 .add-column,
 .add-row,
-.remove-column,
-.remove-row,
-.add-row-first {
-  width: 10px;
-  height: 10px;
-  border: blue solid 1px;
-  margin-left: auto;
+.rm-column,
+.rm-row {
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  fill: var(--selected-cell-background);
+  position: absolute;
 }
-.remove-column,
-.remove-row {
-  margin-right: auto;
-  border: red solid 1px;
+.rm-column,
+.rm-row {
+  width: 24px;
+  height: 24px;
+  fill: var(--destructive);
 }
-.add-row,
-.remove-row {
-  margin-top: auto;
+tr:first-of-type .add-icon-wrapper.row:first-child {
+  top: -8px;
 }
-.remove-row {
-  margin-bottom: auto;
+.add-icon-wrapper,
+.rm-icon-wrapper {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+.rm-icon-wrapper {
+  width: 24px;
+  height: 24px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.add-icon-wrapper.row {
+  width: 100%;
+  height: 16px;
+  bottom: -8px;
+}
+.add-icon-wrapper.col {
+  top: 0;
+  height: 100%;
+  width: 16px;
+  right: -8px;
+}
+.rm-icon-wrapper.col {
+  top: 0;
+}
+.rm-icon-wrapper.row {
+  left: 4px;
+}
+.rm-icon-wrapper > .rm-column,
+.add-icon-wrapper > .add-column {
+  transform: rotate(225deg) scale(0.5);
+  opacity: 0;
+}
+.add-icon-wrapper:focus-visible > .add-column,
+.add-icon-wrapper:hover > .add-column {
+  transition: opacity 0.3s, transform 0.3s;
+  transform: scale(1) rotate(225deg);
+  opacity: 1;
+}
+.rm-icon-wrapper > .rm-row,
+.add-icon-wrapper > .add-row {
+  transform: rotate(-225deg) scale(0.5);
+  opacity: 0;
+}
+.add-icon-wrapper:hover > .add-row,
+.add-icon-wrapper:focus-visible > .add-row {
+  transition: opacity 0.3s, transform 0.3s;
+  transform: scale(1) rotate(-225deg);
+  opacity: 1;
+}
+
+.rm-icon-wrapper:hover > .rm-column,
+.rm-icon-wrapper:focus-visible > .rm-column,
+.rm-icon-wrapper:hover > .rm-row,
+.rm-icon-wrapper:focus-visible > .rm-row {
+  transition: opacity 0.3s, transform 0.3s;
+  transform: scale(1);
+  opacity: 1;
+}
+
+.rm-icon-wrapper:active,
+.add-icon-wrapper:active {
+  border: none;
+  outline: 1px solid var(--foreground);
 }

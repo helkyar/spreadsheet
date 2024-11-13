@@ -1,6 +1,6 @@
 import { Moon, Save, Sun } from '@/components/Header/components/Icons'
 import { useToggleDarkTheme } from '@/components/Header/logic/useToggleDarkTheme'
-import { useMatrix } from '@/context/matrix/MatrixProvider'
+import { useMatrix } from '@/context/matrix/useMatrix'
 
 export default function Header() {
   const { save } = useMatrix()
