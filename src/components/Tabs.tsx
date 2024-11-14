@@ -20,7 +20,7 @@ export default function Tabs() {
           tabIndex={0}
           onClick={() => viewMatrix(index)}
           key={matrix.id}
-          className={`tab ${matrixIdx === index ? 'selected' : ''}`}
+          className={`tab ${matrixIdx === index ? 'selected-tab' : ''}`}
         >
           {`Sheet ${index + 1}`}
           <button className='remove-tab' onClick={handleRemoveTab(index)}>

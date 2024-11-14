@@ -3,6 +3,7 @@ import { MatrixProvider } from '@/context/matrix/MatrixProvider'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeAll, describe, expect, it } from 'vitest'
 
+const selectedClassName = 'selected-tab'
 describe('MatrixProvider', () => {
   beforeAll(() => {
     render(
@@ -22,12 +23,16 @@ describe('MatrixProvider', () => {
     expect(screen.getAllByText(/Sheet/).length).toBe(2)
   })
   it('should allow tab change', () => {
-    expect(screen.getByText('Sheet 2').className).toContain('selected')
-    expect(screen.getByText('Sheet 1').className).not.toContain('selected')
+    expect(screen.getByText('Sheet 2').className).toContain(selectedClassName)
+    expect(screen.getByText('Sheet 1').className).not.toContain(
+      selectedClassName
+    )
 
     fireEvent.click(screen.getByText('Sheet 1'))
-    expect(screen.getByText('Sheet 2').className).not.toContain('selected')
-    expect(screen.getByText('Sheet 1').className).toContain('selected')
+    expect(screen.getByText('Sheet 2').className).not.toContain(
+      selectedClassName
+    )
+    expect(screen.getByText('Sheet 1').className).toContain(selectedClassName)
   })
   it('should allow tab deletion', () => {
     const removeButton = document.getElementsByClassName('remove-tab')[1]

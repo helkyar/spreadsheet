@@ -22,12 +22,14 @@ function SpreadSheet() {
           <tr>
             {getColumnsHeaderLabels(matrix[0]?.length).map((columLabel, y) => (
               <th key={columLabel} onClick={selectColumn(y)}>
-                <RemoveCellsIcon
-                  isHidden={y < 1}
-                  onClick={removeColumn(y - 1)}
-                  isVertical
-                />
-                {columLabel}
+                <div>
+                  <RemoveCellsIcon
+                    isHidden={y < 1}
+                    onClick={removeColumn(y - 1)}
+                    isVertical
+                  />
+                  {columLabel}
+                </div>
                 <AddCellsIcon onClick={addColumn(y)} isVertical />
               </th>
             ))}
@@ -42,9 +44,11 @@ function SpreadSheet() {
                   isHorizontal
                   isHidden={x > 0}
                 />
-                <RemoveCellsIcon isHorizontal onClick={removeRow(x)} />
                 <AddCellsIcon onClick={addRow(x + 1)} isHorizontal />
-                {x + 1}
+                <div>
+                  <RemoveCellsIcon isHorizontal onClick={removeRow(x)} />
+                  {x + 1}
+                </div>
               </th>
               {row.map((cell, y) => (
                 <Cell key={cell.id} cellValues={cell} x={x} y={y} />
