@@ -6,7 +6,7 @@ import { RemoveCellsIcon } from '@/components/Spreadsheet/components/RemoveCells
 import { useMatrix } from '@/context/matrix/useMatrix'
 
 function SpreadSheet() {
-  const { removeSelection, selectColumn, selectRow } = useTableEvents()
+  const { selectColumn, selectRow } = useTableEvents()
   const { spreadsheetEntity, addRow, addColumn, removeColumn, removeRow } =
     useMatrix()
 
@@ -17,7 +17,7 @@ function SpreadSheet() {
 
   return (
     <section className='table-wrapper'>
-      <table key={id} onClick={removeSelection}>
+      <table key={id}>
         <thead>
           <tr>
             {getColumnsHeaderLabels(matrix[0]?.length).map((columLabel, y) => (
