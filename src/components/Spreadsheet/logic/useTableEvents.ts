@@ -3,9 +3,10 @@ import { useKeyPress } from '@/components/Spreadsheet/logic/useKeyPress'
 import { useSelection } from '@/components/Spreadsheet/logic/useSelection'
 
 export function useTableEvents() {
-  const { removeSelection, selectedElements, ...selectors } = useSelection()
+  const { removeSelection, addSelectionArea, selectedElements, ...selectors } =
+    useSelection()
   useClipboard(selectedElements)
-  useKeyPress(selectedElements, removeSelection)
+  useKeyPress(selectedElements, removeSelection, addSelectionArea)
 
   return {
     ...selectors,

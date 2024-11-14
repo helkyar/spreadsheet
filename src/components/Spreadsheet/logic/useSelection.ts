@@ -1,5 +1,9 @@
 import { parentTag, selected } from '@/components/Spreadsheet/data/constants'
 import { HTMLCell } from '@/components/Spreadsheet/data/types'
+import {
+  getCell,
+  getCurrentCellCoordinates,
+} from '@/components/Spreadsheet/logic/cellUtils'
 import { MouseEvent, useCallback, useEffect, useState } from 'react'
 
 export function useSelection() {
@@ -20,6 +24,7 @@ export function useSelection() {
 
   useEffect(() => {
     if (!selectedElements) return
+    if (document.activeElement?.tagName === parentTag) return
 
     const firstCell = Array.from(selectedElements).find(
       (el) => el.tagName === parentTag
@@ -27,20 +32,20 @@ export function useSelection() {
     firstCell?.focus()
   }, [selectedElements])
 
-  const addSelectedClassToElements = (
+  const addSelectedClassToElements = async (
     elements: HTMLElement[] | NodeListOf<Element>
   ) => {
     elements.forEach((el) => el.classList.add(selected))
   }
 
-  const oneCellSelection = (element: HTMLElement) => {
+  const headerCellSelection = (element: HTMLElement) => {
     removeSelection()
     if (element) addSelectedClassToElements([element])
   }
 
   const selectColumn = (index: number) => (event: MouseEvent<HTMLElement>) => {
     event.stopPropagation()
-    oneCellSelection(event.currentTarget)
+    headerCellSelection(event.currentTarget)
 
     if (index === 0) addSelectedClassToElements($$(parentTag))
     else addSelectedClassToElements($$(`tr td:nth-child(${index + 1})`))
@@ -50,7 +55,7 @@ export function useSelection() {
 
   const selectRow = (index: number) => (event: MouseEvent<HTMLElement>) => {
     event.stopPropagation()
-    oneCellSelection(event.currentTarget)
+    headerCellSelection(event.currentTarget)
 
     const rowCells = $$(`tr:nth-child(${index + 1}) td`)
     addSelectedClassToElements(rowCells)
@@ -58,5 +63,39 @@ export function useSelection() {
     setSelectedElements(getSelectedElements())
   }
 
-  return { removeSelection, selectedElements, selectColumn, selectRow }
+  const addSelectionArea = (
+    firstElement: HTMLCell,
+    currentElement?: HTMLCell
+  ) => {
+    if (!currentElement) return
+    removeSelection()
+    const { x: x1, y: y1 } = getCurrentCellCoordinates(firstElement)
+    const { x: x2, y: y2 } = getCurrentCellCoordinates(currentElement)
+
+    const minX = Math.min(x1, x2)
+    const maxX = Math.max(x1, x2)
+    const minY = Math.min(y1, y2)
+    const maxY = Math.max(y1, y2)
+
+    const elementsToSelect: HTMLElement[] = []
+
+    for (let x = minX; x <= maxX; x++) {
+      for (let y = minY; y <= maxY; y++) {
+        const element = getCell({ x, y })
+        if (element) elementsToSelect.push(element)
+      }
+    }
+
+    addSelectedClassToElements(elementsToSelect)
+
+    setSelectedElements(getSelectedElements())
+  }
+
+  return {
+    removeSelection,
+    addSelectionArea,
+    selectedElements,
+    selectColumn,
+    selectRow,
+  }
 }
