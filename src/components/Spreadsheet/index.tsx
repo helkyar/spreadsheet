@@ -4,16 +4,19 @@ import { useTableEvents } from './logic/useTableEvents'
 import { AddCellsIcon } from '@/components/Spreadsheet/components/AddCellsIcon'
 import { RemoveCellsIcon } from '@/components/Spreadsheet/components/RemoveCellsIcon'
 import { useMatrix } from '@/context/matrix/useMatrix'
-// import { useMatrix } from '@/context/matrix/MatrixProvider'
 
 function SpreadSheet() {
   const { removeSelection, selectColumn, selectRow } = useTableEvents()
-  const { matrix, addRow, addColumn, removeColumn, removeRow } = useMatrix()
+  const { spreadsheetEntity, addRow, addColumn, removeColumn, removeRow } =
+    useMatrix()
 
-  // Clean inputs
+  const {
+    id,
+    spreadsheet: { matrix },
+  } = spreadsheetEntity
 
   return (
-    <table onClick={removeSelection}>
+    <table key={id} onClick={removeSelection}>
       <thead>
         <tr>
           {getColumnsHeaderLabels(matrix[0]?.length).map((columLabel, y) => (

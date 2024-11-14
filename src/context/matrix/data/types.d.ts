@@ -1,4 +1,7 @@
+import ComputedMatrix from '@/context/matrix/ComputedMatrix'
 import { MouseEvent } from 'react'
+
+export type Matrix = Cell[][]
 
 export type Cell = {
   inputValue: string
@@ -7,17 +10,21 @@ export type Cell = {
   id: number
 }
 export type MatrixContext = {
+  viewMatrix: (index: number) => void
+  matrixArray: { id: string; spreadsheet: ComputedMatrix }[]
+  spreadsheetEntity: { id: string; spreadsheet: ComputedMatrix }
+  createNewMatrix: () => void
+  removeMatrix: (index: number) => void
   addColumn: (y: number) => (event?: MouseEvent) => void
   addRow: (x: number) => (event?: MouseEvent) => void
   removeColumn: (y: number) => (event?: MouseEvent) => void
   removeRow: (x: number) => (event?: MouseEvent) => void
-  matrix: Cell[][]
   save: () => void
 }
 
 export type ConstructorParams =
   | { rows: number; cols: number; matrix?: undefined }
-  | { matrix: Cell[][]; rows?: undefined; cols?: undefined }
+  | { matrix: Matrix; rows?: undefined; cols?: undefined }
 
 export type MatrixParams = {
   rows: number

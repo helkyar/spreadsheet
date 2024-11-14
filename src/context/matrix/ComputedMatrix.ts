@@ -12,6 +12,7 @@ import {
   ReturnedProcessInput,
   UpdateCellValues,
 } from '@/context/matrix/data/types'
+
 const EVAL_CODE = '='
 
 //TO_DO: implement single responsibility principle
@@ -34,7 +35,7 @@ export default class ComputedMatrix {
       matrix,
     } as ConstructorParams)
 
-    if (this._matrix.length > 0) this.generateAllReferences()
+    if (matrix && this._matrix.length > 0) this.generateAllReferences()
   }
 
   get matrix() {
@@ -170,7 +171,6 @@ export default class ComputedMatrix {
   }
 
   private updateAll() {
-    console.log('🚀 ~ ComputedMatrix ~ updateAll ~ this.refList:', this.refList)
     this.refList.forEach((ref) => {
       const { expression, refIndexArray, ...refData } = ref
       const newExpression = this.generateRefCellFormula(
