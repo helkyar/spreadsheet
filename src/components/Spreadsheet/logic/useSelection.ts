@@ -32,7 +32,7 @@ export function useSelection() {
     firstCell?.focus()
   }, [selectedElements])
 
-  const addSelectedClassToElements = async (
+  const addSelectedClassToElements = (
     elements: HTMLElement[] | NodeListOf<Element>
   ) => {
     elements.forEach((el) => el.classList.add(selected))
@@ -63,33 +63,33 @@ export function useSelection() {
     setSelectedElements(getSelectedElements())
   }
 
-  const addSelectionArea = (
-    firstElement: HTMLCell,
-    currentElement?: HTMLCell
-  ) => {
-    if (!currentElement) return
-    removeSelection()
-    const { x: x1, y: y1 } = getCurrentCellCoordinates(firstElement)
-    const { x: x2, y: y2 } = getCurrentCellCoordinates(currentElement)
+  const addSelectionArea = useCallback(
+    (firstElement: HTMLCell, currentElement?: HTMLCell) => {
+      if (!currentElement) return
+      removeSelection()
+      const { x: x1, y: y1 } = getCurrentCellCoordinates(firstElement)
+      const { x: x2, y: y2 } = getCurrentCellCoordinates(currentElement)
 
-    const minX = Math.min(x1, x2)
-    const maxX = Math.max(x1, x2)
-    const minY = Math.min(y1, y2)
-    const maxY = Math.max(y1, y2)
+      const minX = Math.min(x1, x2)
+      const maxX = Math.max(x1, x2)
+      const minY = Math.min(y1, y2)
+      const maxY = Math.max(y1, y2)
 
-    const elementsToSelect: HTMLElement[] = []
+      const elementsToSelect: HTMLElement[] = []
 
-    for (let x = minX; x <= maxX; x++) {
-      for (let y = minY; y <= maxY; y++) {
-        const element = getCell({ x, y })
-        if (element) elementsToSelect.push(element)
+      for (let x = minX; x <= maxX; x++) {
+        for (let y = minY; y <= maxY; y++) {
+          const element = getCell({ x, y })
+          if (element) elementsToSelect.push(element)
+        }
       }
-    }
 
-    addSelectedClassToElements(elementsToSelect)
+      addSelectedClassToElements(elementsToSelect)
 
-    setSelectedElements(getSelectedElements())
-  }
+      setSelectedElements(getSelectedElements())
+    },
+    [getSelectedElements, removeSelection]
+  )
 
   return {
     removeSelection,
