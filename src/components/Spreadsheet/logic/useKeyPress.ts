@@ -2,7 +2,6 @@ import { inputTag, parentTag } from '@/components/Spreadsheet/data/constants'
 import { HTMLCell, HTMLInput } from '@/components/Spreadsheet/data/types'
 import { useCallback, useEffect, useMemo } from 'react'
 
-// type TagsWithHandlers = [typeof parentTag, typeof inputTag]
 type TagsWithHandlers = typeof parentTag | typeof inputTag
 
 const allowedTagHandlers: TagsWithHandlers[] = [parentTag, inputTag]

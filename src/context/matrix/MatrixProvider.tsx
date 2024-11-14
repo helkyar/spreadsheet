@@ -55,8 +55,6 @@ export const MatrixProvider = ({ children, rows, cols }: Params) => {
   }
 
   const removeMatrix = (index: number) => {
-    console.log('🚀 ~ removeMatrix ~ index:', index)
-
     if (matrixArray.length === 1) {
       toast.error('Create another sheet to delete this one')
       return
