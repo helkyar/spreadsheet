@@ -4,6 +4,7 @@
 
   --muted: hsl(240, 3%, 93%);
   --muted-foreground: hsl(240, 5%, 28%);
+  --muted-foreground-accent: hsl(240, 5%, 22%);
 
   --popover: hsl(0 0% 100%);
   --popover-foreground: hsl(240 10% 3.9%);
@@ -43,6 +44,7 @@
   --chart-4: hsl(43 74% 66%);
 
   --radius: 0.5em;
+  --radius-pill: 999px;
   --padding-lg: 1em;
   --padding-md: 0.5em;
   --padding-sm: 0.1em;
@@ -55,6 +57,7 @@
 
   --muted: hsl(240, 3%, 25%);
   --muted-foreground: hsl(240 5% 64.9%);
+  --muted-foreground-accent: hsl(240, 3%, 53%);
 
   --accent: hsl(240 3.7% 15.9%);
   --accent-foreground: hsl(0 0% 98%);

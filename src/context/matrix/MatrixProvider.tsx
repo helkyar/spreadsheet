@@ -1,16 +1,7 @@
 import { Matrix } from '@/context/matrix/data/types'
-// import ComputedMatrix from '@/context/matrix/ComputedMatrix'
 import { MatrixContext } from '@/context/matrix/MatrixContext'
 import { useLocalStorage } from '@/logic/useLocalStorage'
-import {
-  MouseEvent,
-  ReactNode,
-  useCallback,
-  // useEffect,
-  // useRef,
-  useState,
-} from 'react'
-// import { SingletonMatrix } from '@/context/matrix/SingletonMatrix'
+import { MouseEvent, ReactNode, useCallback, useState } from 'react'
 import ComputedMatrix from '@/context/matrix/ComputedMatrix'
 import { v4 as uuidv4 } from 'uuid'
 import { toast } from '@/components/ui/toast'
@@ -26,8 +17,8 @@ const LOCAL_KEY = '_spreadsheet_'
 export const MatrixProvider = ({ children, rows, cols }: Params) => {
   const [matrices, setMatrices] = useLocalStorage<Matrix[]>({ key: LOCAL_KEY })
 
-  const [, setCount] = useState(0)
-  const updater = () => setCount((c) => c + 1)
+  const [, setBoolean] = useState(false)
+  const updater = () => setBoolean((b) => !b)
 
   const [matrixArray, setMatrixArray] = useState<
     { id: string; spreadsheet: ComputedMatrix }[]
@@ -64,6 +55,8 @@ export const MatrixProvider = ({ children, rows, cols }: Params) => {
   }
 
   const removeMatrix = (index: number) => {
+    console.log('🚀 ~ removeMatrix ~ index:', index)
+
     if (matrixArray.length === 1) {
       toast.error('Create another sheet to delete this one')
       return
@@ -74,8 +67,8 @@ export const MatrixProvider = ({ children, rows, cols }: Params) => {
       copy.splice(index, 1)
       return copy
     })
-    setMatrixIdx((prev) => prev - 1)
 
+    if (index < matrixIdx) setMatrixIdx((prev) => prev - 1)
     if (index === matrixIdx) setMatrixIdx(0)
   }
 
@@ -99,6 +92,7 @@ export const MatrixProvider = ({ children, rows, cols }: Params) => {
   const value = {
     spreadsheetEntity: matrixArray[matrixIdx], // Spreadsheet matrix render
     matrixArray,
+    matrixIdx,
     viewMatrix,
     createNewMatrix,
     removeMatrix,
