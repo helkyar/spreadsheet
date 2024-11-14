@@ -16,7 +16,8 @@ export default function Tabs() {
         +
       </button>
       {matrixArray.map((matrix, index) => (
-        <button
+        <div
+          tabIndex={0}
           onClick={() => viewMatrix(index)}
           key={matrix.id}
           className={`tab ${matrixIdx === index ? 'selected' : ''}`}
@@ -25,7 +26,7 @@ export default function Tabs() {
           <button className='remove-tab' onClick={handleRemoveTab(index)}>
             x
           </button>
-        </button>
+        </div>
       ))}
     </section>
   )
