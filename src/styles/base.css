@@ -21,6 +21,9 @@ main {
   flex-grow: 1;
   padding: 25px;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
 }
 
 table {
@@ -35,9 +38,10 @@ button {
   padding: var(--padding-sm);
   border-radius: var(--radius);
   &:hover,
-  &:focus {
+  &:focus,
+  &:active {
     background-color: var(--muted);
-    border: var(--muted-foreground) solid 1px;
+    outline: var(--muted-foreground) solid 1px;
     border-radius: var(--radius);
   }
 }
@@ -216,4 +220,13 @@ tr:first-of-type .add-icon-wrapper.row:first-child {
 .add-icon-wrapper:active {
   border: none;
   outline: 1px solid var(--foreground);
+}
+.tabs-wrapper {
+  display: flex;
+  gap: 1em;
+}
+.tab {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
 }
