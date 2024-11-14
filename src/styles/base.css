@@ -19,16 +19,9 @@ header {
 }
 main {
   flex-grow: 1;
-  padding: 25px;
-  overflow: auto;
+  max-height: calc(100vh - 115px);
   display: flex;
   flex-direction: column;
-  gap: 1em;
-}
-
-table {
-  max-width: 100%;
-  overflow: auto;
 }
 
 button {
@@ -76,21 +69,58 @@ input {
   fill: var(--foreground);
 }
 
+/*Scroll Bar ========================================================== */
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: var(--muted);
+  border-radius: var(--radius-pill);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  border-radius: var(--radius-pill);
+  background: var(--muted-foreground);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground-accent);
+}
 /*TABLE ========================================================== */
+.table-wrapper {
+  flex: 1;
+  overflow: scroll;
+  padding-bottom: var(--padding-lg);
+  padding-right: var(--padding-lg);
+}
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
 table,
 input,
 span {
   width: 100%;
   height: 100%;
 }
-
+thead th {
+  min-width: 100px;
+}
 th {
   background-color: var(--muted);
   color: var(--muted-foreground);
   text-align: center;
   border: none;
-  padding: var(--padding-md) 0;
+  padding: var(--padding-md) var(--padding-md);
   position: relative;
+  min-width: 25px;
 }
 
 td {
@@ -171,6 +201,8 @@ tr:first-of-type .add-icon-wrapper.row:first-child {
   width: 100%;
   height: 16px;
   bottom: -8px;
+  justify-content: right;
+  left: calc(0px - var(--padding-md));
 }
 .add-icon-wrapper.col {
   top: 0;
@@ -178,12 +210,7 @@ tr:first-of-type .add-icon-wrapper.row:first-child {
   width: 16px;
   right: -8px;
 }
-.rm-icon-wrapper.col {
-  top: 0;
-}
-.rm-icon-wrapper.row {
-  left: 4px;
-}
+
 .rm-icon-wrapper > .rm-column,
 .add-icon-wrapper > .add-column {
   transform: rotate(225deg) scale(0.5);
@@ -222,11 +249,54 @@ tr:first-of-type .add-icon-wrapper.row:first-child {
   outline: 1px solid var(--foreground);
 }
 .tabs-wrapper {
+  border-top: var(--background) 1px solid;
   display: flex;
-  gap: 1em;
+  flex: 0 1 3rem;
+  gap: 3px;
+  padding-left: var(--padding-lg);
 }
 .tab {
   display: flex;
-  flex-direction: column;
-  gap: 0.5em;
+  align-items: center;
+  justify-content: center;
+  gap: var(--padding-md);
+  cursor: pointer;
+  padding-right: var(--padding-md);
+  padding-left: var(--padding-lg);
+  border-radius: unset;
+  font-size: 1.25rem;
+}
+.tab.selected,
+.tab:hover,
+.tab:focus,
+.tab:active {
+  border-radius: unset;
+  background: var(--selected-cell-background);
+  color: var(--selected-cell-foreground);
+}
+.remove-tab {
+  cursor: pointer;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  font-size: 1rem;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--destructive-foreground);
+  background-color: transparent;
+}
+.remove-tab:hover,
+.remove-tab:focus {
+  border: none;
+  background-color: var(--destructive);
+  outline: var(--destructive-foreground) solid 1px;
+}
+
+.create-tab {
+  font-size: 1.25rem;
+  font-weight: bold;
+  border-radius: unset;
+  padding: 0 var(--padding-lg);
 }

@@ -10,6 +10,7 @@ export type Cell = {
   id: number
 }
 export type MatrixContext = {
+  matrixIdx: number
   viewMatrix: (index: number) => void
   matrixArray: { id: string; spreadsheet: ComputedMatrix }[]
   spreadsheetEntity: { id: string; spreadsheet: ComputedMatrix }
