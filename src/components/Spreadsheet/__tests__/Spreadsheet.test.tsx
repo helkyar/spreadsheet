@@ -1,6 +1,3 @@
-// ? mock matrix
-// ? mock table
-
 import SpreadSheet from '@/components/Spreadsheet'
 import { MatrixProvider } from '@/context/matrix/MatrixProvider'
 import { beforeAll, describe, expect, it } from 'vitest'
@@ -26,6 +23,5 @@ describe('Spreadsheet component with context', () => {
   })
 })
 
-// Spreadsheet
 // Specific values are shown based on cell values
 // Input and input values are visible on click

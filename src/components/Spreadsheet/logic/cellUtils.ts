@@ -1,5 +1,16 @@
-import { inputTag } from '@/components/Spreadsheet/data/constants'
-import { HTMLCell, HTMLInput } from '@/components/Spreadsheet/data/types'
+import {
+  inputTag,
+  parentTag,
+  textTag,
+} from '@/components/Spreadsheet/data/constants'
+import {
+  HTMLCell,
+  HTMLInput,
+  HTMLText,
+} from '@/components/Spreadsheet/data/types'
+import { Matrix } from '@/context/matrix/data/types'
+
+export const $$ = (el: string) => document.querySelectorAll(el)
 
 export const focusCell = ({ x, y }: { x: number; y: number }) => {
   if (x < 0 || y < 0 /* || x > rows.length || y > columns.length */) return
@@ -15,11 +26,104 @@ export const getInput = (element: HTMLCell) =>
   element.querySelector(inputTag) as HTMLInput
 
 export const getOutput = (element: HTMLCell) =>
-  (element.querySelector('span') as HTMLSpanElement).innerText
+  element.querySelector(textTag) as HTMLText
+
+export const getText = (element: HTMLCell) => getOutput(element).innerText
 
 export const getCurrentCellCoordinates = (element: HTMLCell) => {
   const { x: xString = -1, y: yString = -1 } = element.dataset
   const x = Number(xString)
   const y = Number(yString)
   return { x, y }
+}
+
+export const downloadTable = (id: string) => {
+  const aElement = document.createElement('a')
+  aElement.setAttribute('download', id + '.txt')
+
+  const matrix = $$(parentTag) as NodeListOf<HTMLCell>
+  const text = formatCellValuesToText(matrix)
+  const blob = new Blob([text], { type: 'plain/text' })
+
+  const href = URL.createObjectURL(blob)
+  aElement.href = href
+  aElement.setAttribute('href', href)
+  aElement.setAttribute('target', '_blank')
+  aElement.click()
+  URL.revokeObjectURL(href)
+}
+
+export const formatCellValuesToText = (
+  selectedElements: NodeListOf<HTMLCell>,
+  copyPlainText: boolean = false
+) => {
+  const selectedValues = Array.from(selectedElements).map((el) => {
+    if (el.tagName !== parentTag) return
+    const { x, y } = getCurrentCellCoordinates(el)
+    let value = ''
+
+    if (copyPlainText) value = getText(el)
+    else value = getInput(el).value
+
+    return { value, x, y }
+  })
+  // Array format gave copy-paste issues
+  const formattedValues = selectedValues.reduce((acc, curr) => {
+    if (!curr) return acc
+    const { value, x, y } = curr
+    if (!acc[x]) acc[x] = {}
+    acc[x][y] = value
+    return acc
+  }, {} as Record<string, Record<string, string>>)
+
+  const result = Object.values(formattedValues)
+    .map((row) => Object.values(row).join('\t'))
+    .join('\n')
+
+  return result
+}
+
+export const addTextToCellValues = (
+  text: string,
+  initialElement?: HTMLCell
+) => {
+  const { x: iX = 0, y: iY = 0 } = initialElement
+    ? getCurrentCellCoordinates(initialElement)
+    : {}
+
+  text.split('\n').forEach((row, x) =>
+    row.split('\t').forEach((cell, y) => {
+      const tableCell = getCell({ x: x + iX, y: y + iY })
+      if (!tableCell) return
+
+      const input = getInput(tableCell)
+      if (!input) return
+
+      input.value = cell
+      input.focus()
+      input.blur()
+    })
+  )
+}
+
+export const formatTextToCellValues = (text: string) => {
+  const rows = text.split('\n')
+  return rows.map((row) =>
+    row.split('\t').map((text) => ({ inputValue: text, computedValue: text }))
+  ) as Matrix
+}
+
+export const updateSelectedCellsValues = (
+  value: string,
+  element: HTMLCell,
+  selectedElements: NodeListOf<HTMLCell>
+) => {
+  selectedElements.forEach((el) => {
+    if (el.tagName !== parentTag) return
+    const input = getInput(el)
+    input.value = value
+    input.focus()
+    input.blur()
+  })
+  element?.focus()
 }

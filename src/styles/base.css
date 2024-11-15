@@ -23,7 +23,15 @@ main {
   display: flex;
   flex-direction: column;
 }
-
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+h3 {
+  font-size: 1rem;
+  font-weight: bold;
+}
 button {
   background-color: var(--background);
   color: var(--foreground);
@@ -41,11 +49,6 @@ button {
 input {
   background-color: var(--muted);
   color: var(--muted-foreground);
-  /* FIX_ME: autocomplete input changes background forever */
-  /* &:focus,
-  &:focus-within {
-    background-color: var(--muted);
-  } */
 }
 
 /* Utils ==================================================== */
@@ -56,17 +59,58 @@ input {
   gap: 2em;
 }
 .save-btn,
-.dark-btn {
+.dark-btn,
+.upload-btn,
+.upload-wrapper,
+.upload-input,
+.download-btn {
   height: 35px;
   width: 35px;
   border-radius: 50%;
-  &:hover,
+  cursor: pointer;
+  border: none;
+  outline: none;
+
+  &:active,
   &:focus {
+    border: none;
+    outline: none;
+    background-color: transparent;
+  }
+
+  &:hover,
+  &:focus-visible {
     border-radius: 50%;
+    border: 0.5px solid var(--foreground);
+    background-color: var(--muted);
   }
 }
-.save-btn svg {
+.save-btn svg,
+.upload-btn svg path,
+.download-btn svg path {
   fill: var(--foreground);
+}
+.download-btn svg,
+.upload-btn svg {
+  width: 30px;
+  height: 30px;
+}
+.upload-wrapper {
+  position: relative;
+}
+.upload-input {
+  width: 35px;
+  height: 35px;
+  background-color: transparent;
+  opacity: 1;
+  background-color: var(--muted);
+
+  &:hover,
+  &:focus-visible {
+    border-radius: 50%;
+    border: 0.5px solid var(--foreground);
+    background-color: var(--muted);
+  }
 }
 
 /*Scroll Bar ========================================================== */
@@ -156,7 +200,6 @@ input {
   border: 0;
   opacity: 0;
   cursor: default;
-  width: 100%;
 
   &:focus {
     opacity: 1;
@@ -302,4 +345,11 @@ tr:first-of-type .add-icon-wrapper.row:first-child {
   border-radius: unset;
   padding: 0 var(--padding-lg);
   cursor: pointer;
+}
+
+.drag {
+  background-color: red;
+}
+.drag input {
+  cursor: grab;
 }

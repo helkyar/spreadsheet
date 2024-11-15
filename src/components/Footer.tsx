@@ -1,7 +1,7 @@
 export default function Footer() {
   return (
     <footer>
-      <h3>footer - tabs</h3>
+      <h3>&#169; Rights granted</h3>
     </footer>
   )
 }
