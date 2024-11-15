@@ -11,10 +11,11 @@ export type Cell = {
 }
 export type MatrixContext = {
   matrixIdx: number
+  download: () => void
   viewMatrix: (index: number) => void
   matrixArray: { id: string; spreadsheet: ComputedMatrix }[]
   spreadsheetEntity: { id: string; spreadsheet: ComputedMatrix }
-  createNewMatrix: () => void
+  createNewMatrix: (matrix?: Matrix) => void
   removeMatrix: (index: number) => void
   addColumn: (y: number) => (event?: MouseEvent) => void
   addRow: (x: number) => (event?: MouseEvent) => void

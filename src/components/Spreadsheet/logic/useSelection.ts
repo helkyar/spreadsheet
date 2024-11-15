@@ -1,13 +1,14 @@
 import { parentTag, selected } from '@/components/Spreadsheet/data/constants'
 import { HTMLCell } from '@/components/Spreadsheet/data/types'
 import {
+  $$,
   getCell,
   getCurrentCellCoordinates,
+  getInput,
 } from '@/components/Spreadsheet/logic/cellUtils'
 import { MouseEvent, useCallback, useEffect, useState } from 'react'
 
 export function useSelection() {
-  const $$ = (el: string) => document.querySelectorAll(el)
   const getSelectedElements = useCallback(
     () => $$(`.${selected}`) as NodeListOf<HTMLCell>,
     []
@@ -30,6 +31,29 @@ export function useSelection() {
       (el) => el.tagName === parentTag
     )
     firstCell?.focus()
+  }, [selectedElements])
+
+  const addDraggable = (elements: HTMLElement[]) => {
+    elements.forEach((el) => {
+      el?.classList.add('drag')
+      el?.setAttribute('draggable', 'true')
+    })
+  }
+  const removeDraggable = (elements: HTMLElement[]) => {
+    elements.forEach((el) => {
+      el?.classList.remove('drag')
+      el?.setAttribute('draggable', 'false')
+    })
+  }
+
+  useEffect(() => {
+    if (!selectedElements) return
+    const draggedElements = Array.from(selectedElements).map((el) =>
+      getInput(el)
+    )
+
+    addDraggable(draggedElements)
+    return () => removeDraggable(draggedElements)
   }, [selectedElements])
 
   const addSelectedClassToElements = (

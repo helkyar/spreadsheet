@@ -5,6 +5,7 @@ import { MouseEvent, ReactNode, useCallback, useState } from 'react'
 import ComputedMatrix from '@/context/matrix/ComputedMatrix'
 import { v4 as uuidv4 } from 'uuid'
 import { toast } from '@/components/ui/toast'
+import { downloadTable } from '@/components/Spreadsheet/logic/cellUtils'
 
 type Params = {
   rows: number
@@ -37,13 +38,17 @@ export const MatrixProvider = ({ children, rows, cols }: Params) => {
 
   const [matrixIdx, setMatrixIdx] = useState(0)
 
-  const createNewMatrix = useCallback(() => {
-    const spreadsheet = new ComputedMatrix({ rows, cols })
-    spreadsheet.setUpdateMethod(updater)
-    setMatrixArray((prev) => [...prev, { id: uuidv4(), spreadsheet }])
+  const createNewMatrix = useCallback(
+    (matrix?: Matrix) => {
+      const initialValue = matrix ? { matrix } : { rows, cols }
+      const spreadsheet = new ComputedMatrix(initialValue)
+      spreadsheet.setUpdateMethod(updater)
+      setMatrixArray((prev) => [...prev, { id: uuidv4(), spreadsheet }])
 
-    setMatrixIdx(matrixArray.length)
-  }, [cols, rows, matrixArray])
+      setMatrixIdx(matrixArray.length)
+    },
+    [cols, rows, matrixArray]
+  )
 
   const viewMatrix = (index: number) => {
     setMatrixIdx(index)
@@ -52,6 +57,11 @@ export const MatrixProvider = ({ children, rows, cols }: Params) => {
   const save = () => {
     const matrices = matrixArray.map(({ spreadsheet }) => spreadsheet.matrix)
     setMatrices(matrices)
+  }
+
+  const download = () => {
+    const { id } = matrixArray[matrixIdx]
+    downloadTable(id)
   }
 
   const removeMatrix = (index: number) => {
@@ -99,6 +109,7 @@ export const MatrixProvider = ({ children, rows, cols }: Params) => {
     removeColumn,
     removeRow,
     save,
+    download,
   }
 
   return (

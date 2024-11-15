@@ -12,7 +12,7 @@ export default function Tabs() {
 
   return (
     <section className='tabs-wrapper'>
-      <button className='create-tab' onClick={createNewMatrix}>
+      <button className='create-tab' onClick={() => createNewMatrix()}>
         +
       </button>
       {matrixArray.map((matrix, index) => (

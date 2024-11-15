@@ -60,7 +60,7 @@ export default class ComputedMatrix {
 
   private generateAllReferences() {
     this._matrix.forEach((row) =>
-      row.forEach((cell) => this.generateExpressionAndReferences({ ...cell }))
+      row.forEach((cell) => this.updateCellAndActualize({ ...cell }))
     )
   }
 

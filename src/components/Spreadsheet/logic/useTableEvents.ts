@@ -8,7 +8,7 @@ export function useTableEvents() {
     useSelection()
   useClipboard(selectedElements)
   useKeyPress(selectedElements, removeSelection, addSelectionArea)
-  useMouse(addSelectionArea, removeSelection)
+  useMouse(selectedElements, addSelectionArea, removeSelection)
 
   return {
     ...selectors,
