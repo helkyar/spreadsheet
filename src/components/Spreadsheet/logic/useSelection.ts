@@ -4,7 +4,7 @@ import {
   $$,
   getCell,
   getCurrentCellCoordinates,
-  getInput,
+  getOutput,
 } from '@/components/Spreadsheet/logic/cellUtils'
 import { MouseEvent, useCallback, useEffect, useState } from 'react'
 
@@ -35,21 +35,21 @@ export function useSelection() {
 
   const addDraggable = (elements: HTMLElement[]) => {
     elements.forEach((el) => {
-      el?.classList.add('drag')
-      el?.setAttribute('draggable', 'true')
+      el.classList.add('drag')
+      el.setAttribute('draggable', 'true')
     })
   }
   const removeDraggable = (elements: HTMLElement[]) => {
     elements.forEach((el) => {
-      el?.classList.remove('drag')
-      el?.setAttribute('draggable', 'false')
+      el.classList.remove('drag')
+      el.setAttribute('draggable', 'false')
     })
   }
 
   useEffect(() => {
     if (!selectedElements) return
     const draggedElements = Array.from(selectedElements).map((el) =>
-      getInput(el)
+      getOutput(el)
     )
 
     addDraggable(draggedElements)
