@@ -46,10 +46,6 @@ button {
     border-radius: var(--radius);
   }
 }
-input {
-  background-color: var(--muted);
-  color: var(--muted-foreground);
-}
 
 /* Utils ==================================================== */
 .utils {
@@ -60,20 +56,18 @@ input {
 }
 .save-btn,
 .dark-btn,
-.upload-btn,
-.upload-wrapper,
-.upload-input,
-.download-btn {
+.download-btn,
+.upload-wrapper {
   height: 35px;
   width: 35px;
   border-radius: 50%;
   cursor: pointer;
-  border: none;
-  outline: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &:active,
   &:focus {
-    border: none;
     outline: none;
     background-color: transparent;
   }
@@ -81,38 +75,24 @@ input {
   &:hover,
   &:focus-visible {
     border-radius: 50%;
-    border: 0.5px solid var(--foreground);
+    outline: 0.5px solid var(--foreground);
     background-color: var(--muted);
   }
 }
 .save-btn svg,
-.upload-btn svg path,
+.upload-wrapper svg path,
 .download-btn svg path {
   fill: var(--foreground);
 }
 .download-btn svg,
-.upload-btn svg {
+.upload-wrapper svg {
   width: 30px;
   height: 30px;
-}
-.upload-wrapper {
-  position: relative;
+  cursor: pointer;
 }
 .upload-input {
-  width: 35px;
-  height: 35px;
-  background-color: transparent;
-  opacity: 1;
-  background-color: var(--muted);
-
-  &:hover,
-  &:focus-visible {
-    border-radius: 50%;
-    border: 0.5px solid var(--foreground);
-    background-color: var(--muted);
-  }
+  display: none;
 }
-
 /*Scroll Bar ========================================================== */
 /* width */
 ::-webkit-scrollbar {
@@ -200,6 +180,9 @@ input {
   border: 0;
   opacity: 0;
   cursor: default;
+
+  background-color: var(--muted);
+  color: var(--muted-foreground);
 
   &:focus {
     opacity: 1;

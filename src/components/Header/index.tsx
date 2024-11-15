@@ -6,29 +6,33 @@ import {
   Upload,
 } from '@/components/Header/components/Icons'
 import { useToggleDarkTheme } from '@/components/Header/logic/useToggleDarkTheme'
+import { parseFilesToMatrix } from '@/components/Spreadsheet/logic/cellUtils'
 import { useMatrix } from '@/context/matrix/useMatrix'
+import { ChangeEvent } from 'react'
 
 export default function Header() {
-  const { save, download } = useMatrix()
+  const { save, download, createNewMatrix } = useMatrix()
   const { toggleDarkTheme, isDark } = useToggleDarkTheme()
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { files } = event.target
+    if (files) parseFilesToMatrix(files, createNewMatrix)
+  }
 
   return (
     <header>
       <h1>Computed File</h1>
       <div className='utils'>
-        <label htmlFor='upload' className='upload-wrapper'>
+        <label className='upload-wrapper' htmlFor='upload'>
+          <Upload />
           <input
             className='upload-input'
             multiple
             accept='.csv, application/vnd.ms-excel, text/plain, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
             type='file'
             id='upload'
-            hidden
-            aria-hidden
+            onChange={handleChange}
           />
-          <button className='upload-btn' aria-label='upload'>
-            <Upload />
-          </button>
         </label>
         <button className='download-btn' onClick={download}>
           <Download />

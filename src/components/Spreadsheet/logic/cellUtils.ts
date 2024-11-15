@@ -1,6 +1,7 @@
 import {
   inputTag,
   parentTag,
+  supportedFileTypes,
   textTag,
 } from '@/components/Spreadsheet/data/constants'
 import {
@@ -8,6 +9,7 @@ import {
   HTMLInput,
   HTMLText,
 } from '@/components/Spreadsheet/data/types'
+import { toast } from '@/components/ui/toast'
 import { Matrix } from '@/context/matrix/data/types'
 
 export const $$ = (el: string) => document.querySelectorAll(el)
@@ -55,6 +57,7 @@ export const downloadTable = (id: string) => {
 
 export const formatCellValuesToText = (
   selectedElements: NodeListOf<HTMLCell>,
+  separation: string = '\t',
   copyPlainText: boolean = false
 ) => {
   const selectedValues = Array.from(selectedElements).map((el) => {
@@ -67,7 +70,8 @@ export const formatCellValuesToText = (
 
     return { value, x, y }
   })
-  // Array format gave copy-paste issues
+
+  // FIX_ME: try map
   const formattedValues = selectedValues.reduce((acc, curr) => {
     if (!curr) return acc
     const { value, x, y } = curr
@@ -77,7 +81,7 @@ export const formatCellValuesToText = (
   }, {} as Record<string, Record<string, string>>)
 
   const result = Object.values(formattedValues)
-    .map((row) => Object.values(row).join('\t'))
+    .map((row) => Object.values(row).join(separation))
     .join('\n')
 
   return result
@@ -126,4 +130,27 @@ export const updateSelectedCellsValues = (
     input.blur()
   })
   element?.focus()
+}
+
+export const parseFilesToMatrix = (
+  files: FileList,
+  createNewMatrix: (matrix: Matrix) => void
+) => {
+  if (!files || files.length === 0) return
+
+  Array.from(files).forEach((file) => {
+    if (!supportedFileTypes.includes(file.type)) {
+      toast.error('Unsupported file type')
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = (eventReader) => {
+      const { result } = eventReader.target as FileReader
+      const matrix = formatTextToCellValues(result as string)
+      createNewMatrix(matrix)
+    }
+
+    reader.readAsText(file as Blob)
+  })
 }

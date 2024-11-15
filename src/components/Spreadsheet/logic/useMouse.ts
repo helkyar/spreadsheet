@@ -1,16 +1,11 @@
-import {
-  inputTag,
-  parentTag,
-  supportedFileTypes,
-} from '@/components/Spreadsheet/data/constants'
+import { inputTag, parentTag } from '@/components/Spreadsheet/data/constants'
 import { HTMLCell, HTMLInput } from '@/components/Spreadsheet/data/types'
 import {
-  formatTextToCellValues,
   getCell,
   getCurrentCellCoordinates,
   getInput,
+  parseFilesToMatrix,
 } from '@/components/Spreadsheet/logic/cellUtils'
-import { toast } from '@/components/ui/toast'
 import { useMatrix } from '@/context/matrix/useMatrix'
 import { useCallback, useEffect, useRef } from 'react'
 
@@ -192,29 +187,9 @@ export function useMouse(
     if (dataTransfer?.types.includes('Files')) {
       //   currentTarget.classList.remove('drag-files')
       const { files } = dataTransfer
-      parseFiles(files)
+      parseFilesToMatrix(files, createNewMatrix)
       //   useFilesToCreateItems(files)
     }
-  }
-
-  function parseFiles(files: FileList) {
-    if (!files || files.length === 0) return
-
-    Array.from(files).forEach((file) => {
-      if (!supportedFileTypes.includes(file.type)) {
-        toast.error('Unsupported file type')
-        return
-      }
-
-      const reader = new FileReader()
-      reader.onload = (eventReader) => {
-        const { result } = eventReader.target as FileReader
-        const matrix = formatTextToCellValues(result as string)
-        createNewMatrix(matrix)
-      }
-
-      reader.readAsText(file as Blob)
-    })
   }
 
   useEffect(() => {
