@@ -57,6 +57,7 @@ function SpreadSheet() {
           ))}
         </tbody>
       </table>
+      <div id='ghost' />
     </section>
   )
 }

@@ -4,6 +4,13 @@
   flex-direction: column;
   justify-content: space-between;
 }
+#ghost {
+  position: absolute;
+  top: -100%;
+  width: 100px;
+  height: 50px;
+  background-color: var(--selected-cell-background);
+}
 * {
   margin: 0;
   padding: 0;
@@ -331,8 +338,7 @@ tr:first-of-type .add-icon-wrapper.row:first-child {
 }
 
 .drag {
-  background-color: red;
-}
-.drag input {
   cursor: grab;
+  z-index: 100;
+  background-color: var(--selected-cell-background);
 }

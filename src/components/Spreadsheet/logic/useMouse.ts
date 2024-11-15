@@ -18,13 +18,23 @@ export function useMouse(
   const firstElement = useRef<HTMLCell | null>(null)
   const isDrag = useRef<boolean>(false)
 
-  const mouseDown = useCallback((event: MouseEvent) => {
-    event.stopPropagation()
+  const mouseDown = useCallback(
+    (event: MouseEvent) => {
+      event.stopPropagation()
 
-    const target = (event.target as HTMLElement).parentElement as HTMLCell
-    if (target.tagName !== parentTag) return
-    firstElement.current = target
-  }, [])
+      const target = (event.target as HTMLElement).parentElement as HTMLCell
+      if (target.tagName !== parentTag) return
+
+      const isTargetSelected = selectedElements
+        ? Array.from(selectedElements)?.some((el) => el === target)
+        : false
+
+      if (isTargetSelected) return
+
+      firstElement.current = target
+    },
+    [selectedElements]
+  )
 
   const mouseDrag = useCallback(
     (event: MouseEvent) => {
@@ -51,12 +61,6 @@ export function useMouse(
     },
     [removeSelection]
   )
-  console.log(
-    '🚀 ~ mouseDrag:',
-    () => mouseDrag,
-    () => mouseDown,
-    () => mouseUp
-  )
 
   useEffect(() => {
     document.addEventListener('mousedown', mouseDown)
@@ -69,48 +73,33 @@ export function useMouse(
     }
   }, [mouseDrag, mouseDown, mouseUp])
 
-  const draggedElement = useRef<HTMLInput | null>(null)
-  const sourceContainer = useRef<HTMLCell | null>(null)
-
-  function handleDragStart(event: DragEvent) {
-    const input = event.target as HTMLInput
-    if (input.tagName !== inputTag) return
-
-    //   get selected values
-
-    draggedElement.current = input
-    sourceContainer.current = draggedElement.current.parentNode as HTMLCell
-    event.dataTransfer?.setData('text/plain', draggedElement.current.value)
-  }
-
-  function handleDragOver(event: DragEvent) {
+  const handleDragOver = useCallback((event: DragEvent) => {
     event.preventDefault()
-    handleDragOverFromDesktop(event)
-
-    // const currentTarget = event.currentTarget as HTMLElement
-
-    // if (sourceContainer.current === currentTarget) return
-
-    // currentTarget?.classList.add('drag-over')
-
-    // const dragPreview = document.querySelector('.drag-preview')
-
-    // if (draggedElement.current && !dragPreview) {
-    //   const previewElement = draggedElement.current.cloneNode(
-    //     true
-    //   ) as HTMLElement
-    //   previewElement.classList.add('drag-preview')
-    //   currentTarget?.appendChild(previewElement)
-    // }
-  }
+    // preview???
+    // handleDragOverFromDesktop(event)
+  }, [])
+  // function handleDragOverFromDesktop(event: DragEvent) {
+  // const { currentTarget, dataTransfer } = event
+  // if (dataTransfer.types.includes('Files')) {
+  //   currentTarget.classList.add('drag-files')
+  // }
+  // }
 
   function handleDragLeave(event: MouseEvent) {
     event.preventDefault()
-
-    // const currentTarget = event.currentTarget as HTMLElement
-    // currentTarget?.classList.remove('drag-over')
-    // currentTarget?.querySelector('.drag-preview')?.remove()
   }
+
+  const handleDropFromDesktop = useCallback(
+    (event: DragEvent) => {
+      const { dataTransfer } = event
+
+      if (dataTransfer?.types.includes('Files')) {
+        const { files } = dataTransfer
+        parseFilesToMatrix(files, createNewMatrix)
+      }
+    },
+    [createNewMatrix]
+  )
 
   const handleDrop = useCallback(
     (event: DragEvent) => {
@@ -148,66 +137,64 @@ export function useMouse(
         finalCellInput.blur()
       })
       finalCell.focus()
+    },
+    [selectedElements, handleDropFromDesktop]
+  )
 
-      // const dataTransfer = event.dataTransfer as DataTransfer
+  const handleDragStart = useCallback(
+    (event: DragEvent) => {
+      const ghost = document.getElementById('ghost')
 
-      // if (sourceContainer.current && draggedElement.current) {
-      //   draggedElement.current.value = ''
-      //   getOutput(sourceContainer.current).innerText = ''
-      // }
+      Array.from(selectedElements).forEach((el, i) => {
+        const clone = el.cloneNode(true) as HTMLCell
+        clone.style.cssText = `
+          background: var(--selected);
+          position: absolute;
+          top: ${i * 3}px;
+          left: ${i * 3}px;
+          z-index: ${999999 - i * 5};
+          width: ${el.offsetWidth}px;
+          height: ${el.offsetHeight}px;
+        `
+        ghost?.appendChild(clone)
+      })
 
-      // if (draggedElement.current) {
-      //   const value = dataTransfer?.getData('text/plain')
-      //   input.value = value
-      //   input.focus()
-      //   input.blur()
-      // }
-
-      // currentTarget.classList.remove('drag-over')
-      // currentTarget.querySelector('.drag-preview')?.remove()
+      if (!event.dataTransfer) return
+      event.dataTransfer.effectAllowed = 'move'
+      event.dataTransfer.setDragImage(ghost || selectedElements[0], -10, -10)
     },
     [selectedElements]
   )
 
-  function handleDragEnd() {
-    draggedElement.current = null
-    sourceContainer.current = null
-  }
+  const handleDragEnd = useCallback(() => {
+    if (!selectedElements) return
+    const ghost = document.getElementById('ghost')
+    selectedElements.forEach(() => {
+      ghost?.removeChild(ghost.firstChild as Node)
+    })
+    console.log(
+      '🚀 ~ handleDragEnd ~ ghost?.childElementCount:',
+      ghost?.childElementCount
+    )
 
-  function handleDragOverFromDesktop(event: DragEvent) {
-    // const { currentTarget, dataTransfer } = event
-    // if (dataTransfer.types.includes('Files')) {
-    //   currentTarget.classList.add('drag-files')
-    // }
-  }
-
-  function handleDropFromDesktop(event: DragEvent) {
-    const { currentTarget, dataTransfer } = event
-
-    if (dataTransfer?.types.includes('Files')) {
-      //   currentTarget.classList.remove('drag-files')
-      const { files } = dataTransfer
-      parseFilesToMatrix(files, createNewMatrix)
-      //   useFilesToCreateItems(files)
-    }
-  }
+    removeSelection()
+  }, [selectedElements, removeSelection])
 
   useEffect(() => {
     document.addEventListener('dragstart', handleDragStart)
-    document.addEventListener('dragend', handleDragEnd)
+    document.addEventListener('dragleave', handleDragLeave)
 
     document.addEventListener('dragover', handleDragOver)
     document.addEventListener('drop', handleDrop)
-    document.addEventListener('dragleave', handleDragLeave)
+    document.addEventListener('dragend', handleDragEnd)
 
     return () => {
-      // Cells
       document.removeEventListener('dragstart', handleDragStart)
-      document.removeEventListener('dragend', handleDragEnd)
-      // Table
+      document.removeEventListener('dragleave', handleDragLeave)
+
       document.removeEventListener('dragover', handleDragOver)
       document.removeEventListener('drop', handleDrop)
-      document.removeEventListener('dragleave', handleDragLeave)
+      document.removeEventListener('dragend', handleDragEnd)
     }
-  }, [handleDrop])
+  }, [handleDrop, handleDragEnd, handleDragOver, handleDragStart])
 }
