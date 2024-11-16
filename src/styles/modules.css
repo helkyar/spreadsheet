@@ -1,0 +1,45 @@
+@import '../components/Header/modules.css';
+@import '../components/Tabs/modules.css';
+@import '../components/Spreadsheet/modules.css';
+@import '../components/Modal/modules.css';
+/* GENERAL ========================================================== */
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* COMPONENTS ========================================================== */
+.button {
+  background-color: var(--background);
+  color: var(--foreground);
+  padding: var(--padding-sm);
+  cursor: pointer;
+  border-radius: var(--radius);
+  border: none;
+  outline: none;
+
+  &:hover,
+  &:focus-visible,
+  &:active {
+    background-color: var(--muted);
+    outline: var(--muted-foreground) solid 1px;
+  }
+}
+.btn-round {
+  height: 35px;
+  width: 35px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.action-button {
+  border: 1px solid var(--foreground);
+  padding: var(--padding-lg);
+  background-color: var(--muted);
+  color: var(--muted-foreground);
+  &:hover {
+    background-color: var(--selected-cell-background);
+    color: var(--selected-cell-foreground);
+  }
+}

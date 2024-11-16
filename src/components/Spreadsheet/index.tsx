@@ -1,11 +1,11 @@
 import Cell from '@/components/Spreadsheet/components/Cell'
-import { getColumnsHeaderLabels } from '@/components/Spreadsheet/utils/getColumHeaderLabel'
+import { getColumnsHeaderLabels } from '@/components/Spreadsheet/utils/columnLabel'
 import { useTableEvents } from './logic/useTableEvents'
 import { AddCellsIcon } from '@/components/Spreadsheet/components/AddCellsIcon'
 import { RemoveCellsIcon } from '@/components/Spreadsheet/components/RemoveCellsIcon'
 import { useMatrix } from '@/context/matrix/useMatrix'
 
-function SpreadSheet() {
+export function SpreadSheet() {
   const { selectColumn, selectRow } = useTableEvents()
   const { spreadsheetEntity, addRow, addColumn, removeColumn, removeRow } =
     useMatrix()
@@ -22,7 +22,7 @@ function SpreadSheet() {
           <tr>
             {getColumnsHeaderLabels(matrix[0]?.length).map((columLabel, y) => (
               <th key={columLabel} onClick={selectColumn(y)}>
-                <div>
+                <div className='flex-center'>
                   <RemoveCellsIcon
                     isHidden={y < 1}
                     onClick={removeColumn(y - 1)}
@@ -45,7 +45,7 @@ function SpreadSheet() {
                   isHidden={x > 0}
                 />
                 <AddCellsIcon onClick={addRow(x + 1)} isHorizontal />
-                <div>
+                <div className='flex-center'>
                   <RemoveCellsIcon isHorizontal onClick={removeRow(x)} />
                   {x + 1}
                 </div>
@@ -60,5 +60,3 @@ function SpreadSheet() {
     </section>
   )
 }
-
-export default SpreadSheet

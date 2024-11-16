@@ -8,11 +8,11 @@ import {
 } from '@/components/Header/components/Icons'
 import { useToggleDarkTheme } from '@/components/Header/logic/useToggleDarkTheme'
 import { Modal } from '@/components/Modal'
-import { parseFilesToMatrix } from '@/components/Spreadsheet/utils/cellUtils'
+import { parseFilesToMatrix } from '@/components/Spreadsheet/utils/file'
 import { useMatrix } from '@/context/matrix/useMatrix'
 import { ChangeEvent, useState } from 'react'
 
-export default function Header() {
+export function Header() {
   const [openModal, setOpenModal] = useState(false)
   const { save, download, createNewMatrix } = useMatrix()
   const { toggleDarkTheme, isDark } = useToggleDarkTheme()
@@ -25,8 +25,8 @@ export default function Header() {
   return (
     <header>
       <h1>Computed File</h1>
-      <div className='utils'>
-        <label className='upload-wrapper' htmlFor='upload'>
+      <div className='header-icons flex-center'>
+        <label className='btn-round flex-center button' htmlFor='upload'>
           <Upload />
           <input
             className='upload-input'
@@ -38,7 +38,7 @@ export default function Header() {
           />
         </label>
         <button
-          className='download-btn'
+          className='btn-round flex-center'
           onClick={() => setOpenModal((prev) => !prev)}
         >
           <Download />
@@ -51,11 +51,11 @@ export default function Header() {
             />
           </Modal>
         )}
-        <button className='save-btn' name='save' onClick={save}>
+        <button className='btn-round flex-center' name='save' onClick={save}>
           <Save />
         </button>
         <button
-          className='dark-btn'
+          className='btn-round flex-center'
           name='toggle-dark-theme'
           onClick={toggleDarkTheme}
         >

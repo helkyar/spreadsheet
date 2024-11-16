@@ -7,8 +7,8 @@ type PropTypes = {
 export function Modal({ children }: PropTypes) {
   const modalRoot = document.getElementById('root-modal') as HTMLElement
   return createPortal(
-    <section className='modal-wrapper'>
-      <div className='modal-content'>{children}</div>
+    <section className='modal-wrapper flex-center'>
+      <div className='modal-content flex-center'>{children}</div>
     </section>,
     modalRoot
   )

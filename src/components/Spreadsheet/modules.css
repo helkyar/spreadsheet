@@ -1,0 +1,31 @@
+.table-wrapper {
+  flex: 1;
+  overflow: scroll;
+  padding-bottom: var(--padding-lg);
+  padding-right: var(--padding-lg);
+}
+.cell-text,
+.cell-input {
+  position: absolute;
+  inset: 0;
+  vertical-align: middle;
+}
+
+.cell-input {
+  border: 0;
+  opacity: 0;
+  cursor: default;
+
+  background-color: var(--muted);
+  color: var(--muted-foreground);
+
+  &:focus {
+    opacity: 1;
+    outline: 2px solid var(--cell-outline);
+  }
+}
+/* TO_DO: add selection border */
+.selected {
+  background-color: var(--selected-cell-background);
+  color: var(--selected-cell-foreground);
+}
