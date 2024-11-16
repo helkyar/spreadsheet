@@ -36,7 +36,6 @@ export const MatrixProvider = ({ children, rows, cols }: Params) => {
       return { id: uuidv4(), spreadsheet }
     })
   })
-
   const [matrixIdx, setMatrixIdx] = useState(0)
 
   const createNewMatrix = useCallback(
@@ -98,8 +97,9 @@ export const MatrixProvider = ({ children, rows, cols }: Params) => {
     matrixArray[matrixIdx].spreadsheet.removeRow(x)
   }
 
+  const { id, spreadsheet } = matrixArray[matrixIdx]
   const value = {
-    spreadsheetEntity: matrixArray[matrixIdx], // Spreadsheet matrix render
+    spreadsheet: { id, matrix: spreadsheet.matrix },
     matrixArray,
     matrixIdx,
     viewMatrix,
