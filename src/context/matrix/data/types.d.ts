@@ -1,3 +1,4 @@
+import { DownloadOptions } from '@/components/Spreadsheet/data/types'
 import ComputedMatrix from '@/context/matrix/ComputedMatrix'
 import { MouseEvent } from 'react'
 
@@ -11,7 +12,7 @@ export type Cell = {
 }
 export type MatrixContext = {
   matrixIdx: number
-  download: () => void
+  download: (options: Omit<DownloadOptions, 'id'>) => void
   viewMatrix: (index: number) => void
   matrixArray: { id: string; spreadsheet: ComputedMatrix }[]
   spreadsheetEntity: { id: string; spreadsheet: ComputedMatrix }

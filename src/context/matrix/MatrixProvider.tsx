@@ -6,6 +6,7 @@ import ComputedMatrix from '@/context/matrix/ComputedMatrix'
 import { v4 as uuidv4 } from 'uuid'
 import { toast } from '@/components/ui/toast'
 import { downloadTable } from '@/components/Spreadsheet/logic/cellUtils'
+import { DownloadOptions } from '@/components/Spreadsheet/data/types'
 
 type Params = {
   rows: number
@@ -59,9 +60,9 @@ export const MatrixProvider = ({ children, rows, cols }: Params) => {
     setMatrices(matrices)
   }
 
-  const download = () => {
+  const download = (options: Omit<DownloadOptions, 'id'>) => {
     const { id } = matrixArray[matrixIdx]
-    downloadTable(id)
+    downloadTable({ id, ...options })
   }
 
   const removeMatrix = (index: number) => {
