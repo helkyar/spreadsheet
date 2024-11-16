@@ -5,7 +5,7 @@ type CellProps = {
   x: number
   y: number
 }
-export default function Cell({ cellValues, x, y }: CellProps) {
+export function Cell({ cellValues, x, y }: CellProps) {
   const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     const value = event.target.value
     cellValues.update(value, cellValues.id)
