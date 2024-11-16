@@ -35,14 +35,14 @@ export function useSelection() {
 
   const addDraggable = (elements: HTMLElement[]) => {
     elements.forEach((el) => {
-      el.classList.add('drag')
-      el.setAttribute('draggable', 'true')
+      el?.classList.add('drag')
+      el?.setAttribute('draggable', 'true')
     })
   }
   const removeDraggable = (elements: HTMLElement[]) => {
     elements.forEach((el) => {
-      el.classList.remove('drag')
-      el.setAttribute('draggable', 'false')
+      el?.classList.remove('drag')
+      el?.setAttribute('draggable', 'false')
     })
   }
 

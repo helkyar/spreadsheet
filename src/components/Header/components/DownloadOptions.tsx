@@ -8,6 +8,7 @@ type PropTypes = {
   onSubmit: (options: Omit<DownloadOptions, 'id'>) => void
   onClose: () => void
 }
+
 export function DownloadOptions({ onClose, onSubmit }: PropTypes) {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -30,8 +31,6 @@ export function DownloadOptions({ onClose, onSubmit }: PropTypes) {
 
   useEffect(() => {
     const handleClose = (event: MouseEvent) => {
-      console.log('🚀 ~ handleClose ~ event:', event.target)
-
       if ((event.target as HTMLElement).className === 'modal-wrapper') onClose()
     }
 
