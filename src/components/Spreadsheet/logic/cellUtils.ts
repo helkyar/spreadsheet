@@ -5,6 +5,7 @@ import {
   textTag,
 } from '@/components/Spreadsheet/data/constants'
 import {
+  DownloadOptions,
   HTMLCell,
   HTMLInput,
   HTMLText,
@@ -39,13 +40,20 @@ export const getCurrentCellCoordinates = (element: HTMLCell) => {
   return { x, y }
 }
 
-export const downloadTable = (id: string) => {
+export const downloadTable = ({
+  id,
+  value = 'expression',
+  file = 'plain/text',
+  separation,
+}: DownloadOptions) => {
   const aElement = document.createElement('a')
-  aElement.setAttribute('download', id + '.txt')
+  const fileType = file === 'csv' ? '.csv' : '.txt'
+  aElement.setAttribute('download', id + fileType)
 
   const matrix = $$(parentTag) as NodeListOf<HTMLCell>
-  const text = formatCellValuesToText(matrix)
-  const blob = new Blob([text], { type: 'plain/text' })
+  const copyPlainText = value === 'expression'
+  const text = formatCellValuesToText(matrix, separation, copyPlainText)
+  const blob = new Blob([text], { type: file })
 
   const href = URL.createObjectURL(blob)
   aElement.href = href

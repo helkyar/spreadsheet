@@ -1,3 +1,4 @@
+import { DownloadOptions } from '@/components/Header/components/DownloadOptions'
 import {
   Download,
   Moon,
@@ -6,11 +7,13 @@ import {
   Upload,
 } from '@/components/Header/components/Icons'
 import { useToggleDarkTheme } from '@/components/Header/logic/useToggleDarkTheme'
+import { Modal } from '@/components/Modal'
 import { parseFilesToMatrix } from '@/components/Spreadsheet/logic/cellUtils'
 import { useMatrix } from '@/context/matrix/useMatrix'
-import { ChangeEvent } from 'react'
+import { ChangeEvent, useState } from 'react'
 
 export default function Header() {
+  const [openModal, setOpenModal] = useState(false)
   const { save, download, createNewMatrix } = useMatrix()
   const { toggleDarkTheme, isDark } = useToggleDarkTheme()
 
@@ -34,9 +37,20 @@ export default function Header() {
             onChange={handleChange}
           />
         </label>
-        <button className='download-btn' onClick={download}>
+        <button
+          className='download-btn'
+          onClick={() => setOpenModal((prev) => !prev)}
+        >
           <Download />
         </button>
+        {openModal && (
+          <Modal>
+            <DownloadOptions
+              onSubmit={download}
+              onClose={() => setOpenModal((prev) => !prev)}
+            />
+          </Modal>
+        )}
         <button className='save-btn' name='save' onClick={save}>
           <Save />
         </button>
