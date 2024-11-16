@@ -1,6 +1,6 @@
-export default function Footer() {
+export function Footer() {
   return (
-    <footer>
+    <footer className='flex-center'>
       <h3>&#169; Rights granted</h3>
     </footer>
   )

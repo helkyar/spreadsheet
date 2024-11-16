@@ -13,8 +13,9 @@ export default function Cell({ cellValues, x, y }: CellProps) {
 
   return (
     <td data-x={x} data-y={y} tabIndex={0}>
-      <span>{cellValues.computedValue}</span>
+      <span className='cell-text flex-center'>{cellValues.computedValue}</span>
       <input
+        className='cell-input'
         tabIndex={-1}
         type='text'
         onBlur={handleBlur}

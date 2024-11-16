@@ -1,4 +1,4 @@
-import { getIndexFromLabel } from '@/components/Spreadsheet/utils/getColumHeaderLabel'
+import { getIndexFromLabel } from '@/components/Spreadsheet/utils/columnLabel'
 import {
   Cell,
   CellObject,

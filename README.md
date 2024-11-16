@@ -15,6 +15,7 @@ Intro
 - Add and delete columns and rows actualizing references
 - Reference cells and detect cyclic references
 - Full keyboard accessibility
+- Responsive
 
 ## Challenges & Solutions
 
@@ -56,6 +57,8 @@ Building this project has been an enriching experience that allowed me to take a
 - Accessibility
   - Legend or tutorial (modal with 'i' icon)
   - Change between sheets key (Alt+Arrow Left/Right)
+  - Aria when needed
+  - Google checks
   - Change between sections key (Alt+Arrow Up/Down)
     - Header options (save, import, export, dark theme)
     - Header rows/cols
@@ -68,3 +71,6 @@ Building this project has been an enriching experience that allowed me to take a
   - Lock row header css
   - Add drop preview showing a dotted border in target cells
   - Add same logic to show border in selection
+- Mobile accessible
+  - Column and row touch contextual menu
+  - Selection management

@@ -32,7 +32,8 @@ export function DownloadOptions({ onClose, onSubmit }: PropTypes) {
 
   useEffect(() => {
     const handleClose = (event: MouseEvent) => {
-      if ((event.target as HTMLElement).className === 'modal-wrapper') onClose()
+      if ((event.target as HTMLElement).className.includes('modal-wrapper'))
+        onClose()
     }
 
     document.addEventListener('click', handleClose)
@@ -81,7 +82,9 @@ export function DownloadOptions({ onClose, onSubmit }: PropTypes) {
           <input type='radio' name='separation' value=',' /> Comas
         </label>
       </fieldset>
-      <button type='submit'>Download</button>
+      <button className='action-button' type='submit'>
+        Download
+      </button>
     </form>
   )
 }
