@@ -1,6 +1,7 @@
 import {
   ExportValue,
   File,
+  Separation,
   type DownloadOptions,
 } from '@/components/Spreadsheet/data/types'
 import { FormEvent, useEffect } from 'react'
@@ -23,7 +24,7 @@ export function DownloadOptions({ onClose, onSubmit }: PropTypes) {
     onSubmit({
       value: exportValue.value as ExportValue,
       file: fileType.value as File,
-      separation: separation.value,
+      separation: separation.value as Separation,
     })
 
     onClose()
@@ -73,11 +74,11 @@ export function DownloadOptions({ onClose, onSubmit }: PropTypes) {
       <fieldset>
         <legend>Separation</legend>
         <label>
-          <input type='radio' name='separation' value='tabs' defaultChecked />{' '}
+          <input type='radio' name='separation' value='\t' defaultChecked />
           Tabs
         </label>
         <label>
-          <input type='radio' name='separation' value='comas' /> Comas
+          <input type='radio' name='separation' value=',' /> Comas
         </label>
       </fieldset>
       <button type='submit'>Download</button>

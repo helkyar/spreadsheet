@@ -1,5 +1,5 @@
 import Cell from '@/components/Spreadsheet/components/Cell'
-import { getColumnsHeaderLabels } from '@/components/Spreadsheet/logic/getColumHeaderLabel'
+import { getColumnsHeaderLabels } from '@/components/Spreadsheet/utils/getColumHeaderLabel'
 import { useTableEvents } from './logic/useTableEvents'
 import { AddCellsIcon } from '@/components/Spreadsheet/components/AddCellsIcon'
 import { RemoveCellsIcon } from '@/components/Spreadsheet/components/RemoveCellsIcon'

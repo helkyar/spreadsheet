@@ -5,7 +5,7 @@ import {
   getCurrentCellCoordinates,
   getInput,
   updateSelectedCellsValues,
-} from '@/components/Spreadsheet/logic/cellUtils'
+} from '@/components/Spreadsheet/utils/cell'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 type TagsWithHandlers = typeof parentTag | typeof inputTag
