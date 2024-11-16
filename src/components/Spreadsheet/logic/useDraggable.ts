@@ -1,13 +1,14 @@
-import { useCallback, useEffect } from 'react'
+import { useEffect } from 'react'
+import { HTMLCell, HTMLInput } from '@/components/Spreadsheet/data/types'
+import { useMatrix } from '@/context/matrix/useMatrix'
+import { inputTag } from '@/components/Spreadsheet/data/constants'
 import {
   getCell,
   getCurrentCellCoordinates,
   getInput,
-  parseFilesToMatrix,
-} from '@/components/Spreadsheet/logic/cellUtils'
-import { HTMLCell, HTMLInput } from '@/components/Spreadsheet/data/types'
-import { useMatrix } from '@/context/matrix/useMatrix'
-import { inputTag } from '@/components/Spreadsheet/data/constants'
+  updateCell,
+} from '@/components/Spreadsheet/utils/cell'
+import { parseFilesToMatrix } from '@/components/Spreadsheet/utils/file'
 
 export function useDraggable(
   selectedElements: NodeListOf<HTMLCell>,
@@ -15,28 +16,26 @@ export function useDraggable(
 ) {
   const { createNewMatrix } = useMatrix()
 
-  const handleDragOver = useCallback((event: DragEvent) => {
-    event.preventDefault()
-  }, [])
+  useEffect(() => {
+    const handleDragOver = (event: DragEvent) => {
+      event.preventDefault()
+      //TO_DO: generate preview adding cell border same logic for selection border
+    }
 
-  function handleDragLeave(event: MouseEvent) {
-    event.preventDefault()
-  }
+    function handleDragLeave(event: MouseEvent) {
+      event.preventDefault()
+    }
 
-  const handleDropFromDesktop = useCallback(
-    (event: DragEvent) => {
+    const handleDropFromDesktop = (event: DragEvent) => {
       const { dataTransfer } = event
 
       if (dataTransfer?.types.includes('Files')) {
         const { files } = dataTransfer
         parseFilesToMatrix(files, createNewMatrix)
       }
-    },
-    [createNewMatrix]
-  )
+    }
 
-  const handleDrop = useCallback(
-    (event: DragEvent) => {
+    const handleDrop = (event: DragEvent) => {
       event.preventDefault()
       handleDropFromDesktop(event)
 
@@ -46,71 +45,60 @@ export function useDraggable(
       if (input.tagName !== inputTag) return
       const finalCell = input.parentNode as HTMLCell
 
-      const { x, y } = getCurrentCellCoordinates(finalCell)
+      const { x: finalX, y: finalY } = getCurrentCellCoordinates(finalCell)
+      const { x: initialX, y: initialY } = getCurrentCellCoordinates(
+        selectedElements[0]
+      )
 
-      selectedElements.forEach((el, _, self) => {
-        const { x: iX, y: iY } = getCurrentCellCoordinates(self[0])
+      selectedElements.forEach((el) => {
         const { x: elX, y: elY } = getCurrentCellCoordinates(el)
 
-        if (elX === x && elY === y) return
+        if (elX === finalX && elY === finalY) return
 
         const cell = getCell({
-          x: elX + x - elX + (elX - iX),
-          y: elY + y - elY + (elY - iY),
+          x: finalX + (elX - initialX),
+          y: finalY + (elY - initialY),
         })
 
-        const initialCellInput = getInput(el)
-        const value = initialCellInput.value
-        initialCellInput.value = ''
-        initialCellInput.focus()
-        initialCellInput.blur()
-
-        const finalCellInput = getInput(cell)
-        finalCellInput.value = value
-        finalCellInput.focus()
-        finalCellInput.blur()
+        const value = getInput(el).value
+        updateCell(el, '')
+        updateCell(cell, value)
       })
       finalCell.focus()
-    },
-    [selectedElements, handleDropFromDesktop]
-  )
+    }
 
-  const handleDragStart = useCallback(
-    (event: DragEvent) => {
+    const handleDragStart = (event: DragEvent) => {
       const ghost = document.getElementById('ghost')
 
-      Array.from(selectedElements).forEach((el, i) => {
+      selectedElements.forEach((el, i) => {
         const clone = el.cloneNode(true) as HTMLCell
-        clone.style.cssText = `
-          background: var(--selected);
-          position: absolute;
-          top: ${i * 3}px;
-          left: ${i * 3}px;
-          z-index: ${999999 - i * 5};
-          width: ${el.offsetWidth}px;
-          height: ${el.offsetHeight}px;
-        `
+        Object.assign(clone.style, {
+          background: 'var(--selected)',
+          position: 'absolute',
+          top: `${i * 3}px`,
+          left: `${i * 3}px`,
+          zIndex: `${999999 - i * 5}`,
+          width: `${el.offsetWidth}px`,
+          height: `${el.offsetHeight}px`,
+        })
         ghost?.appendChild(clone)
       })
 
       if (!event.dataTransfer) return
       event.dataTransfer.effectAllowed = 'move'
       event.dataTransfer.setDragImage(ghost || selectedElements[0], -10, -10)
-    },
-    [selectedElements]
-  )
+    }
 
-  const handleDragEnd = useCallback(() => {
-    if (!selectedElements) return
-    const ghost = document.getElementById('ghost')
-    selectedElements.forEach(() => {
-      ghost?.removeChild(ghost.firstChild as Node)
-    })
+    const handleDragEnd = () => {
+      if (!selectedElements) return
+      const ghost = document.getElementById('ghost')
+      selectedElements.forEach(() => {
+        ghost?.removeChild(ghost.firstChild as Node)
+      })
 
-    removeSelection()
-  }, [selectedElements, removeSelection])
+      removeSelection()
+    }
 
-  useEffect(() => {
     document.addEventListener('dragstart', handleDragStart)
     document.addEventListener('dragleave', handleDragLeave)
 
@@ -126,5 +114,5 @@ export function useDraggable(
       document.removeEventListener('drop', handleDrop)
       document.removeEventListener('dragend', handleDragEnd)
     }
-  }, [handleDrop, handleDragEnd, handleDragOver, handleDragStart])
+  }, [selectedElements, removeSelection, createNewMatrix])
 }

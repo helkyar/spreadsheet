@@ -8,7 +8,7 @@ import {
 } from '@/components/Header/components/Icons'
 import { useToggleDarkTheme } from '@/components/Header/logic/useToggleDarkTheme'
 import { Modal } from '@/components/Modal'
-import { parseFilesToMatrix } from '@/components/Spreadsheet/logic/cellUtils'
+import { parseFilesToMatrix } from '@/components/Spreadsheet/utils/cellUtils'
 import { useMatrix } from '@/context/matrix/useMatrix'
 import { ChangeEvent, useState } from 'react'
 

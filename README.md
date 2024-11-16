@@ -1,55 +1,70 @@
-# React + TypeScript + Vite
+# Computed File
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Intro
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- React with Typescript
+- Vitest
+- Sonner for toast messages
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- Upload and Download sheets
+- Select cols, rows and cells area for edition, deletion, drag and drop or clipboard management
+- Add and delete columns and rows actualizing references
+- Reference cells and detect cyclic references
+- Full keyboard accessibility
 
-- Configure the top-level `parserOptions` property like this:
+## Challenges & Solutions
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+- Add and remove cols/rows (pre-update problem) -> cell id
+- Optimizing computation and value update -> ref list
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Future Improvements
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+- **More features**: One of the most interesting ones to explore are referencing cells from other sheets as well as allowing for cell styles personalization (color, font, format, ...)
+- **More dynamic features**: Allowing to insert images and generate graphics
+- **Advanced Analytics**: Integrating more sophisticated analytics to better understand user behavior and engagement with the content.
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## Conclusion
 
-## Next steps
+Building this project has been an enriching experience that allowed me to take a deep dive in matrix data management. The use of principles like SOLID and DRY in conjunction with some patterns has enabled me to create a platform that is not only functional but also scalable and easy to maintain. As I continue to grow and evolve as a developer, I look forward to enhancing this site.
 
-- Rename sheets
--
+## Pending
+
+- Change history with Ctrl+z Ctrl+y?
+- Config file?
+- Refactors
+  - Refactor CSS
+  - Refactor HTML
+  - Refactor ComputedMatrix (single resp, open/close, command chain)
+  - Optimization
+- Tests
+  - clipboard
+  - keyboard accessibility
+  - drag and drop
+- Better remove/add rows/cols ui
+  - Selector vs contextual menu
+    - Select col/row by default?
+    - Contextual menu key combination (Ctrl+Enter)
+  - Content of selector/contextual menu
+    - clipboard values/expression
+    - order
+    - add
+    - remove
+- Accessibility
+  - Legend or tutorial (modal with 'i' icon)
+  - Change between sheets key (Alt+Arrow Left/Right)
+  - Change between sections key (Alt+Arrow Up/Down)
+    - Header options (save, import, export, dark theme)
+    - Header rows/cols
+    - Cells
+    - Sheets tabs
+- Shallow features
+  - Rename sheets tabs and use them as file export name
+  - Change cell focus on arrow navigation
+  - Esc doesn't store changes
+  - Lock row header css
+  - Add drop preview showing a dotted border in target cells
+  - Add same logic to show border in selection

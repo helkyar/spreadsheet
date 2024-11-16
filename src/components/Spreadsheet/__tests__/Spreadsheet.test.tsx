@@ -22,6 +22,3 @@ describe('Spreadsheet component with context', () => {
     expect(screen.queryByText('11')).toBeFalsy()
   })
 })
-
-// Specific values are shown based on cell values
-// Input and input values are visible on click
