@@ -24,7 +24,7 @@ Intro
 
 ## Future Improvements
 
-- **More features**: One of the most interesting ones to explore are referencing cells from other sheets as well as allowing for cell styles personalization (color, font, format, ...)
+- **More features**: One of the most interesting ones to explore are referencing cells from other sheets as well as allowing for cell styles personalization (color, font, format, ...). Cell resize and cell fusion
 - **More dynamic features**: Allowing to insert images and generate graphics
 - **Advanced Analytics**: Integrating more sophisticated analytics to better understand user behavior and engagement with the content.
 
@@ -37,10 +37,8 @@ Building this project has been an enriching experience that allowed me to take a
 - Change history with Ctrl+z Ctrl+y?
 - Config file?
 - Refactors
-  - Refactor CSS
-  - Refactor HTML
   - Refactor ComputedMatrix (single resp, open/close, command chain)
-  - Optimization
+  - Optimization with tools and code
 - Tests
   - clipboard
   - keyboard accessibility

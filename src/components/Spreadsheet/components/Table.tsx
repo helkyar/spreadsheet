@@ -5,7 +5,7 @@ type PropTypes = {
 export function Table({ children }: PropTypes) {
   return (
     <section className='table-wrapper'>
-      <table>{children}</table>
+      <table aria-label='spreadsheet'>{children}</table>
     </section>
   )
 }

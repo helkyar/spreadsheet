@@ -9,23 +9,45 @@
   position: absolute;
   inset: 0;
   vertical-align: middle;
+  border: none;
 }
 
 .cell-input {
-  border: 0;
   opacity: 0;
   cursor: default;
 
   background-color: var(--muted);
   color: var(--muted-foreground);
+  padding: var(--padding-md);
 
   &:focus {
     opacity: 1;
-    outline: 2px solid var(--cell-outline);
+    background-color: var(--muted);
+    outline: 1px solid var(--cell-outline);
   }
 }
 /* TO_DO: add selection border */
 .selected {
   background-color: var(--selected-cell-background);
   color: var(--selected-cell-foreground);
+  /* border: 1px dashed green; */
+}
+/* .selected + .selected {
+  border: 1px dashed red;
+}
+.selected:last-of-type {
+  border: 1px dashed white;
+} */
+
+.selected-top {
+  border-top: 2px dashed var(--selected-cell-accent);
+}
+.selected-bottom {
+  border-bottom: 2px dashed var(--selected-cell-accent);
+}
+.selected-left {
+  border-left: 2px dashed var(--selected-cell-accent);
+}
+.selected-right {
+  border-right: 2px dashed var(--selected-cell-accent);
 }

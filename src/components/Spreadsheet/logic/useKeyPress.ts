@@ -2,7 +2,7 @@ import { inputTag, parentTag } from '@/components/Spreadsheet/data/constants'
 import { HTMLCell, HTMLInput } from '@/components/Spreadsheet/data/types'
 import {
   focusCell,
-  getCurrentCellCoordinates,
+  getCellCoordinates,
   getInput,
   updateSelectedCellsValues,
 } from '@/components/Spreadsheet/utils/cell'
@@ -23,7 +23,7 @@ const keyGroups = {
 }
 
 const arrowNavigation = (event: KeyboardEvent, element: HTMLCell) => {
-  const { x, y } = getCurrentCellCoordinates(element)
+  const { x, y } = getCellCoordinates(element)
 
   if (event.key === 'ArrowDown') {
     return focusCell({ x: x + 1, y })
@@ -61,7 +61,7 @@ export function useKeyPress(
         if (keyGroups.execute.includes(event.key)) {
           const cell = element.parentElement as HTMLCell
           if (!selectedElements) {
-            const { x, y } = getCurrentCellCoordinates(cell)
+            const { x, y } = getCellCoordinates(cell)
             // FIX_ME: double call to prevent out of bounds
             focusCell({ x, y })
             focusCell({ x: x + 1, y })

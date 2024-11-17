@@ -50,5 +50,5 @@
 .drag {
   cursor: grab;
   z-index: 100;
-  background-color: var(--selected-cell-background);
+  /* background-color: var(--selected-cell-background); */
 }

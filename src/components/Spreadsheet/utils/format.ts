@@ -2,7 +2,7 @@ import { parentTag } from '@/components/Spreadsheet/data/constants'
 import { HTMLCell, Separation } from '@/components/Spreadsheet/data/types'
 import {
   getCell,
-  getCurrentCellCoordinates,
+  getCellCoordinates,
   getInput,
   getText,
   updateCell,
@@ -20,7 +20,7 @@ export const formatCellValuesToText = ({
 }) => {
   const selectedValues = Array.from(elements).map((el) => {
     if (el.tagName !== parentTag) return
-    const { x, y } = getCurrentCellCoordinates(el)
+    const { x, y } = getCellCoordinates(el)
     let value = ''
 
     if (isPlainText) value = getText(el)
@@ -49,7 +49,7 @@ export const addTextToCellValues = (
   initialElement?: HTMLCell
 ) => {
   const { x: iX = 0, y: iY = 0 } = initialElement
-    ? getCurrentCellCoordinates(initialElement)
+    ? getCellCoordinates(initialElement)
     : {}
 
   text.split('\n').forEach((row, x) => {
