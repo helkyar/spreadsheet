@@ -4,13 +4,13 @@ import {
   Separation,
   type DownloadOptions,
 } from '@/components/Spreadsheet/data/types'
-import { FormEvent, useEffect } from 'react'
+import { FormEvent } from 'react'
+
 type PropTypes = {
   onSubmit: (options: Omit<DownloadOptions, 'id'>) => void
-  onClose: () => void
 }
 
-export function DownloadOptions({ onClose, onSubmit }: PropTypes) {
+export function DownloadOptions({ onSubmit }: PropTypes) {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const form = event.currentTarget
@@ -26,19 +26,7 @@ export function DownloadOptions({ onClose, onSubmit }: PropTypes) {
       file: fileType.value as File,
       separation: separation.value as Separation,
     })
-
-    onClose()
   }
-
-  useEffect(() => {
-    const handleClose = (event: MouseEvent) => {
-      if ((event.target as HTMLElement).className.includes('modal-wrapper'))
-        onClose()
-    }
-
-    document.addEventListener('click', handleClose)
-    return () => document.removeEventListener('click', handleClose)
-  }, [onClose])
 
   return (
     <form onSubmit={handleSubmit} className='download-form'>
