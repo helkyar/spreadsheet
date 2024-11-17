@@ -15,6 +15,7 @@
   --cell-outline: rgb(10, 116, 187);
   --selected-cell-background: rgb(118, 185, 229);
   --selected-cell-foreground: var(--foreground);
+  --selected-cell-accent: rgb(15, 81, 125);
 
   --card: hsl(0 0% 100%);
   --card-foreground: hsl(240 10% 3.9%);
@@ -65,12 +66,13 @@
   --popover: hsl(240 10% 3.9%);
   --popover-foreground: hsl(0 0% 98%);
 
-  --border: hsl(240 3.7% 15.9%);
+  --border: hsl(240, 9%, 2%);
   --input: hsl(240 3.7% 15.9%);
 
-  --cell-outline: rgb(145, 180, 203);
+  --cell-outline: rgb(173, 192, 205);
   --selected-cell-background: rgb(47, 113, 156);
   --selected-cell-foreground: var(--foreground);
+  --selected-cell-accent: rgb(15, 81, 125);
 
   --card: hsl(240 10% 3.9%);
   --card-foreground: hsl(0 0% 98%);

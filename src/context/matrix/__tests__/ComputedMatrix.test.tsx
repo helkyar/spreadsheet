@@ -45,10 +45,6 @@ describe('ComputedMatrix class', () => {
     expect(cell.computedValue).toBe('3+2')
   })
 
-  it('should avoid un-existent references p.e. A5 in matrix of 4 rows', () => {
-    // TO_DO implement this feature first
-  })
-
   it('should avoid cyclic reference', () => {
     const matrix = getMockMatrix()
 

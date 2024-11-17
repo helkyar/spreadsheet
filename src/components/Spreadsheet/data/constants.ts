@@ -1,5 +1,9 @@
 export const parentTag = 'TD'
 export const inputTag = 'INPUT'
-export const textTag = 'SPAN'
+export const outputTag = 'SPAN'
 export const selected = 'selected'
+export const selectedT = 'selected-top'
+export const selectedB = 'selected-bottom'
+export const selectedL = 'selected-left'
+export const selectedR = 'selected-right'
 export const supportedFileTypes = ['text/plain', 'text/csv']

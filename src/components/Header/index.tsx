@@ -34,7 +34,11 @@ export function Header() {
     <header>
       <h1>Computed File</h1>
       <section className='header-icons flex-center'>
-        <label className='btn-round flex-center button' htmlFor='upload'>
+        <label
+          aria-label='upload'
+          className='btn-round flex-center button'
+          htmlFor='upload'
+        >
           <Upload />
           <input
             className='upload-input'
@@ -45,17 +49,29 @@ export function Header() {
             onChange={handleChange}
           />
         </label>
-        <button className='btn-round flex-center' onClick={toggleModal}>
+        <button
+          className='btn-round flex-center'
+          onClick={toggleModal}
+          aria-label='download'
+        >
           <Download />
           <Modal isOpen={openModal} onClose={toggleModal}>
             <DownloadOptions onSubmit={handleDownload} />
           </Modal>
         </button>
 
-        <button className='btn-round flex-center' onClick={save}>
+        <button
+          className='btn-round flex-center'
+          onClick={save}
+          aria-label='save'
+        >
           <Save />
         </button>
-        <button className='btn-round flex-center' onClick={toggleDarkTheme}>
+        <button
+          className='btn-round flex-center'
+          onClick={toggleDarkTheme}
+          aria-label='toggle dark mode'
+        >
           {isDark ? <Sun /> : <Moon />}
         </button>
       </section>

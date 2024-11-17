@@ -1,4 +1,4 @@
-import SpreadSheet from '@/components/Spreadsheet'
+import { SpreadSheet } from '@/components/Spreadsheet'
 import { MatrixProvider } from '@/context/matrix/MatrixProvider'
 import { beforeAll, describe, expect, it } from 'vitest'
 
@@ -34,7 +34,7 @@ describe('useTableEvents hook tested through ui', () => {
     fireEvent.click(screen.getByText('1'))
     expect(selectedCells().length).toBe(11)
 
-    // checks that multiple clicks only select one column
+    // checks that multiple clicks only select one row
     fireEvent.click(screen.getByText('2'))
     fireEvent.click(screen.getByText('3'))
     expect(selectedCells().length).toBe(11)

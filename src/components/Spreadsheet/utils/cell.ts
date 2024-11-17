@@ -1,7 +1,11 @@
 import {
   inputTag,
   parentTag,
-  textTag,
+  selectedB,
+  selectedL,
+  selectedR,
+  selectedT,
+  outputTag,
 } from '@/components/Spreadsheet/data/constants'
 import {
   HTMLCell,
@@ -10,17 +14,17 @@ import {
 } from '@/components/Spreadsheet/data/types'
 
 export const $$ = (el: string) => document.querySelectorAll(el)
-const $ = (el: string) => document.querySelector(el)
+export const $ = (el: string) => document.querySelector(el) as HTMLElement
 
 export const getInput = (element: HTMLCell) =>
   element.querySelector(inputTag) as HTMLInput
 
 export const getOutput = (element: HTMLCell) =>
-  element.querySelector(textTag) as HTMLText
+  element.querySelector(outputTag) as HTMLText
 
 export const getText = (element: HTMLCell) => getOutput(element).innerText
 
-export const getCurrentCellCoordinates = (element: HTMLCell) => {
+export const getCellCoordinates = (element: HTMLCell) => {
   const { x: xString = -1, y: yString = -1 } = element.dataset
   const x = Number(xString)
   const y = Number(yString)
@@ -55,4 +59,72 @@ export const updateSelectedCellsValues = (
     }
   })
   element?.focus()
+}
+
+export const manageBoundaryClassName = (
+  elements: NodeListOf<HTMLCell>,
+  offset?: { x: number; y: number }
+) => {
+  const removeCellBoundary = () => {
+    $$(`.${selectedT}`).forEach((el) => el?.classList.remove(selectedT))
+    $$(`.${selectedB}`).forEach((el) => el?.classList.remove(selectedB))
+    $$(`.${selectedL}`).forEach((el) => el?.classList.remove(selectedL))
+    $$(`.${selectedR}`).forEach((el) => el?.classList.remove(selectedR))
+  }
+  if (!elements) return { removeCellBoundary }
+
+  let topCell: HTMLCell | null = null
+  let bottomCell: HTMLCell | null = null
+  let leftCell: HTMLCell | null = null
+  let rightCell: HTMLCell | null = null
+
+  elements.forEach((cell) => {
+    const { x, y } = getCellCoordinates(cell)
+
+    if (!leftCell || y < getCellCoordinates(leftCell).y) {
+      leftCell = cell
+    }
+    if (!rightCell || y > getCellCoordinates(rightCell).y) {
+      rightCell = cell
+    }
+    if (!topCell || x < getCellCoordinates(topCell).x) {
+      topCell = cell
+    }
+    if (!bottomCell || x > getCellCoordinates(bottomCell).x) {
+      bottomCell = cell
+    }
+  })
+
+  return {
+    addCellBoundary: () => {
+      const { x: initialX, y: initialY } = getCellCoordinates(elements[0])
+      elements.forEach((cell) => {
+        const { x, y } = getCellCoordinates(cell)
+        let offsetCell: HTMLCell | null = null
+        if (offset) {
+          const { x: offsetX, y: offsetY } = offset
+          offsetCell = getCell({
+            x: offsetX + (x - initialX),
+            y: offsetY + (y - initialY),
+          })
+        } else {
+          offsetCell = cell
+        }
+
+        if (x === getCellCoordinates(topCell!).x) {
+          offsetCell?.classList.add(selectedT)
+        }
+        if (x === getCellCoordinates(bottomCell!).x) {
+          offsetCell?.classList.add(selectedB)
+        }
+        if (y === getCellCoordinates(leftCell!).y) {
+          offsetCell?.classList.add(selectedL)
+        }
+        if (y === getCellCoordinates(rightCell!).y) {
+          offsetCell?.classList.add(selectedR)
+        }
+      })
+    },
+    removeCellBoundary,
+  }
 }

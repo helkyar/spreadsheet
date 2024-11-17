@@ -2,8 +2,9 @@ import { parentTag, selected } from '@/components/Spreadsheet/data/constants'
 import { HTMLCell } from '@/components/Spreadsheet/data/types'
 import {
   $$,
+  manageBoundaryClassName,
   getCell,
-  getCurrentCellCoordinates,
+  getCellCoordinates,
   getOutput,
 } from '@/components/Spreadsheet/utils/cell'
 
@@ -18,10 +19,11 @@ export function useSelection() {
   const [selectedElements, setSelectedElements] = useState<
     NodeListOf<HTMLCell>
   >(null as unknown as NodeListOf<HTMLCell>)
-
-  const removeSelection = useCallback(() => {
-    selectedElements?.forEach((el) => el.classList.remove(selected))
-    setSelectedElements(null as unknown as NodeListOf<HTMLCell>)
+  useEffect(() => {
+    const { removeCellBoundary, addCellBoundary } =
+      manageBoundaryClassName(selectedElements)
+    if (addCellBoundary) addCellBoundary()
+    return removeCellBoundary
   }, [selectedElements])
 
   useEffect(() => {
@@ -36,17 +38,16 @@ export function useSelection() {
 
   useEffect(() => {
     if (!selectedElements) return
+
     const draggedElements = Array.from(selectedElements).map((el) =>
       getOutput(el)
     )
-
     const addDraggable = (elements: HTMLElement[]) => {
       elements.forEach((el) => {
         el?.classList.add('drag')
         el?.setAttribute('draggable', 'true')
       })
     }
-
     const removeDraggable = (elements: HTMLElement[]) => {
       elements.forEach((el) => {
         el?.classList.remove('drag')
@@ -56,6 +57,11 @@ export function useSelection() {
 
     addDraggable(draggedElements)
     return () => removeDraggable(draggedElements)
+  }, [selectedElements])
+
+  const removeSelection = useCallback(() => {
+    selectedElements?.forEach((el) => el.classList.remove(selected))
+    setSelectedElements(null as unknown as NodeListOf<HTMLCell>)
   }, [selectedElements])
 
   const addSelectedClassToElements = (
@@ -93,8 +99,8 @@ export function useSelection() {
     (firstElement: HTMLCell, currentElement?: HTMLCell) => {
       if (!currentElement) return
       removeSelection()
-      const { x: x1, y: y1 } = getCurrentCellCoordinates(firstElement)
-      const { x: x2, y: y2 } = getCurrentCellCoordinates(currentElement)
+      const { x: x1, y: y1 } = getCellCoordinates(firstElement)
+      const { x: x2, y: y2 } = getCellCoordinates(currentElement)
 
       const minX = Math.min(x1, x2)
       const maxX = Math.max(x1, x2)

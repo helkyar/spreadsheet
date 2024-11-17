@@ -1,11 +1,17 @@
 import { useEffect } from 'react'
 import { HTMLCell, HTMLInput } from '@/components/Spreadsheet/data/types'
 import { useMatrix } from '@/context/matrix/useMatrix'
-import { inputTag } from '@/components/Spreadsheet/data/constants'
 import {
+  inputTag,
+  outputTag,
+  parentTag,
+} from '@/components/Spreadsheet/data/constants'
+import {
+  $,
   getCell,
-  getCurrentCellCoordinates,
+  getCellCoordinates,
   getInput,
+  manageBoundaryClassName,
   updateCell,
 } from '@/components/Spreadsheet/utils/cell'
 import { parseFilesToMatrix } from '@/components/Spreadsheet/utils/file'
@@ -19,7 +25,16 @@ export function useDraggable(
   useEffect(() => {
     const handleDragOver = (event: DragEvent) => {
       event.preventDefault()
-      //TO_DO: generate preview adding cell border same logic for selection border
+      const target = event.target as HTMLElement
+      if (target.tagName !== inputTag && target.tagName !== outputTag) return
+      const cell = target.parentNode as HTMLCell
+      const coordinates = getCellCoordinates(cell)
+      const { removeCellBoundary, addCellBoundary } = manageBoundaryClassName(
+        selectedElements,
+        coordinates
+      )
+      if (removeCellBoundary) removeCellBoundary()
+      if (addCellBoundary) addCellBoundary()
     }
 
     function handleDragLeave(event: MouseEvent) {
@@ -41,39 +56,43 @@ export function useDraggable(
 
       if (!selectedElements) return
 
-      const input = event.target as HTMLInput
-      if (input.tagName !== inputTag) return
-      const finalCell = input.parentNode as HTMLCell
+      const target = event.target as HTMLInput
+      if (target.tagName !== inputTag && target.tagName !== outputTag) return
+      const finalCell = target.parentNode as HTMLCell
 
-      const { x: finalX, y: finalY } = getCurrentCellCoordinates(finalCell)
-      const { x: initialX, y: initialY } = getCurrentCellCoordinates(
+      const { x: finalX, y: finalY } = getCellCoordinates(finalCell)
+      const { x: initialX, y: initialY } = getCellCoordinates(
         selectedElements[0]
       )
 
-      selectedElements.forEach((el) => {
-        const { x: elX, y: elY } = getCurrentCellCoordinates(el)
+      selectedElements.forEach(async (el) => {
+        const { x: elX, y: elY } = getCellCoordinates(el)
 
-        if (elX === finalX && elY === finalY) return
-
-        const cell = getCell({
-          x: finalX + (elX - initialX),
-          y: finalY + (elY - initialY),
-        })
+        if (finalX === initialX && finalY === initialY) return
 
         const value = getInput(el).value
         updateCell(el, '')
-        updateCell(cell, value)
+
+        //FIX_ME: hack to wait for cell to update after drop before updating the cell value
+        setTimeout(() => {
+          const cell = getCell({
+            x: finalX + (elX - initialX),
+            y: finalY + (elY - initialY),
+          })
+          updateCell(cell, value)
+        }, 0)
       })
       finalCell.focus()
     }
 
     const handleDragStart = (event: DragEvent) => {
-      const ghost = document.getElementById('ghost')
+      const ghost = $('#ghost')
 
       selectedElements.forEach((el, i) => {
+        if (el.tagName !== parentTag) return
         const clone = el.cloneNode(true) as HTMLCell
         Object.assign(clone.style, {
-          background: 'var(--selected)',
+          background: 'var(--selected-cell-background)',
           position: 'absolute',
           top: `${i * 3}px`,
           left: `${i * 3}px`,
@@ -81,20 +100,18 @@ export function useDraggable(
           width: `${el.offsetWidth}px`,
           height: `${el.offsetHeight}px`,
         })
-        ghost?.appendChild(clone)
+        ghost.appendChild(clone)
       })
 
       if (!event.dataTransfer) return
       event.dataTransfer.effectAllowed = 'move'
-      event.dataTransfer.setDragImage(ghost || selectedElements[0], -10, -10)
+      event.dataTransfer.setDragImage(ghost, -10, -10)
     }
 
     const handleDragEnd = () => {
       if (!selectedElements) return
-      const ghost = document.getElementById('ghost')
-      selectedElements.forEach(() => {
-        ghost?.removeChild(ghost.firstChild as Node)
-      })
+
+      $('#ghost').innerHTML = ''
 
       removeSelection()
     }
