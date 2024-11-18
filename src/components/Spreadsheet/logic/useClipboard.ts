@@ -1,5 +1,5 @@
 import { parentTag } from '@/components/Spreadsheet/data/constants'
-import { HTMLCell } from '@/components/Spreadsheet/data/types'
+import { HTMLCell, Selected } from '@/components/Spreadsheet/data/types'
 import { updateSelectedCellsValues } from '@/components/Spreadsheet/utils/cell'
 import {
   addTextToCellValues,
@@ -7,7 +7,7 @@ import {
 } from '@/components/Spreadsheet/utils/format'
 import { useEffect } from 'react'
 
-export const useClipboard = (selectedElements: NodeListOf<HTMLCell>) => {
+export const useClipboard = (selectedElements: Selected) => {
   useEffect(() => {
     const copy = (event: ClipboardEvent) => {
       if (!selectedElements) return

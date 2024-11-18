@@ -2,7 +2,6 @@ import {
   Cell,
   CellObject,
   ConstructorParams,
-  Coordinates,
   Matrix,
   MatrixParams,
   PartialCell,
@@ -14,6 +13,9 @@ import { parser } from '@/context/matrix/parser'
 export default class ComputedMatrix {
   private _matrix: Matrix
   private _update = () => {}
+  private debounceId = 0
+  private cellId = 0
+  private refList = [] as Reference[]
 
   constructor({ cols, rows, matrix }: ConstructorParams) {
     this._matrix = this.createMatrix({
@@ -42,7 +44,6 @@ export default class ComputedMatrix {
     )
   }
 
-  private cellId = 0
   private generateCellObject(cell?: CellObject) {
     return {
       computedValue: '',
@@ -71,8 +72,8 @@ export default class ComputedMatrix {
   }
 
   private updateCell({ id, inputValue }: PartialCell) {
-    const coords = this.findCellCoordinates(id)
-    if (!coords) {
+    const cell = this._matrix.flat().find((cell) => cell.id === id)
+    if (!cell) {
       this.updateRefList({ id, hasRef: false })
       return ''
     }
@@ -85,17 +86,15 @@ export default class ComputedMatrix {
 
     this.updateRefList({ id, inputValue, computedValue, hasRef })
 
-    const cell = this.matrix[coords.x][coords.y]
     cell.computedValue = computedValue
     cell.inputValue = inputValue
     return computedValue
   }
 
-  private refList = [] as Reference[]
   private updateRefList({ id, inputValue, computedValue, hasRef }: UpdateRef) {
     const refIdx = this.refList.findIndex((ref) => ref.id === id)
 
-    if (!hasRef || !inputValue || !computedValue) {
+    if (!hasRef || !inputValue) {
       if (refIdx >= 0) this.refList.splice(refIdx, 1)
       return
     }
@@ -111,21 +110,6 @@ export default class ComputedMatrix {
     }
   }
 
-  private findCellCoordinates(id: number) {
-    let coordinates: Coordinates = null as unknown as Coordinates
-    this.matrix.some((row, x) =>
-      row.some((cell, y) => {
-        if (cell.id === id) {
-          coordinates = { x, y }
-          return true
-        }
-        return false
-      })
-    )
-    return coordinates
-  }
-
-  private debounceId = 0
   private debouncedUpdateAll(ms = 5) {
     const id = this.debounceId + 1
     this.debounceId = id

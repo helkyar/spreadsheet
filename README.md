@@ -37,12 +37,12 @@ Building this project has been an enriching experience that allowed me to take a
 - Change history with Ctrl+z Ctrl+y?
 - Config file?
 - Refactors
-  - Refactor ComputedMatrix (single resp, open/close, command chain)
   - Optimization with tools and code
 - Tests
   - clipboard
   - keyboard accessibility
   - drag and drop
+  - computed matrix
 - Better remove/add rows/cols ui
   - Selector vs contextual menu
     - Select col/row by default?
@@ -64,11 +64,7 @@ Building this project has been an enriching experience that allowed me to take a
     - Sheets tabs
 - Shallow features
   - Rename sheets tabs and use them as file export name
-  - Change cell focus on arrow navigation
   - Esc doesn't store changes
-  - Lock row header css
-  - Add drop preview showing a dotted border in target cells
-  - Add same logic to show border in selection
 - Mobile accessible
   - Column and row touch contextual menu
   - Selection management

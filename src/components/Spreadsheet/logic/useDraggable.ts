@@ -1,5 +1,9 @@
 import { useEffect } from 'react'
-import { HTMLCell, HTMLInput } from '@/components/Spreadsheet/data/types'
+import {
+  HTMLCell,
+  HTMLInput,
+  Selected,
+} from '@/components/Spreadsheet/data/types'
 import { useMatrix } from '@/context/matrix/useMatrix'
 import {
   inputTag,
@@ -17,7 +21,7 @@ import {
 import { parseFilesToMatrix } from '@/components/Spreadsheet/utils/file'
 
 export function useDraggable(
-  selectedElements: NodeListOf<HTMLCell>,
+  selectedElements: Selected,
   removeSelection: () => void
 ) {
   const { createNewMatrix } = useMatrix()
@@ -74,13 +78,13 @@ export function useDraggable(
         updateCell(el, '')
 
         //FIX_ME: hack to wait for cell to update after drop before updating the cell value
-        setTimeout(() => {
-          const cell = getCell({
-            x: finalX + (elX - initialX),
-            y: finalY + (elY - initialY),
-          })
-          updateCell(cell, value)
-        }, 0)
+        // setTimeout(() => {
+        const cell = getCell({
+          x: finalX + (elX - initialX),
+          y: finalY + (elY - initialY),
+        })
+        updateCell(cell, value)
+        // }, 0)
       })
       finalCell.focus()
     }
@@ -88,7 +92,7 @@ export function useDraggable(
     const handleDragStart = (event: DragEvent) => {
       const ghost = $('#ghost')
 
-      selectedElements.forEach((el, i) => {
+      selectedElements?.forEach((el, i) => {
         if (el.tagName !== parentTag) return
         const clone = el.cloneNode(false) as HTMLCell
         Object.assign(clone.style, {

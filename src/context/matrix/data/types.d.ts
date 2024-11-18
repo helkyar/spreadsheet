@@ -56,10 +56,14 @@ export type CellWithExpression = PartialCell & {
 export type CreateRefValues = CellWithExpression & {
   refArray: string[]
 }
-export type UpdateRef = CellObject & {
-  hasRef: boolean
-  id: number
-}
+export type UpdateRef =
+  | { hasRef: boolean; id: number; computedValue: string; inputValue: string }
+  | {
+      hasRef: boolean
+      id: number
+      computedValue?: undefined
+      inputValue?: undefined
+    }
 export type Reference = PartialCell & {
   computedValue: string
 }

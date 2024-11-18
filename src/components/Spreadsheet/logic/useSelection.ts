@@ -1,5 +1,9 @@
-import { parentTag, selected } from '@/components/Spreadsheet/data/constants'
-import { HTMLCell } from '@/components/Spreadsheet/data/types'
+import {
+  drag,
+  parentTag,
+  selected,
+} from '@/components/Spreadsheet/data/constants'
+import { HTMLCell, Selected } from '@/components/Spreadsheet/data/types'
 import {
   $$,
   manageBoundaryClassName,
@@ -11,14 +15,8 @@ import {
 import { MouseEvent, useCallback, useEffect, useState } from 'react'
 
 export function useSelection() {
-  const getSelectedElements = useCallback(
-    () => $$(`.${selected}`) as NodeListOf<HTMLCell>,
-    []
-  )
+  const [selectedElements, setSelectedElements] = useState<Selected>(null)
 
-  const [selectedElements, setSelectedElements] = useState<
-    NodeListOf<HTMLCell>
-  >(null as unknown as NodeListOf<HTMLCell>)
   useEffect(() => {
     const { removeCellBoundary, addCellBoundary } =
       manageBoundaryClassName(selectedElements)
@@ -44,58 +42,59 @@ export function useSelection() {
     )
     const addDraggable = (elements: HTMLElement[]) => {
       elements.forEach((el) => {
-        el?.classList.add('drag')
+        el?.classList.add(drag)
         el?.setAttribute('draggable', 'true')
       })
     }
-    const removeDraggable = (elements: HTMLElement[]) => {
+    const removeDraggable = (elements: NodeListOf<Element>) => {
       elements.forEach((el) => {
-        el?.classList.remove('drag')
-        el?.setAttribute('draggable', 'false')
+        el.classList.remove(drag)
+        el.setAttribute('draggable', 'false')
       })
     }
 
     addDraggable(draggedElements)
-    return () => removeDraggable(draggedElements)
+    return () => removeDraggable($$(`.${drag}`))
   }, [selectedElements])
+
+  const getSelectedElements = useCallback(
+    () => $$(`.${selected}`) as NodeListOf<HTMLCell>,
+    []
+  )
 
   const removeSelection = useCallback(() => {
-    selectedElements?.forEach((el) => el.classList.remove(selected))
-    setSelectedElements(null as unknown as NodeListOf<HTMLCell>)
-  }, [selectedElements])
+    getSelectedElements().forEach((el) => el?.classList.remove(selected))
+    setSelectedElements(null)
+  }, [getSelectedElements])
 
-  const addSelectedClassToElements = (
-    elements: HTMLElement[] | NodeListOf<Element>
-  ) => {
-    elements.forEach((el) => el.classList.add(selected))
-  }
-
-  const headerCellSelection = (element: HTMLElement) => {
-    removeSelection()
-    if (element) addSelectedClassToElements([element])
-  }
+  const addSelectedClassToElements = useCallback(
+    (elements: Element[]) => {
+      elements.forEach((el) => el?.classList.add(selected))
+      setSelectedElements(getSelectedElements())
+    },
+    [getSelectedElements]
+  )
 
   const selectColumn = (index: number) => (event: MouseEvent<HTMLElement>) => {
     event.stopPropagation()
-    headerCellSelection(event.currentTarget)
+    removeSelection()
+    const element = event.currentTarget
+    const headerElements = [element, ...$$(`tr td:nth-child(${index + 1})`)]
+    const allElements = [event.currentTarget, ...$$(parentTag)]
 
-    if (index === 0) addSelectedClassToElements($$(parentTag))
-    else addSelectedClassToElements($$(`tr td:nth-child(${index + 1})`))
-
-    setSelectedElements(getSelectedElements())
+    if (index === 0) addSelectedClassToElements(allElements)
+    else addSelectedClassToElements(headerElements)
   }
 
   const selectRow = (index: number) => (event: MouseEvent<HTMLElement>) => {
     event.stopPropagation()
-    headerCellSelection(event.currentTarget)
-
+    removeSelection()
+    const element = event.currentTarget
     const rowCells = $$(`tr:nth-child(${index + 1}) td`)
-    addSelectedClassToElements(rowCells)
-
-    setSelectedElements(getSelectedElements())
+    addSelectedClassToElements([element, ...rowCells])
   }
 
-  const addSelectionArea = useCallback(
+  const selectArea = useCallback(
     (firstElement: HTMLCell, currentElement?: HTMLCell) => {
       if (!currentElement) return
       removeSelection()
@@ -117,15 +116,13 @@ export function useSelection() {
       }
 
       addSelectedClassToElements(elementsToSelect)
-
-      setSelectedElements(getSelectedElements())
     },
-    [getSelectedElements, removeSelection]
+    [removeSelection, addSelectedClassToElements]
   )
 
   return {
     removeSelection,
-    addSelectionArea,
+    selectArea,
     selectedElements,
     selectColumn,
     selectRow,

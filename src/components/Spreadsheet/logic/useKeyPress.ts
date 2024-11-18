@@ -1,5 +1,9 @@
 import { inputTag, parentTag } from '@/components/Spreadsheet/data/constants'
-import { HTMLCell, HTMLInput } from '@/components/Spreadsheet/data/types'
+import {
+  HTMLCell,
+  HTMLInput,
+  Selected,
+} from '@/components/Spreadsheet/data/types'
 import {
   focusCell,
   getCellCoordinates,
@@ -40,9 +44,9 @@ const arrowNavigation = (event: KeyboardEvent, element: HTMLCell) => {
 }
 
 export function useKeyPress(
-  selectedElements: NodeListOf<HTMLCell>,
+  selectedElements: Selected,
   removeSelected: () => void,
-  addSelectionArea: (elFirst: HTMLCell, el: HTMLCell | undefined) => void
+  selectArea: (elFirst: HTMLCell, el: HTMLCell | undefined) => void
 ) {
   const firstSelection = useRef<HTMLCell | null>(null)
   const handleRemoveSelected = useCallback(() => {
@@ -70,6 +74,10 @@ export function useKeyPress(
           updateSelectedCellsValues(element.value, cell, selectedElements)
         } else if (keyGroups.escape.includes(event.key)) {
           element.parentElement?.focus()
+        } else if (keyGroups.navigation.includes(event.key)) {
+          if (selectedElements) handleRemoveSelected()
+          const cell = element.parentElement as HTMLCell
+          arrowNavigation(event, cell)
         }
       },
       [parentTag]: (event) => {
@@ -84,7 +92,7 @@ export function useKeyPress(
         } else if (keyGroups.navigation.includes(event.key) && event.shiftKey) {
           if (!firstSelection.current) firstSelection.current = element
           const nextElement = arrowNavigation(event, element)
-          addSelectionArea(firstSelection.current, nextElement)
+          selectArea(firstSelection.current, nextElement)
         } else if (keyGroups.navigation.includes(event.key)) {
           if (selectedElements) handleRemoveSelected()
           arrowNavigation(event, element)
@@ -100,7 +108,7 @@ export function useKeyPress(
         }
       },
     }),
-    [handleRemoveSelected, selectedElements, addSelectionArea]
+    [handleRemoveSelected, selectedElements, selectArea]
   )
 
   useEffect(() => {
