@@ -1,11 +1,11 @@
 import { parentTag } from '@/components/Spreadsheet/data/constants'
-import { HTMLCell } from '@/components/Spreadsheet/data/types'
+import { HTMLCell, Selected } from '@/components/Spreadsheet/data/types'
 
 import { useEffect, useRef } from 'react'
 
 export function useMouse(
-  selectedElements: NodeListOf<HTMLCell>,
-  addSelectionArea: (elFirst: HTMLCell, el: HTMLCell) => void,
+  selectedElements: Selected,
+  selectArea: (elFirst: HTMLCell, el: HTMLCell) => void,
   removeSelection: () => void
 ) {
   const firstElement = useRef<HTMLCell | null>(null)
@@ -35,7 +35,7 @@ export function useMouse(
       if (!firstElement.current || target.tagName !== parentTag) return
       isMovingAndDown.current = true
 
-      addSelectionArea(firstElement.current, target)
+      selectArea(firstElement.current, target)
     }
 
     const mouseUp = (event: MouseEvent) => {
@@ -55,5 +55,5 @@ export function useMouse(
       document.removeEventListener('mousemove', mouseMove)
       document.removeEventListener('mouseup', mouseUp)
     }
-  }, [selectedElements, addSelectionArea, removeSelection])
+  }, [selectedElements, selectArea, removeSelection])
 }

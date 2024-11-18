@@ -12,10 +12,8 @@ export class ExpressionParser extends AbstractParser {
     if (!referenceFound) {
       return { computedValue: this.evaluateInput(expression), hasRef: false }
     }
-    const hasRef = referenceFound.filter(
-      (ref, i, self) => i === self.findIndex((r) => r === ref)
-    )
-    return super.parse({ ...matrixData, refArray: hasRef })
+
+    return super.parse({ ...matrixData })
   }
 
   private evaluateInput(expression: string) {

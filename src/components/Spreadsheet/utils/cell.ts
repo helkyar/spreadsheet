@@ -62,7 +62,7 @@ export const updateSelectedCellsValues = (
 }
 
 export const manageBoundaryClassName = (
-  elements: NodeListOf<HTMLCell>,
+  elements: NodeListOf<HTMLCell> | null,
   offset?: { x: number; y: number }
 ) => {
   const removeCellBoundary = () => {

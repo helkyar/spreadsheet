@@ -10,3 +10,4 @@ export type DownloadOptions = {
 export type File = 'csv' | 'plain/text'
 export type ExportValue = 'value' | 'expression'
 export type Separation = '\t' | ','
+export type Selected = NodeListOf<HTMLCell> | null

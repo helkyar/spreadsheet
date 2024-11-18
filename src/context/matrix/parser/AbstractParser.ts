@@ -27,7 +27,7 @@ abstract class AbstractParser implements Parser {
       return this.nextParser.parse(expression)
     }
 
-    return { computedValue: '', hasRef: false }
+    return { computedValue: '##Error: unexpected expression', hasRef: false }
   }
 }
 export { AbstractParser }

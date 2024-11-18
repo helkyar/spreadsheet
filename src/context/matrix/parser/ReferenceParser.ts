@@ -7,11 +7,12 @@ import {
 import { EVAL_CODE } from '@/context/matrix/parser/constants'
 
 export class ReferenceParser extends AbstractParser {
-  parse({ id, expression, refArray, matrix }: MatrixData) {
-    if (!refArray) {
-      const noRefError = '##Error: no ref provided to ReferenceParser'
-      return { computedValue: noRefError, hasRef: false }
-    }
+  parse({ id, expression, matrix }: MatrixData) {
+    const referencePattern = /([A-Z]{1,3}[0-9]{1,7})/g
+    const referenceFound = expression.match(referencePattern)
+    const refArray = referenceFound!.filter(
+      (ref, i, self) => i === self.findIndex((r) => r === ref)
+    )
 
     const cyclicError = this.findCyclicReferences({ id, refArray, matrix })
     if (cyclicError) return { computedValue: cyclicError, hasRef: true }

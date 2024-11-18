@@ -6,4 +6,5 @@ export const selectedT = 'selected-top'
 export const selectedB = 'selected-bottom'
 export const selectedL = 'selected-left'
 export const selectedR = 'selected-right'
+export const drag = 'drag'
 export const supportedFileTypes = ['text/plain', 'text/csv']

@@ -5,11 +5,11 @@ import { useMouse } from '@/components/Spreadsheet/logic/useMouse'
 import { useSelection } from '@/components/Spreadsheet/logic/useSelection'
 
 export function useTableEvents() {
-  const { removeSelection, addSelectionArea, selectedElements, ...selectors } =
+  const { removeSelection, selectArea, selectedElements, ...selectors } =
     useSelection()
   useClipboard(selectedElements)
-  useKeyPress(selectedElements, removeSelection, addSelectionArea)
-  useMouse(selectedElements, addSelectionArea, removeSelection)
+  useKeyPress(selectedElements, removeSelection, selectArea)
+  useMouse(selectedElements, selectArea, removeSelection)
   useDraggable(selectedElements, removeSelection)
 
   return {
