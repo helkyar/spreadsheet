@@ -18,11 +18,9 @@ export function useMouse(
       const target = (event.target as HTMLElement).parentElement as HTMLCell
       if (target.tagName !== parentTag) return
 
-      const isTargetSelected = selectedElements
-        ? Array.from(selectedElements)?.some((el) => el === target)
-        : false
-
-      if (isTargetSelected) return
+      if (selectedElements && Array.from(selectedElements).includes(target)) {
+        return
+      }
 
       firstElement.current = target
     }

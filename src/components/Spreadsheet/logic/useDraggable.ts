@@ -78,13 +78,13 @@ export function useDraggable(
         updateCell(el, '')
 
         //FIX_ME: hack to wait for cell to update after drop before updating the cell value
-        // setTimeout(() => {
-        const cell = getCell({
-          x: finalX + (elX - initialX),
-          y: finalY + (elY - initialY),
-        })
-        updateCell(cell, value)
-        // }, 0)
+        setTimeout(() => {
+          const cell = getCell({
+            x: finalX + (elX - initialX),
+            y: finalY + (elY - initialY),
+          })
+          updateCell(cell, value)
+        }, 0)
       })
       finalCell.focus()
     }

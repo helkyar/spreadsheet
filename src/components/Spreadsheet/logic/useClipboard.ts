@@ -12,7 +12,6 @@ export const useClipboard = (selectedElements: Selected) => {
     const copy = (event: ClipboardEvent) => {
       if (!selectedElements) return
 
-      // TO_DO: should be available as copy option (contextual menu)
       const result = formatCellValuesToText({ elements: selectedElements })
 
       event.clipboardData?.setData('text/plain', result)
@@ -34,7 +33,6 @@ export const useClipboard = (selectedElements: Selected) => {
     const cut = (event: ClipboardEvent) => {
       if (!selectedElements) return
 
-      // TO_DO: should be available as cut option (contextual menu / config)
       const result = formatCellValuesToText({ elements: selectedElements })
       const element = document.activeElement as HTMLCell
 

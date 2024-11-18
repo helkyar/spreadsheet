@@ -7,10 +7,10 @@ import { TableBody } from '@/components/Spreadsheet/components/TableBody'
 
 export function SpreadSheet() {
   const { selectColumn, selectRow } = useTableEvents()
-  const { spreadsheet, addRow, addColumn, removeColumn, removeRow } =
+  const { currentMatrix, addRow, addColumn, removeColumn, removeRow } =
     useMatrix()
 
-  const { id, matrix } = spreadsheet
+  const { id, matrix } = currentMatrix
 
   return (
     <>
