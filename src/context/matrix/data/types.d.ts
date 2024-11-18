@@ -49,22 +49,25 @@ export type PartialCell = {
   inputValue: string
 }
 
-export type UpdateCellValues = PartialCell & {
+export type CellWithExpression = PartialCell & {
   expression: string
 }
 
-export type CreateRefValues = UpdateCellValues & {
-  refArray: RegExpMatchArray
+export type CreateRefValues = CellWithExpression & {
+  refArray: string[]
+}
+export type UpdateRef = CellObject & {
+  hasRef: boolean
+  id: number
+}
+export type Reference = PartialCell & {
+  computedValue: string
 }
 
 export type RefIndexArray = Coordinates & {
   ref: string
 }
 
-export type ListOfReferences = UpdateCellValues & {
-  refIndexArray: RefIndexArray[]
-}
-
 export type ReturnedProcessInput =
-  | { expression: string; refArray: null }
-  | { expression: string; refArray: RegExpMatchArray }
+  | { expression: string; hasRef: null }
+  | { expression: string; hasRef: string[] }
