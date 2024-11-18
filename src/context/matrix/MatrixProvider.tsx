@@ -99,7 +99,7 @@ export const MatrixProvider = ({ children, rows, cols }: Params) => {
 
   const { id, spreadsheet } = matrixArray[matrixIdx]
   const value = {
-    spreadsheet: { id, matrix: spreadsheet.matrix },
+    currentMatrix: { id, matrix: spreadsheet.matrix },
     matrixArray,
     matrixIdx,
     viewMatrix,
@@ -110,7 +110,7 @@ export const MatrixProvider = ({ children, rows, cols }: Params) => {
     removeColumn,
     removeRow,
     save,
-    download,
+    download, // if provider grows move this to a separate context/hook
   }
 
   return (

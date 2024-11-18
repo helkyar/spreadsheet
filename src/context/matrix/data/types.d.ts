@@ -15,7 +15,7 @@ export type MatrixContext = {
   download: (options: Omit<DownloadOptions, 'id'>) => void
   viewMatrix: (index: number) => void
   matrixArray: { id: string; spreadsheet: ComputedMatrix }[]
-  spreadsheet: { id: string; matrix: Matrix }
+  currentMatrix: { id: string; matrix: Matrix }
   createNewMatrix: (matrix?: Matrix) => void
   removeMatrix: (index: number) => void
   addColumn: (y: number) => (event?: MouseEvent) => void

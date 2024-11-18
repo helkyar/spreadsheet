@@ -12,7 +12,7 @@ import {
 } from '@/components/Spreadsheet/utils/cell'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
-type TagsWithHandlers = typeof parentTag | typeof inputTag
+type TagsWithHandlers = typeof parentTag | typeof inputTag | 'always'
 
 const allowedTagHandlers: TagsWithHandlers[] = [parentTag, inputTag]
 
@@ -54,14 +54,13 @@ export function useKeyPress(
     firstSelection.current = null
   }, [removeSelected])
 
-  const eventHandlerByActiveElement: Record<
-    typeof parentTag | typeof inputTag,
+  const handleKeyboardEvent: Record<
+    TagsWithHandlers,
     (event: KeyboardEvent) => void
   > = useMemo(
     () => ({
       [inputTag]: (event) => {
         const element = document.activeElement as HTMLInput
-
         if (keyGroups.execute.includes(event.key)) {
           const cell = element.parentElement as HTMLCell
           if (!selectedElements) {
@@ -80,9 +79,9 @@ export function useKeyPress(
           arrowNavigation(event, cell)
         }
       },
+
       [parentTag]: (event) => {
         const element = document.activeElement as HTMLCell
-
         if (keyGroups.execute.includes(event.key)) {
           getInput(element)?.focus()
         } else if (keyGroups.escape.includes(event.key) && selectedElements) {
@@ -107,6 +106,11 @@ export function useKeyPress(
           input.focus()
         }
       },
+      always: (event: KeyboardEvent) => {
+        if (keyGroups.tab.includes(event.key)) {
+          if (selectedElements) handleRemoveSelected()
+        }
+      },
     }),
     [handleRemoveSelected, selectedElements, selectArea]
   )
@@ -115,19 +119,16 @@ export function useKeyPress(
     const keyDown = (event: KeyboardEvent) => {
       if (!document.activeElement) return
 
-      if (selectedElements) {
-        if (keyGroups.tab.includes(event.key)) {
-          handleRemoveSelected()
-        }
-      }
+      handleKeyboardEvent.always(event)
+
       const activeElement = document.activeElement.tagName as TagsWithHandlers
       if (!allowedTagHandlers.includes(activeElement)) return
 
-      const handleEvent = eventHandlerByActiveElement[activeElement]
+      const handleEvent = handleKeyboardEvent[activeElement]
       handleEvent(event)
     }
 
     document.addEventListener('keydown', keyDown)
     return () => document.removeEventListener('keydown', keyDown)
-  }, [eventHandlerByActiveElement, handleRemoveSelected, selectedElements])
+  }, [handleKeyboardEvent])
 }

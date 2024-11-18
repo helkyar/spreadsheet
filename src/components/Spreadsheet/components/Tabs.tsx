@@ -2,7 +2,7 @@ import { useMatrix } from '@/context/matrix/useMatrix'
 import { MouseEvent } from 'react'
 
 export function Tabs() {
-  const { viewMatrix, matrixArray, createNewMatrix, removeMatrix, matrixIdx } =
+  const { matrixArray, matrixIdx, viewMatrix, createNewMatrix, removeMatrix } =
     useMatrix()
 
   const handleRemoveTab = (index: number) => (event: MouseEvent) => {
@@ -15,19 +15,17 @@ export function Tabs() {
       <button className='create-tab' onClick={() => createNewMatrix()}>
         +
       </button>
-      {matrixArray.map((matrix, index) => (
+      {matrixArray.map((matrix, i) => (
         <div
-          tabIndex={0}
-          onClick={() => viewMatrix(index)}
           key={matrix.id}
-          className={`tab flex-center ${
-            matrixIdx === index ? 'selected-tab' : ''
-          }`}
+          tabIndex={0}
+          onClick={() => viewMatrix(i)}
+          className={`tab flex-center ${matrixIdx === i ? 'selected-tab' : ''}`}
         >
-          {`Sheet ${index + 1}`}
+          {`Sheet ${i + 1}`}
           <button
             className='remove-tab flex-center'
-            onClick={handleRemoveTab(index)}
+            onClick={handleRemoveTab(i)}
           >
             x
           </button>
