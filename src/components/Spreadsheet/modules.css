@@ -10,6 +10,7 @@
   inset: 0;
   vertical-align: middle;
   border: none;
+  padding: var(--padding-sm) var(--padding-md);
 }
 
 .cell-input {
@@ -18,7 +19,6 @@
 
   background-color: var(--muted);
   color: var(--muted-foreground);
-  padding: var(--padding-md);
 
   &:focus {
     opacity: 1;

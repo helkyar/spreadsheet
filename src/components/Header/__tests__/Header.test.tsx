@@ -29,7 +29,6 @@ describe('Header component with context', () => {
 
   it('should change the theme and maintain it on re-render', () => {
     const darkModeBtn = screen.getAllByRole('button')[2]
-    console.log('🚀 ~ it ~ darkModeBtn:', darkModeBtn)
 
     const storedTheme = () => window.localStorage.getItem(THEME_KEY)
     const darkThemeEnabled = document.getElementsByClassName('dark')

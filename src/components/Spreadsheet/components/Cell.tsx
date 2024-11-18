@@ -8,7 +8,6 @@ type CellProps = {
 export function Cell({ cellValues, x, y }: CellProps) {
   const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     const value = event.target.value
-    console.log('🚀 ~ handleBlur ~ value:', value)
     cellValues.update(value, cellValues.id)
   }
 

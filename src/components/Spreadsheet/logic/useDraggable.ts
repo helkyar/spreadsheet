@@ -90,7 +90,7 @@ export function useDraggable(
 
       selectedElements.forEach((el, i) => {
         if (el.tagName !== parentTag) return
-        const clone = el.cloneNode(true) as HTMLCell
+        const clone = el.cloneNode(false) as HTMLCell
         Object.assign(clone.style, {
           background: 'var(--selected-cell-background)',
           position: 'absolute',
