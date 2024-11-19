@@ -8,7 +8,7 @@ type TableContext = {
 export type HTMLCell = HTMLTableCellElement
 export type HTMLInput = HTMLInputElement
 export type HTMLText = HTMLSpanElement
-export type HTMLHeader = HTMLTableHeaderCellElement
+export type HTMLHeader = HTMLTableElement
 export type DownloadOptions = {
   id: string
   value: ExportValue

@@ -29,6 +29,13 @@ export function useMouse(
 
       firstElement.current = cell
     }
+    // const touchStart = (event: TouchEvent) => {
+    //   const data = getEventData(event)
+    //   const { cell, isCell, isSelected, isRightClick } = data
+    //   if (!isCell || isSelected || isRightClick) return
+
+    //   firstElement.current = cell
+    // }
 
     const mouseMove = (event: MouseEvent) => {
       event.preventDefault()
@@ -40,6 +47,14 @@ export function useMouse(
 
       selectArea(firstElement.current, target)
     }
+    // const touchMove = (event: TouchEvent) => {
+    //   // event.preventDefault()
+    //   const target = (event.target as HTMLInput).parentElement as HTMLCell
+    //   if (!firstElement.current || target.tagName !== parentTag) return
+    //   isMovingAndDown.current = true
+
+    //   selectArea(firstElement.current, target)
+    // }
 
     const mouseUp = (event: MouseEvent) => {
       event.preventDefault()
@@ -53,14 +68,29 @@ export function useMouse(
       firstElement.current = null
       isMovingAndDown.current = false
     }
+    // const touchEnd = (event: TouchEvent) => {
+    //   const data = getEventData(event)
+    //   const { isCell, isSelected, isRightClick } = data
+    //   if (!isCell || (isSelected && isRightClick)) return
+
+    //   if (!isMovingAndDown.current) removeSelection()
+    //   firstElement.current = null
+    //   isMovingAndDown.current = false
+    // }
 
     document.addEventListener('mousedown', mouseDown)
     document.addEventListener('mousemove', mouseMove)
     document.addEventListener('mouseup', mouseUp)
+    // document.addEventListener('touchstart', touchStart)
+    // document.addEventListener('touchmove', touchMove)
+    // document.addEventListener('touchend', touchEnd)
     return () => {
       document.removeEventListener('mousedown', mouseDown)
       document.removeEventListener('mousemove', mouseMove)
       document.removeEventListener('mouseup', mouseUp)
+      // document.removeEventListener('touchstart', touchStart)
+      // document.removeEventListener('touchmove', touchMove)
+      // document.removeEventListener('touchend', touchEnd)
     }
   }, [selectedElements, selectArea, removeSelection])
 }

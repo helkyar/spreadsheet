@@ -1,4 +1,4 @@
-import { outputTag, selected } from '@/context/table/data/constants'
+import { inputTag, outputTag, selected } from '@/context/table/data/constants'
 import { HTMLCell, HTMLInput } from '@/context/table/data/types'
 import { MouseEvent, useState } from 'react'
 
@@ -12,11 +12,16 @@ export function useContextMenu(onClick: () => void) {
     const target = event.target as HTMLInput
     const cell = target.parentElement as HTMLCell
     setIsSelected(cell.classList.contains(selected))
+
+    if (target.tagName !== inputTag) event.preventDefault()
     if (target.tagName !== outputTag) return
 
-    setCoords({ x: event.clientX, y: event.clientY })
+    //FIX_ME: magic number 515, no keyboard support
+    setCoords({
+      x: event.clientX,
+      y: event.clientY < 515 ? event.clientY : 515,
+    })
     onClick()
-    event.preventDefault()
   }
   return { setMenuPosition, coords, isSelected }
 }

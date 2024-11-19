@@ -47,6 +47,9 @@
 
 th:hover .header-contextmenu {
   outline: 1px solid var(--cell-outline);
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
   &::after {
     opacity: 1;
   }
@@ -56,9 +59,9 @@ th:hover .header-contextmenu {
   margin: 0 auto;
   width: 50%;
   border-radius: var(--radius);
-  cursor: pointer;
   position: relative;
   padding: 0 var(--padding-md);
+  background-color: transparent;
 
   &::after {
     opacity: 0;
@@ -79,9 +82,4 @@ th:hover .header-contextmenu {
   &::after {
     right: 0.5rem;
   }
-}
-th:hover .header-contextmenu {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: space-between;
 }
