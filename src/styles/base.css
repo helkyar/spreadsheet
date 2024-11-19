@@ -27,7 +27,7 @@ header {
 }
 main {
   flex-grow: 1;
-  max-height: calc(100vh - 115px);
+  max-height: calc(100vh - 120px);
   display: flex;
   flex-direction: column;
 }
@@ -65,11 +65,12 @@ table {
 thead {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 11;
 }
 tbody th {
   position: sticky;
   left: 0;
+  z-index: 10;
 }
 
 /* All column th except first */
@@ -79,13 +80,14 @@ thead th:nth-child(n + 2) {
 
 th {
   border: 1px solid var(--border);
+  outline: 1px inset var(--border);
   background-color: var(--muted);
   color: var(--muted-foreground);
   text-align: center;
 
   padding: var(--padding-md);
   position: relative;
-  min-width: 1.55rem;
+  min-width: 4.5rem;
 }
 
 td {

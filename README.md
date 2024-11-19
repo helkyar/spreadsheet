@@ -49,8 +49,7 @@ Building this project has been an enriching experience that allowed me to take a
   - Content of selector/contextual menu
     - clipboard values/expression
     - order
-    - add
-    - remove
+    - make contextual menu always be inside the table
 - Accessibility
   - Legend or tutorial (modal with 'i' icon)
   - Change between sheets key (Alt+Arrow Left/Right)
@@ -63,7 +62,7 @@ Building this project has been an enriching experience that allowed me to take a
     - Sheets tabs
 - Shallow features
   - Rename sheets tabs and use them as file export name
-  - Esc doesn't store changes
+  - Fix drag & drop from header offset error
 - Mobile accessible
   - Column and row touch contextual menu
   - Selection management

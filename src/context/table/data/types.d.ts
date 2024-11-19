@@ -3,6 +3,7 @@ import { MouseEvent } from 'react'
 type TableContext = {
   selectColumn: (index: number) => (event: MouseEvent<HTMLElement>) => void
   selectRow: (index: number) => (event: MouseEvent<HTMLElement>) => void
+  selectedElements: Selected
 }
 export type HTMLCell = HTMLTableCellElement
 export type HTMLInput = HTMLInputElement

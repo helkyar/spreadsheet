@@ -7,8 +7,9 @@ export function useOnClickOutside(
   useEffect(() => {
     const eventHandler = (event: MouseEvent) => {
       const target = event.target as HTMLElement
-      if (target === (ref.current as Node)) return
-      onClickOutside()
+      if (target !== (ref.current as Node)) {
+        onClickOutside(event)
+      }
     }
 
     document.addEventListener('mousedown', eventHandler)
