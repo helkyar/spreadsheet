@@ -11,7 +11,7 @@ import {
 import { parser } from '@/context/matrix/parser'
 
 export default class ComputedMatrix {
-  private _matrix: Matrix
+  readonly _matrix: Matrix
   private _update = () => {}
   private debounceId = 0
   private cellId = 0
@@ -136,9 +136,9 @@ export default class ComputedMatrix {
   }
 
   addColumn(y: number) {
-    if (y < 0 || y > this.matrix[0].length) return
+    if (y < 0 || y > this._matrix[0].length) return
 
-    this.matrix.forEach((row) => {
+    this._matrix.forEach((row) => {
       const newCell = this.generateCellObject()
       row.splice(y, 0, newCell)
     })
@@ -147,12 +147,12 @@ export default class ComputedMatrix {
   }
 
   addRow(x: number) {
-    if (x < 0 || x > this.matrix.length) return
+    if (x < 0 || x > this._matrix.length) return
 
-    const newRow = Array.from({ length: this.matrix[0].length }, () =>
+    const newRow = Array.from({ length: this._matrix[0].length }, () =>
       this.generateCellObject()
     )
-    this.matrix.splice(x, 0, newRow)
+    this._matrix.splice(x, 0, newRow)
 
     this.updateAll()
   }
@@ -161,8 +161,8 @@ export default class ComputedMatrix {
   // generates a crazy case where references are pre-updated before the change occurs
   // example: addColumn(0) -> coordinates of references are updated before the column is added
   removeColumn(y: number) {
-    if (y < 0 || y >= this.matrix.length) return
-    this.matrix.forEach((row) => {
+    if (y < 0 || y >= this._matrix.length) return
+    this._matrix.forEach((row) => {
       row.splice(y, 1)
     })
 
@@ -170,9 +170,9 @@ export default class ComputedMatrix {
   }
 
   removeRow(x: number) {
-    if (x < 0 || x >= this.matrix.length) return
+    if (x < 0 || x >= this._matrix.length) return
 
-    this.matrix.splice(x, 1)
+    this._matrix.splice(x, 1)
 
     this.updateAll()
   }

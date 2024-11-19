@@ -6,10 +6,27 @@
   z-index: 100;
 }
 .modal-content {
+  position: relative;
   width: fit-content;
   background-color: var(--background);
   border: 1px solid var(--foreground);
   border-radius: var(--radius);
 
-  padding: var(--padding-lg);
+  padding: var(--padding-xlg);
+}
+.close-modal {
+  height: 2rem;
+  width: 2rem;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: var(--padding-md);
+  cursor: pointer;
+  border-radius: 50%;
+  font-size: 1rem;
+  font-weight: bold;
+  &:hover {
+    background-color: var(--destructive);
+    color: var(--destructive-foreground);
+  }
 }
