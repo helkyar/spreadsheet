@@ -37,24 +37,17 @@ Building this project has been an enriching experience that allowed me to take a
 ## Pending
 
 - Refactors
-  - Optimization with tools and code
+  - Optimization with tools
 - Tests
   - clipboard
   - keyboard accessibility
   - drag and drop
-- Better remove/add rows/cols ui
-  - Selector vs contextual menu
-    - Select col/row by default?
-    - Contextual menu key combination (Ctrl+Enter)
-  - Content of selector/contextual menu
-    - clipboard values/expression
-    - order
-    - make contextual menu always be inside the table
 - Accessibility
   - Legend or tutorial (modal with 'i' icon)
   - Change between sheets key (Alt+Arrow Left/Right)
   - Aria when needed
   - Google checks
+  - SEO ready
   - Change between sections key (Alt+Arrow Up/Down)
     - Header options (save, import, export, dark theme)
     - Header rows/cols
@@ -62,7 +55,4 @@ Building this project has been an enriching experience that allowed me to take a
     - Sheets tabs
 - Shallow features
   - Rename sheets tabs and use them as file export name
-  - Fix drag & drop from header offset error
-- Mobile accessible
-  - Column and row touch contextual menu
-  - Selection management
+  - Fix drag & drop from header (offset error)

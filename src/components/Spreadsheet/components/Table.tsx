@@ -3,7 +3,7 @@ import { useContextMenu } from '@/components/ContextualMenu/hooks/useContextMenu
 import { useState } from 'react'
 
 type PropTypes = {
-  children: React.ReactNode
+  readonly children: React.ReactNode
 }
 
 export function Table({ children }: PropTypes) {
@@ -12,7 +12,11 @@ export function Table({ children }: PropTypes) {
     setOpenMenu(true)
   )
   return (
-    <section className='table-wrapper' onContextMenu={setMenuPosition}>
+    <section
+      className='table-wrapper'
+      onContextMenu={setMenuPosition}
+      role='application'
+    >
       <table aria-label='spreadsheet'>{children}</table>
 
       {openMenu && (

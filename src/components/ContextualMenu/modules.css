@@ -1,6 +1,7 @@
 .contextual-menu {
   display: flex;
   flex-direction: column;
+  gap: var(--padding-md);
   background-color: var(--background);
   position: absolute;
   top: calc(100% + 0.5rem);
@@ -9,6 +10,7 @@
   z-index: 100;
   border-radius: var(--radius);
   box-shadow: 1px 1px 11px 0px rgba(0, 0, 0, 0.9);
+  padding: var(--padding-md);
 }
 .contextual-menu.row {
   top: 15%;
@@ -17,4 +19,15 @@
 .contextual-menu button {
   padding: var(--padding-md);
   width: 100%;
+  text-transform: capitalize;
+}
+.contextual-menu section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-bottom: 1px solid var(--foreground);
+  padding-bottom: var(--padding-md);
+}
+.contextual-menu section:last-child {
+  border-bottom: none;
 }
