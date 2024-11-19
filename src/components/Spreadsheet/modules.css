@@ -26,18 +26,11 @@
     outline: 1px solid var(--cell-outline);
   }
 }
-/* TO_DO: add selection border */
+
 .selected {
   background-color: var(--selected-cell-background);
   color: var(--selected-cell-foreground);
-  /* border: 1px dashed green; */
 }
-/* .selected + .selected {
-  border: 1px dashed red;
-}
-.selected:last-of-type {
-  border: 1px dashed white;
-} */
 
 .selected-top {
   border-top: 2px dashed var(--selected-cell-accent);
@@ -50,4 +43,43 @@
 }
 .selected-right {
   border-right: 2px dashed var(--selected-cell-accent);
+}
+
+th:hover .header-contextmenu {
+  outline: 1px solid var(--cell-outline);
+  &::after {
+    opacity: 1;
+  }
+}
+
+.header-contextmenu {
+  margin: 0 auto;
+  width: 50%;
+  border-radius: var(--radius);
+  cursor: pointer;
+  position: relative;
+  &::after {
+    opacity: 0;
+    content: '';
+    position: absolute;
+    right: 0.5rem;
+    top: 0.5rem;
+    border: 0.25em solid transparent;
+    border-top-color: var(--foreground);
+
+    &:hover {
+      border-top-color: var(--foreground);
+    }
+  }
+}
+.header-contextmenu.row {
+  width: 100%;
+  padding: 0 var(--padding-md);
+  &::after {
+    right: 0.5rem;
+  }
+}
+th:hover .header-contextmenu.row {
+  display: flex;
+  justify-content: space-between;
 }

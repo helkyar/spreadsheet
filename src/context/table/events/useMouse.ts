@@ -1,6 +1,5 @@
-import { parentTag } from '@/components/Spreadsheet/data/constants'
-import { HTMLCell, Selected } from '@/components/Spreadsheet/data/types'
-
+import { parentTag, selected } from '@/context/table/data/constants'
+import { HTMLCell, HTMLInput, Selected } from '@/context/table/data/types'
 import { useEffect, useRef } from 'react'
 
 export function useMouse(
@@ -12,24 +11,30 @@ export function useMouse(
   const isMovingAndDown = useRef<boolean>(false)
 
   useEffect(() => {
+    const getEventData = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
+      const cell = target.parentElement as HTMLCell
+      const isCell = cell.tagName === parentTag
+      const isSelected = cell.classList.contains(selected)
+      const isRightClick = event.button === 2
+      return { cell, isCell, isSelected, isRightClick }
+    }
+
     const mouseDown = (event: MouseEvent) => {
       event.stopPropagation()
 
-      const target = (event.target as HTMLElement).parentElement as HTMLCell
-      if (target.tagName !== parentTag) return
+      const data = getEventData(event)
+      const { cell, isCell, isSelected, isRightClick } = data
+      if (!isCell || isSelected || isRightClick) return
 
-      if (selectedElements && Array.from(selectedElements).includes(target)) {
-        return
-      }
-
-      firstElement.current = target
+      firstElement.current = cell
     }
 
     const mouseMove = (event: MouseEvent) => {
       event.preventDefault()
       event.stopPropagation()
 
-      const target = (event.target as HTMLElement).parentElement as HTMLCell
+      const target = (event.target as HTMLInput).parentElement as HTMLCell
       if (!firstElement.current || target.tagName !== parentTag) return
       isMovingAndDown.current = true
 
@@ -39,6 +44,10 @@ export function useMouse(
     const mouseUp = (event: MouseEvent) => {
       event.preventDefault()
       event.stopPropagation()
+
+      const data = getEventData(event)
+      const { isCell, isSelected, isRightClick } = data
+      if (!isCell || (isSelected && isRightClick)) return
 
       if (!isMovingAndDown.current) removeSelection()
       firstElement.current = null

@@ -1,6 +1,13 @@
+import { MouseEvent } from 'react'
+
+type TableContext = {
+  selectColumn: (index: number) => (event: MouseEvent<HTMLElement>) => void
+  selectRow: (index: number) => (event: MouseEvent<HTMLElement>) => void
+}
 export type HTMLCell = HTMLTableCellElement
 export type HTMLInput = HTMLInputElement
 export type HTMLText = HTMLSpanElement
+export type HTMLHeader = HTMLTableHeaderCellElement
 export type DownloadOptions = {
   id: string
   value: ExportValue

@@ -4,12 +4,15 @@ import './index.css'
 import App from './App.tsx'
 import { MatrixProvider } from '@/context/matrix/MatrixProvider.tsx'
 import { Toaster } from '@/components/ui/toast.tsx'
+import { TableProvider } from '@/context/table/TableProvider.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <MatrixProvider rows={10} cols={10}>
-      <App />
-      <Toaster />
+      <TableProvider>
+        <App />
+        <Toaster />
+      </TableProvider>
     </MatrixProvider>
   </StrictMode>
 )

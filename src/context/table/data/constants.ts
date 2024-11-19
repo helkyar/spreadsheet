@@ -1,6 +1,7 @@
 export const parentTag = 'TD'
 export const inputTag = 'INPUT'
 export const outputTag = 'SPAN'
+export const headerTag = 'TH'
 export const selected = 'selected'
 export const selectedT = 'selected-top'
 export const selectedB = 'selected-bottom'

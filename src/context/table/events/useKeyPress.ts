@@ -1,15 +1,11 @@
-import { inputTag, parentTag } from '@/components/Spreadsheet/data/constants'
-import {
-  HTMLCell,
-  HTMLInput,
-  Selected,
-} from '@/components/Spreadsheet/data/types'
+import { inputTag, parentTag } from '@/context/table/data/constants'
+import { HTMLCell, HTMLInput, Selected } from '@/context/table/data/types'
 import {
   focusCell,
   getCellCoordinates,
   getInput,
   updateSelectedCellsValues,
-} from '@/components/Spreadsheet/utils/cell'
+} from '@/context/table/utils/cell'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 type TagsWithHandlers = typeof parentTag | typeof inputTag | 'always'

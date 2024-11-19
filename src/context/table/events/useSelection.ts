@@ -1,16 +1,12 @@
-import {
-  drag,
-  parentTag,
-  selected,
-} from '@/components/Spreadsheet/data/constants'
-import { HTMLCell, Selected } from '@/components/Spreadsheet/data/types'
+import { drag, parentTag, selected } from '@/context/table/data/constants'
+import { HTMLCell, Selected } from '@/context/table/data/types'
 import {
   $$,
   manageBoundaryClassName,
   getCell,
   getCellCoordinates,
   getOutput,
-} from '@/components/Spreadsheet/utils/cell'
+} from '@/context/table/utils/cell'
 
 import { MouseEvent, useCallback, useEffect, useState } from 'react'
 
