@@ -3,7 +3,7 @@ import { MatrixProvider } from '@/context/matrix/MatrixProvider'
 import { beforeAll, describe, expect, it } from 'vitest'
 
 import { fireEvent, render, screen } from '@testing-library/react'
-import { parentTag } from '@/components/Spreadsheet/data/constants'
+import { parentTag } from '@/context/table/data/constants'
 
 const selectedClassName = 'selected-tab'
 

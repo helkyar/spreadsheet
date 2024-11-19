@@ -1,10 +1,10 @@
-import { parentTag } from '@/components/Spreadsheet/data/constants'
-import { HTMLCell, Selected } from '@/components/Spreadsheet/data/types'
-import { updateSelectedCellsValues } from '@/components/Spreadsheet/utils/cell'
+import { parentTag } from '@/context/table/data/constants'
+import { HTMLCell, Selected } from '@/context/table/data/types'
+import { updateSelectedCellsValues } from '@/context/table/utils/cell'
 import {
   addTextToCellValues,
   formatCellValuesToText,
-} from '@/components/Spreadsheet/utils/format'
+} from '@/context/table/utils/format'
 import { useEffect } from 'react'
 
 export const useClipboard = (selectedElements: Selected) => {

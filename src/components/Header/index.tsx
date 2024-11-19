@@ -8,8 +8,8 @@ import {
 } from '@/components/Header/components/Icons'
 import { useToggleDarkTheme } from '@/components/Header/logic/useToggleDarkTheme'
 import { Modal } from '@/components/Modal'
-import { DownloadOptions as DownloadOptionsType } from '@/components/Spreadsheet/data/types'
-import { parseFilesToMatrix } from '@/components/Spreadsheet/utils/file'
+import { DownloadOptions as DownloadOptionsType } from '@/context/table/data/types'
+import { parseFilesToMatrix } from '@/context/table/utils/file'
 import { useMatrix } from '@/context/matrix/useMatrix'
 import { ChangeEvent, useState } from 'react'
 
@@ -33,6 +33,7 @@ export function Header() {
   return (
     <header>
       <h1>Computed File</h1>
+
       <section className='header-icons flex-center'>
         <label
           aria-label='upload'
@@ -49,6 +50,7 @@ export function Header() {
             onChange={handleChange}
           />
         </label>
+
         <button
           className='btn-round flex-center'
           onClick={toggleModal}
@@ -67,6 +69,7 @@ export function Header() {
         >
           <Save />
         </button>
+
         <button
           className='btn-round flex-center'
           onClick={toggleDarkTheme}

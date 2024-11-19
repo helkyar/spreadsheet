@@ -1,17 +1,13 @@
 import {
   inputTag,
+  outputTag,
   parentTag,
   selectedB,
   selectedL,
   selectedR,
   selectedT,
-  outputTag,
-} from '@/components/Spreadsheet/data/constants'
-import {
-  HTMLCell,
-  HTMLInput,
-  HTMLText,
-} from '@/components/Spreadsheet/data/types'
+} from '@/context/table/data/constants'
+import { HTMLCell, HTMLInput, HTMLText } from '@/context/table/data/types'
 
 export const $$ = (el: string) => document.querySelectorAll(el)
 export const $ = (el: string) => document.querySelector(el) as HTMLElement

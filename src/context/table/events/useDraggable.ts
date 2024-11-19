@@ -1,15 +1,5 @@
 import { useEffect } from 'react'
-import {
-  HTMLCell,
-  HTMLInput,
-  Selected,
-} from '@/components/Spreadsheet/data/types'
 import { useMatrix } from '@/context/matrix/useMatrix'
-import {
-  inputTag,
-  outputTag,
-  parentTag,
-} from '@/components/Spreadsheet/data/constants'
 import {
   $,
   getCell,
@@ -17,8 +7,10 @@ import {
   getInput,
   manageBoundaryClassName,
   updateCell,
-} from '@/components/Spreadsheet/utils/cell'
-import { parseFilesToMatrix } from '@/components/Spreadsheet/utils/file'
+} from '@/context/table/utils/cell'
+import { parseFilesToMatrix } from '@/context/table/utils/file'
+import { HTMLCell, HTMLInput, Selected } from '@/context/table/data/types'
+import { inputTag, outputTag, parentTag } from '@/context/table/data/constants'
 
 export function useDraggable(
   selectedElements: Selected,
@@ -29,14 +21,15 @@ export function useDraggable(
   useEffect(() => {
     const handleDragOver = (event: DragEvent) => {
       event.preventDefault()
+
       const target = event.target as HTMLElement
       if (target.tagName !== inputTag && target.tagName !== outputTag) return
       const cell = target.parentNode as HTMLCell
+
       const coordinates = getCellCoordinates(cell)
-      const { removeCellBoundary, addCellBoundary } = manageBoundaryClassName(
-        selectedElements,
-        coordinates
-      )
+      const boundary = manageBoundaryClassName(selectedElements, coordinates)
+      const { removeCellBoundary, addCellBoundary } = boundary
+
       if (removeCellBoundary) removeCellBoundary()
       if (addCellBoundary) addCellBoundary()
     }

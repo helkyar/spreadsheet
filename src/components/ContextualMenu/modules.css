@@ -1,0 +1,13 @@
+.contextual-menu {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background);
+  position: absolute;
+  width: 100%;
+  top: calc(100% + 0.5rem);
+  border: 1px solid var(--cell-outline);
+}
+.contextual-menu.row {
+  top: 25%;
+  right: calc(-100% - 0.5rem);
+}

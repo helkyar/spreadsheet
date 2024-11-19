@@ -1,12 +1,12 @@
-import { parentTag } from '@/components/Spreadsheet/data/constants'
-import { HTMLCell, Separation } from '@/components/Spreadsheet/data/types'
+import { parentTag } from '@/context/table/data/constants'
+import { HTMLCell, Separation } from '@/context/table/data/types'
 import {
   getCell,
   getCellCoordinates,
   getInput,
   getText,
   updateCell,
-} from '@/components/Spreadsheet/utils/cell'
+} from '@/context/table/utils/cell'
 import { Matrix } from '@/context/matrix/data/types'
 
 export const formatCellValuesToText = ({

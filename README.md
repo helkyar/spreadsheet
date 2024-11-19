@@ -24,7 +24,9 @@ Intro
 
 ## Future Improvements
 
-- **More features**: One of the most interesting ones to explore are referencing cells from other sheets as well as allowing for cell styles personalization (color, font, format, ...). Cell resize and cell fusion
+There is no end when creating a fully functional spreadsheet
+
+- **More features**: One of the most interesting ones to explore are referencing cells from other sheets as well as allowing for cell styles personalization (color, font, format, ...). Cell resize and cell combination, select multiple columns or rows and allow to drag and insert them with preview animation, undo nad redo...
 - **More dynamic features**: Allowing to insert images and generate graphics
 - **Advanced Analytics**: Integrating more sophisticated analytics to better understand user behavior and engagement with the content.
 
@@ -34,15 +36,12 @@ Building this project has been an enriching experience that allowed me to take a
 
 ## Pending
 
-- Change history with Ctrl+z Ctrl+y?
-- Config file?
 - Refactors
   - Optimization with tools and code
 - Tests
   - clipboard
   - keyboard accessibility
   - drag and drop
-  - computed matrix
 - Better remove/add rows/cols ui
   - Selector vs contextual menu
     - Select col/row by default?

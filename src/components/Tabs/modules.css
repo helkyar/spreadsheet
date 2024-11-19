@@ -49,6 +49,6 @@
 
 .drag {
   cursor: grab;
-  z-index: 100;
+  z-index: 1;
   /* background-color: var(--selected-cell-background); */
 }

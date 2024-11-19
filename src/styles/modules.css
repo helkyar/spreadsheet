@@ -2,6 +2,7 @@
 @import '../components/Tabs/modules.css';
 @import '../components/Spreadsheet/modules.css';
 @import '../components/Modal/modules.css';
+@import '../components/ContextualMenu/modules.css';
 /* GENERAL ========================================================== */
 .flex-center {
   display: flex;

@@ -3,7 +3,7 @@ import { MatrixProvider } from '@/context/matrix/MatrixProvider'
 import { beforeAll, describe, expect, it } from 'vitest'
 
 import { fireEvent, render, screen } from '@testing-library/react'
-import { inputTag, parentTag } from '@/components/Spreadsheet/data/constants'
+import { inputTag, parentTag } from '@/context/table/data/constants'
 import { act } from 'react'
 
 describe('useTableEvents hook tested through ui', () => {

@@ -1,30 +1,19 @@
-import { AddCellsIcon } from '@/components/Spreadsheet/components/AddCellsIcon'
-import { RemoveCellsIcon } from '@/components/Spreadsheet/components/RemoveCellsIcon'
+import { CellHeader } from '@/components/Spreadsheet/components/CellHeader'
 import { getColumnsHeaderLabels } from '@/components/Spreadsheet/utils/columnLabel'
 import { MouseEvent } from 'react'
 
 type PropTypes = {
   length: number
   onClick: (y: number) => (e: MouseEvent<HTMLElement>) => void
-  onAdd: (y: number) => (e?: MouseEvent) => void
-  onRemove: (y: number) => (e?: MouseEvent) => void
 }
 
-export function TableHead({ length, onClick, onAdd, onRemove }: PropTypes) {
+export function TableHead({ length, onClick }: PropTypes) {
   return (
     <thead>
       <tr>
         {getColumnsHeaderLabels(length).map((columLabel, y) => (
-          <th key={columLabel} onClick={onClick(y)}>
-            <div className='flex-center'>
-              <RemoveCellsIcon
-                isHidden={y < 1}
-                onClick={onRemove(y - 1)}
-                isVertical
-              />
-              {columLabel}
-            </div>
-            <AddCellsIcon onClick={onAdd(y)} isVertical />
+          <th key={columLabel} onMouseDown={onClick(y)}>
+            <CellHeader label={columLabel} index={y} col />
           </th>
         ))}
       </tr>
