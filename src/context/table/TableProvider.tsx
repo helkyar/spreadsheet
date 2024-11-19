@@ -18,6 +18,7 @@ export const TableProvider = ({ children }: { children: React.ReactNode }) => {
     selectColumn,
     selectRow,
     removeSelection,
+    selectedElements,
   }
 
   return <TableContext.Provider value={value}>{children}</TableContext.Provider>
