@@ -11,8 +11,17 @@ export function Modal({ children, isOpen, onClose }: PropTypes) {
 
   const modalRoot = document.getElementById('root-modal')
   return createPortal(
-    <section className='modal-wrapper flex-center' onClick={onClose}>
-      <div className='modal-content flex-center'>{children}</div>
+    <section
+      className='modal-wrapper flex-center'
+      role='none'
+      onClick={onClose}
+    >
+      <div className='modal-content flex-center'>
+        <button className='close-modal' onClick={onClose}>
+          x
+        </button>
+        {children}
+      </div>
     </section>,
     modalRoot!
   )

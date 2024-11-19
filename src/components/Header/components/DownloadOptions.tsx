@@ -3,11 +3,11 @@ import {
   File,
   Separation,
   type DownloadOptions,
-} from '@/components/Spreadsheet/data/types'
+} from '@/context/table/data/types'
 import { FormEvent } from 'react'
 
 type PropTypes = {
-  onSubmit: (options: Omit<DownloadOptions, 'id'>) => void
+  readonly onSubmit: (options: Omit<DownloadOptions, 'id'>) => void
 }
 
 export function DownloadOptions({ onSubmit }: PropTypes) {
@@ -39,7 +39,7 @@ export function DownloadOptions({ onSubmit }: PropTypes) {
             value='expression'
             defaultChecked
           />
-          Expression
+          <span>Expression</span>
         </label>
         <label>
           <input type='radio' name='exportValue' value='value' /> Value
@@ -54,7 +54,7 @@ export function DownloadOptions({ onSubmit }: PropTypes) {
             value='plain/text'
             defaultChecked
           />
-          Plain Text
+          <span>Plain Text</span>
         </label>
         <label>
           <input type='radio' name='fileType' value='csv' /> CSV
@@ -64,7 +64,7 @@ export function DownloadOptions({ onSubmit }: PropTypes) {
         <legend>Separation</legend>
         <label>
           <input type='radio' name='separation' value='\t' defaultChecked />
-          Tabs
+          <span>Tabs</span>
         </label>
         <label>
           <input type='radio' name='separation' value=',' /> Comas

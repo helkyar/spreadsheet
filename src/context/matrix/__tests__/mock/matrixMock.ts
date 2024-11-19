@@ -1,13 +1,12 @@
 import { Cell } from '@/context/matrix/data/types'
 
-const mockCell = (x: number, y: number): Cell => ({
-  x,
-  y,
+const mockCell = (id: number): Cell => ({
+  id,
   inputValue: '',
   computedValue: '',
   update: () => {},
 })
 export const mockMatrix: Cell[][] = [
-  [{ ...mockCell(0, 0) }, { ...mockCell(0, 1) }],
-  [{ ...mockCell(1, 0) }, { ...mockCell(1, 1) }],
+  [{ ...mockCell(0) }, { ...mockCell(1) }],
+  [{ ...mockCell(2) }, { ...mockCell(3) }],
 ]

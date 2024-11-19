@@ -18,7 +18,6 @@ export function Tabs() {
       {matrixArray.map((matrix, i) => (
         <div
           key={matrix.id}
-          tabIndex={0}
           onClick={() => viewMatrix(i)}
           className={`tab flex-center ${matrixIdx === i ? 'selected-tab' : ''}`}
         >

@@ -6,7 +6,7 @@ import {
 export class ExpressionParser extends AbstractParser {
   parse(matrixData: MatrixData) {
     const { expression } = matrixData
-    const referencePattern = /([A-Z]{1,3}[0-9]{1,7})/g
+    const referencePattern = /([A-Z]{1,3}\d{1,7})/g
     const referenceFound = expression.match(referencePattern)
 
     if (!referenceFound) {

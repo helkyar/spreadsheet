@@ -1,9 +1,9 @@
 import { type Cell } from '@/context/matrix/data/types'
 
 type CellProps = {
-  cellValues: Cell
-  x: number
-  y: number
+  readonly cellValues: Cell
+  readonly x: number
+  readonly y: number
 }
 export function Cell({ cellValues, x, y }: CellProps) {
   const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
@@ -12,7 +12,7 @@ export function Cell({ cellValues, x, y }: CellProps) {
   }
 
   return (
-    <td data-x={x} data-y={y} tabIndex={0}>
+    <td data-x={x} data-y={y} tabIndex={0} role='cell'>
       <span className='cell-text flex-center'>{cellValues.computedValue}</span>
       <input
         className='cell-input'

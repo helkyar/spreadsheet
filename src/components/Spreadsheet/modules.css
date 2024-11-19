@@ -83,3 +83,56 @@ th:hover .header-contextmenu {
     right: 0.5rem;
   }
 }
+.tabs-wrapper {
+  border-top: var(--background) 1px solid;
+  display: flex;
+  flex: 0 1 3.5rem;
+  gap: 0.2rem;
+  padding-left: var(--padding-lg);
+  overflow: auto;
+}
+.tab {
+  cursor: pointer;
+  padding-right: var(--padding-md);
+  padding-left: var(--padding-lg);
+  border-radius: unset;
+  font-size: 1.25rem;
+  min-width: 6rem;
+}
+.selected-tab,
+.tab:hover,
+.tab:focus,
+.tab:active {
+  border-radius: unset;
+  background: var(--selected-cell-background);
+  color: var(--selected-cell-foreground);
+}
+
+.remove-tab {
+  cursor: pointer;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--destructive-foreground);
+  background-color: transparent;
+}
+.remove-tab:hover,
+.remove-tab:focus {
+  border: none;
+  background-color: var(--destructive);
+  outline: var(--destructive-foreground) solid 1px;
+}
+
+.create-tab {
+  font-size: 1.25rem;
+  font-weight: bold;
+  border-radius: unset;
+  padding: 0 var(--padding-lg);
+}
+
+.drag {
+  cursor: grab;
+  z-index: 1;
+}

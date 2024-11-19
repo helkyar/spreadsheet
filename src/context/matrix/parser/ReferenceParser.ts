@@ -8,7 +8,7 @@ import { EVAL_CODE } from '@/context/matrix/parser/constants'
 
 export class ReferenceParser extends AbstractParser {
   parse({ id, expression, matrix }: MatrixData) {
-    const referencePattern = /([A-Z]{1,3}[0-9]{1,7})/g
+    const referencePattern = /([A-Z]{1,3}\d{1,7})/g
     const referenceFound = expression.match(referencePattern)
     const refArray = referenceFound!.filter(
       (ref, i, self) => i === self.findIndex((r) => r === ref)
@@ -46,7 +46,7 @@ export class ReferenceParser extends AbstractParser {
             return %{expression}%
           })()`
 
-    return formula.replace('%{expression}%', error ? error : expression)
+    return formula.replace('%{expression}%', error ?? expression)
   }
 
   private findCyclicReferences({
@@ -83,12 +83,12 @@ export class ReferenceParser extends AbstractParser {
     })
   }
 
-  private processInputValue = (input: string): ReturnedProcessInput => {
+  readonly processInputValue = (input: string): ReturnedProcessInput => {
     if (!input.startsWith(EVAL_CODE)) {
       return { expression: input, hasRef: null }
     }
     const expression = input.slice(1)
-    const referencePattern = /([A-Z]{1,3}[0-9]{1,7})/g
+    const referencePattern = /([A-Z]{1,3}\d{1,7})/g
     const referenceFound = expression.match(referencePattern)
     if (!referenceFound) {
       const evalExpression = this.evaluateInput(expression)
@@ -104,9 +104,9 @@ export class ReferenceParser extends AbstractParser {
   private generateCoordinatesFromReferences(refArray: string[]) {
     return refArray.map((ref) => {
       const yIndex = ref.match(/([A-Z]{1,3})/g)
-      const xIndex = ref.match(/([0-9]{1,7})/g)
+      const xIndex = ref.match(/(\d{1,7})/g)
       return {
-        y: getIndexFromLabel(yIndex?.toString() || ''),
+        y: getIndexFromLabel(yIndex?.toString() ?? ''),
         x: Number(xIndex) - 1,
         ref,
       }
