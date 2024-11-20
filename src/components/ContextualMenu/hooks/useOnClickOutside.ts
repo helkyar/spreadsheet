@@ -1,11 +1,18 @@
+import { className } from '@/components/ContextualMenu/data/constants'
 import { useEffect } from 'react'
 
 export function useOnClickOutside(handler: () => void) {
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
-      const target = (event.target as HTMLElement).parentElement
-        ?.parentElement as HTMLElement
-      if (target.className.includes('contextual-menu')) return
+      event.stopPropagation()
+      const target = event.target as HTMLElement
+      const parent = target.parentElement as HTMLElement
+      if (
+        target.className?.includes(className) ||
+        parent.className.includes(className)
+      ) {
+        return
+      }
       handler()
     }
     document.addEventListener('mousedown', handleClick)

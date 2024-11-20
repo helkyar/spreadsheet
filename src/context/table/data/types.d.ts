@@ -1,8 +1,8 @@
 import { MouseEvent } from 'react'
 
 type TableContext = {
-  selectColumn: (index: number) => (event: MouseEvent<HTMLElement>) => void
-  selectRow: (index: number) => (event: MouseEvent<HTMLElement>) => void
+  selectColumn: (index: number) => (event: MouseEvent) => void
+  selectRow: (index: number) => (event: MouseEvent) => void
   selectedElements: Selected
 }
 export type HTMLCell = HTMLTableCellElement
@@ -18,4 +18,4 @@ export type DownloadOptions = {
 export type File = 'csv' | 'plain/text'
 export type ExportValue = 'value' | 'expression'
 export type Separation = '\t' | ','
-export type Selected = NodeListOf<HTMLCell> | null
+export type Selected = HTMLCell[] | null

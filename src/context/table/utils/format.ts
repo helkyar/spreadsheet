@@ -1,4 +1,3 @@
-import { parentTag } from '@/context/table/data/constants'
 import { HTMLCell, Selected, Separation } from '@/context/table/data/types'
 import {
   getCell,
@@ -20,8 +19,7 @@ export const formatCellValuesToText = ({
 }) => {
   if (!elements) return ''
 
-  const selectedValues = Array.from(elements).map((el) => {
-    if (el.tagName !== parentTag) return
+  const selectedValues = elements.map((el) => {
     const { x, y } = getCellCoordinates(el)
     let value = ''
 

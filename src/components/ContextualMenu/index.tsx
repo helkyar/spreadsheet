@@ -1,5 +1,7 @@
+import { className } from '@/components/ContextualMenu/data/constants'
 import { useClipboardContextMenu } from '@/components/ContextualMenu/hooks/useClipboardContextMenu'
 import { useOnClickOutside } from '@/components/ContextualMenu/hooks/useOnClickOutside'
+import { MouseEvent } from 'react'
 
 type PropTypes = {
   readonly row?: boolean
@@ -19,15 +21,21 @@ export function ContextualMenu({
   useOnClickOutside(onClose)
   const { copyExpression, copyValue, cutExpression, cutValue, paste } =
     useClipboardContextMenu()
-
-  console.log('ContextualMenu', coords)
+  const handleClose = (event: MouseEvent) => {
+    event.preventDefault()
+    event.stopPropagation()
+    const target = event.target as HTMLElement
+    const menu = target.parentElement?.parentElement
+    if (menu?.className.includes(className)) onClose()
+  }
 
   return (
     <div
+      onMouseUp={(e) => e.stopPropagation()}
       style={{ top: coords?.y, left: coords?.x }}
-      className={`contextual-menu ${row ? 'row' : ''}`}
+      className={`${className} ${row ? 'row' : ''}`}
     >
-      <section onClick={() => setTimeout(() => onClose(), 10)} role='none'>
+      <section onClick={handleClose} role='none'>
         <button onClick={copyExpression} disabled={!isSelected}>
           copy expression
         </button>

@@ -68,7 +68,7 @@ export function useKeyPress(
           }
           updateSelectedCellsValues(element.value, cell, selectedElements)
         } else if (keyGroups.escape.includes(event.key)) {
-          element.parentElement?.focus()
+          element.parentElement!.focus()
         } else if (keyGroups.navigation.includes(event.key)) {
           if (selectedElements) handleRemoveSelected()
           const cell = element.parentElement as HTMLCell
@@ -79,7 +79,7 @@ export function useKeyPress(
       [parentTag]: (event) => {
         const element = document.activeElement as HTMLCell
         if (keyGroups.execute.includes(event.key)) {
-          getInput(element)?.focus()
+          getInput(element).focus()
         } else if (keyGroups.escape.includes(event.key) && selectedElements) {
           handleRemoveSelected()
         } else if (keyGroups.delete.includes(event.key) && selectedElements) {

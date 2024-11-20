@@ -66,16 +66,16 @@ export default class ComputedMatrix {
   }
 
   private updateCellAndActualize(inputCellValues: PartialCell) {
-    this.updateCell(inputCellValues)
+    const { hasUpdated } = this.updateCell(inputCellValues)
 
-    this.debouncedUpdateAll()
+    if (hasUpdated) this.debouncedUpdateAll()
   }
 
   private updateCell({ id, inputValue }: PartialCell) {
     const cell = this._matrix.flat().find((cell) => cell.id === id)
     if (!cell) {
       this.updateRefList({ id, hasRef: false })
-      return ''
+      return { computedValue: '', hasUpdated: false }
     }
 
     const { computedValue, hasRef } = parser.parse({
@@ -86,9 +86,11 @@ export default class ComputedMatrix {
 
     this.updateRefList({ id, inputValue, computedValue, hasRef })
 
+    const hasUpdated =
+      cell.computedValue !== computedValue || cell.inputValue !== inputValue
     cell.computedValue = computedValue
     cell.inputValue = inputValue
-    return computedValue
+    return { hasUpdated, computedValue }
   }
 
   private updateRefList({ id, inputValue, computedValue, hasRef }: UpdateRef) {
@@ -126,8 +128,8 @@ export default class ComputedMatrix {
     while (keepTheLoop) {
       keepTheLoop = false
       this.refList.forEach((ref) => {
-        const newComputedValue = this.updateCell({ ...ref })
-        if (newComputedValue !== ref.computedValue) {
+        const { computedValue } = this.updateCell({ ...ref })
+        if (computedValue !== ref.computedValue) {
           keepTheLoop = true
         }
       })

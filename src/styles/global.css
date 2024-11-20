@@ -51,6 +51,7 @@
   --padding-md: 0.5em;
   --padding-sm: 0.1em;
   --gap: 2em;
+  --box-shadow: 1px 1px 11px 0px rgba(0, 0, 0, 0.9);
 }
 
 .dark {

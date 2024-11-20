@@ -11,7 +11,7 @@
   background-color: var(--background);
   border: 1px solid var(--foreground);
   border-radius: var(--radius);
-
+  box-shadow: var(--box-shadow);
   padding: var(--padding-xlg);
 }
 .close-modal {

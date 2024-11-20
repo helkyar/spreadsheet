@@ -1,22 +1,26 @@
 import {
   inputTag,
   outputTag,
-  parentTag,
   selectedB,
   selectedL,
   selectedR,
   selectedT,
 } from '@/context/table/data/constants'
-import { HTMLCell, HTMLInput, HTMLText } from '@/context/table/data/types'
+import {
+  HTMLCell,
+  HTMLInput,
+  HTMLText,
+  Selected,
+} from '@/context/table/data/types'
 
 export const $$ = (el: string) => document.querySelectorAll(el)
 export const $ = (el: string) => document.querySelector(el) as HTMLElement
 
 export const getInput = (element: HTMLCell) =>
-  element.querySelector(inputTag) as HTMLInput
+  element?.querySelector(inputTag) as HTMLInput
 
 export const getOutput = (element: HTMLCell) =>
-  element.querySelector(outputTag) as HTMLText
+  element?.querySelector(outputTag) as HTMLText
 
 export const getText = (element: HTMLCell) => getOutput(element).innerText
 
@@ -39,6 +43,7 @@ export const focusCell = ({ x, y }: { x: number; y: number }) => {
 
 export const updateCell = (element: HTMLCell, value: string) => {
   const input = getInput(element)
+  if (!input) return
   input.value = value
   input.focus()
   input.blur()
@@ -47,25 +52,21 @@ export const updateCell = (element: HTMLCell, value: string) => {
 export const updateSelectedCellsValues = (
   value: string,
   element: HTMLCell,
-  selectedElements: NodeListOf<HTMLCell>
+  selectedElements: NonNullable<Selected>
 ) => {
-  selectedElements.forEach((el) => {
-    if (el.tagName === parentTag) {
-      updateCell(el, value)
-    }
-  })
+  selectedElements.forEach((el) => updateCell(el, value))
   element?.focus()
 }
 
 export const manageBoundaryClassName = (
-  elements: NodeListOf<HTMLCell> | null,
+  elements: Selected,
   offset?: { x: number; y: number }
 ) => {
   const removeCellBoundary = () => {
-    $$(`.${selectedT}`).forEach((el) => el?.classList.remove(selectedT))
-    $$(`.${selectedB}`).forEach((el) => el?.classList.remove(selectedB))
-    $$(`.${selectedL}`).forEach((el) => el?.classList.remove(selectedL))
-    $$(`.${selectedR}`).forEach((el) => el?.classList.remove(selectedR))
+    $$(`.${selectedT}`).forEach((el) => el.classList.remove(selectedT))
+    $$(`.${selectedB}`).forEach((el) => el.classList.remove(selectedB))
+    $$(`.${selectedL}`).forEach((el) => el.classList.remove(selectedL))
+    $$(`.${selectedR}`).forEach((el) => el.classList.remove(selectedR))
   }
   if (!elements) return { removeCellBoundary }
 

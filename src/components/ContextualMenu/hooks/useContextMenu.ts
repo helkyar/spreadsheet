@@ -2,9 +2,9 @@ import { inputTag, outputTag, selected } from '@/context/table/data/constants'
 import { HTMLCell, HTMLInput } from '@/context/table/data/types'
 import { MouseEvent, useState } from 'react'
 
-export function useContextMenu(onClick: () => void) {
+export function useContextMenu(onClick?: () => void) {
   const [isSelected, setIsSelected] = useState(false)
-  const [coords, setCoords] = useState({ x: 0, y: 0 })
+  const [coords, setCoords] = useState({})
 
   const setMenuPosition = (event: MouseEvent<HTMLElement>) => {
     event.stopPropagation()
@@ -21,7 +21,7 @@ export function useContextMenu(onClick: () => void) {
       x: event.clientX,
       y: event.clientY < 515 ? event.clientY : 515,
     })
-    onClick()
+    if (onClick) onClick()
   }
-  return { setMenuPosition, coords, isSelected }
+  return { setMenuPosition, coords, isSelected, setCoords }
 }

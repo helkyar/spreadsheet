@@ -22,16 +22,12 @@ export const useClipboard = (selectedElements: Selected) => {
       const clipboardData = event.clipboardData?.getData('text/plain')
       if (!clipboardData) return
 
-      console.log('🚀 ~ paste ~ clipboardData:', event)
-
       const element = document.activeElement as HTMLCell
       const isCell = element.tagName === parentTag
 
       if (!isCell && !selectedElements) return
 
-      const cell = Array.from(selectedElements!).find(
-        (el) => el.tagName === parentTag
-      ) as HTMLCell
+      const cell = selectedElements![0]
       const pasteElement = element.tagName === parentTag ? element : cell
 
       addTextToCellValues(clipboardData, pasteElement)

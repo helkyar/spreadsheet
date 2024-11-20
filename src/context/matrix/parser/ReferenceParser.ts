@@ -95,9 +95,7 @@ export class ReferenceParser extends AbstractParser {
       return { expression: evalExpression, hasRef: null }
     }
 
-    const hasRef = referenceFound.filter(
-      (ref, i, self) => i === self.findIndex((r) => r === ref)
-    )
+    const hasRef = [...new Set(referenceFound)]
     return { expression, hasRef }
   }
 
