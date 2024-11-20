@@ -15,6 +15,8 @@ export function isPolluted(expression: string) {
     'Function',
     'fetch',
     'XMLHttpRequest',
+    'javascript',
+    'void',
     'eval',
     'setTimeout',
     'setInterval',
