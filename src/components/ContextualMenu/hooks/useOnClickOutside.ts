@@ -7,9 +7,11 @@ export function useOnClickOutside(handler: () => void) {
       event.stopPropagation()
       const target = event.target as HTMLElement
       const parent = target.parentElement as HTMLElement
+      const menu = parent.parentElement as HTMLElement
       if (
-        target.className?.includes(className) ||
-        parent.className.includes(className)
+        target?.className.includes(className) ||
+        parent?.className.includes(className) ||
+        menu?.className.includes(className)
       ) {
         return
       }

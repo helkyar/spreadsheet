@@ -43,15 +43,14 @@ export function useSelection() {
         el?.setAttribute('draggable', 'true')
       })
     }
-    const removeDraggable = (elements: NodeListOf<Element>) => {
-      elements.forEach((el) => {
+    const removeDraggable = () => {
+      $$(`.${drag}`).forEach((el) => {
         el?.classList.remove(drag)
         el?.setAttribute('draggable', 'false')
       })
     }
-
     addDraggable(draggedElements)
-    return () => removeDraggable($$(`.${drag}`))
+    return () => removeDraggable()
   }, [selectedElements])
 
   const getSelectedElements = useCallback(
@@ -67,7 +66,7 @@ export function useSelection() {
       const hasHeader = selectedArray[0]?.tagName === headerTag
       if (hasHeader) selectedArray.shift()
       // FIX_ME:
-      // if (selectedElements?.every((el, i) => el === selectedArray[i])) return
+      if (selectedElements?.every((el, i) => el === selectedArray[i])) return
 
       setSelectedElements(selectedArray)
     },
@@ -76,7 +75,6 @@ export function useSelection() {
 
   const removeSelection = useCallback(() => {
     getSelectedElements().forEach((el) => el.classList.remove(selected))
-    if (selectedElements == null) return
     setSelectedElements(null)
   }, [getSelectedElements])
 
