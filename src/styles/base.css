@@ -80,6 +80,7 @@ thead th:nth-child(n + 2) {
 }
 
 th {
+  user-select: none;
   border: 1px solid var(--border);
   outline: 1px inset var(--border);
   background-color: var(--muted);

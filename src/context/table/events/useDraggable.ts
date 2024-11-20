@@ -18,6 +18,17 @@ export function useDraggable(
 ) {
   const { createNewMatrix } = useMatrix()
 
+  const updateAsyncCell = (
+    { x, y }: { x: number; y: number },
+    value: string
+  ) => {
+    //FIX_ME: hack to wait for cell to update after drop before updating the cell value
+    setTimeout(() => {
+      const cell = getCell({ x, y })
+      updateCell(cell, value)
+    }, 0)
+  }
+
   useEffect(() => {
     const handleDragOver = (event: DragEvent) => {
       event.preventDefault()
@@ -66,18 +77,12 @@ export function useDraggable(
         const { x: elX, y: elY } = getCellCoordinates(el)
 
         if (finalX === initialX && finalY === initialY) return
+        const x = finalX + (elX - initialX)
+        const y = finalY + (elY - initialY)
 
         const value = getInput(el)?.value
         updateCell(el, '')
-
-        //FIX_ME: hack to wait for cell to update after drop before updating the cell value
-        setTimeout(() => {
-          const cell = getCell({
-            x: finalX + (elX - initialX),
-            y: finalY + (elY - initialY),
-          })
-          updateCell(cell, value)
-        }, 0)
+        updateAsyncCell({ x, y }, value)
       })
       finalCell.focus()
     }

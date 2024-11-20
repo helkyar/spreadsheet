@@ -98,8 +98,9 @@ export const MatrixProvider = ({ children, rows, cols }: Params) => {
   }
 
   const { id, spreadsheet } = matrixArray[matrixIdx]
+  const currentMatrix = { id, matrix: spreadsheet.matrix }
   const value = {
-    currentMatrix: { id, matrix: spreadsheet.matrix },
+    currentMatrix,
     matrixArray,
     matrixIdx,
     viewMatrix,

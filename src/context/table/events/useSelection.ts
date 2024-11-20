@@ -65,8 +65,7 @@ export function useSelection() {
       const selectedArray = Array.from(getSelectedElements())
       const hasHeader = selectedArray[0]?.tagName === headerTag
       if (hasHeader) selectedArray.shift()
-      // FIX_ME:
-      if (selectedElements?.every((el, i) => el === selectedArray[i])) return
+      if (selectedElements === selectedArray) return
 
       setSelectedElements(selectedArray)
     },

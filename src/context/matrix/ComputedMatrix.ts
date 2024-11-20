@@ -90,6 +90,7 @@ export default class ComputedMatrix {
       cell.computedValue !== computedValue || cell.inputValue !== inputValue
     cell.computedValue = computedValue
     cell.inputValue = inputValue
+
     return { hasUpdated, computedValue }
   }
 

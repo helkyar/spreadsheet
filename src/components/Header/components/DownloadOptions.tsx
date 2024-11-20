@@ -14,12 +14,11 @@ export function DownloadOptions({ onSubmit }: PropTypes) {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const form = event.currentTarget
-    const { exportValue, fileType, separation } =
-      form.elements as typeof form.elements & {
-        exportValue: HTMLInputElement
-        fileType: HTMLInputElement
-        separation: HTMLInputElement
-      }
+    const { exportValue, fileType, separation } = form.elements as unknown as {
+      exportValue: HTMLInputElement
+      fileType: HTMLInputElement
+      separation: HTMLInputElement
+    }
 
     onSubmit({
       value: exportValue.value as ExportValue,

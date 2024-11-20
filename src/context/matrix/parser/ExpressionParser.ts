@@ -2,6 +2,7 @@ import {
   AbstractParser,
   MatrixData,
 } from '@/context/matrix/parser/AbstractParser'
+import { safeEval } from '@/context/matrix/parser/eval'
 
 export class ExpressionParser extends AbstractParser {
   parse(matrixData: MatrixData) {
@@ -18,10 +19,9 @@ export class ExpressionParser extends AbstractParser {
 
   private evaluateInput(expression: string) {
     if (expression.startsWith('##Error')) return expression
-    try {
-      return eval(expression)
-    } catch (error) {
-      return `##Error: ${error}`
-    }
+    const referencePattern = /(^([-+/*]\d+(\.\d+)?)*)|^Math/g
+    const safeMatch = expression.match(referencePattern)
+    if (!safeMatch) return '##Error: invalid expression'
+    return safeEval(expression)
   }
 }
