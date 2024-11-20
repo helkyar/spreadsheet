@@ -26,7 +26,9 @@ export function ContextualMenu({
     event.stopPropagation()
     const target = event.target as HTMLElement
     const menu = target.parentElement?.parentElement
-    if (menu?.className.includes(className)) onClose()
+    if (menu?.className.includes(className)) {
+      setTimeout(() => onClose(), 10)
+    }
   }
 
   return (
