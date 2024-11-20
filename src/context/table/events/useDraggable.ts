@@ -10,7 +10,7 @@ import {
 } from '@/context/table/utils/cell'
 import { parseFilesToMatrix } from '@/context/table/utils/file'
 import { HTMLCell, HTMLInput, Selected } from '@/context/table/data/types'
-import { inputTag, outputTag, parentTag } from '@/context/table/data/constants'
+import { inputTag, outputTag } from '@/context/table/data/constants'
 
 export function useDraggable(
   selectedElements: Selected,
@@ -67,7 +67,7 @@ export function useDraggable(
 
         if (finalX === initialX && finalY === initialY) return
 
-        const value = getInput(el).value
+        const value = getInput(el)?.value
         updateCell(el, '')
 
         //FIX_ME: hack to wait for cell to update after drop before updating the cell value
@@ -86,14 +86,13 @@ export function useDraggable(
       const ghost = $('#ghost')
 
       selectedElements?.forEach((el, i) => {
-        if (el.tagName !== parentTag) return
         const clone = el.cloneNode(false) as HTMLCell
         Object.assign(clone.style, {
           background: 'var(--selected-cell-background)',
           position: 'absolute',
           top: `${i * 3}px`,
           left: `${i * 3}px`,
-          zIndex: `${999999 - i * 5}`,
+          zIndex: `${999 - i * 5}`,
           width: `${el.offsetWidth}px`,
           height: `${el.offsetHeight}px`,
         })

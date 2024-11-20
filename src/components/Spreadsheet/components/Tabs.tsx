@@ -19,6 +19,7 @@ export function Tabs() {
         <div
           key={matrix.id}
           onClick={() => viewMatrix(i)}
+          onTouchEnd={() => viewMatrix(i)}
           className={`tab flex-center ${matrixIdx === i ? 'selected-tab' : ''}`}
         >
           {`Sheet ${i + 1}`}

@@ -1,4 +1,9 @@
-import { drag, parentTag, selected } from '@/context/table/data/constants'
+import {
+  drag,
+  headerTag,
+  parentTag,
+  selected,
+} from '@/context/table/data/constants'
 import { HTMLCell, Selected } from '@/context/table/data/types'
 import {
   $$,
@@ -24,18 +29,14 @@ export function useSelection() {
     if (!selectedElements) return
     if (document.activeElement?.tagName === parentTag) return
 
-    const firstCell = Array.from(selectedElements).find(
-      (el) => el.tagName === parentTag
-    )
+    const firstCell = selectedElements[0]
     firstCell?.focus()
   }, [selectedElements])
 
   useEffect(() => {
     if (!selectedElements) return
 
-    const draggedElements = Array.from(selectedElements).map((el) =>
-      getOutput(el)
-    )
+    const draggedElements = selectedElements.map((el) => getOutput(el))
     const addDraggable = (elements: HTMLElement[]) => {
       elements.forEach((el) => {
         el?.classList.add(drag)
@@ -44,8 +45,8 @@ export function useSelection() {
     }
     const removeDraggable = (elements: NodeListOf<Element>) => {
       elements.forEach((el) => {
-        el.classList.remove(drag)
-        el.setAttribute('draggable', 'false')
+        el?.classList.remove(drag)
+        el?.setAttribute('draggable', 'false')
       })
     }
 
@@ -58,20 +59,28 @@ export function useSelection() {
     []
   )
 
-  const removeSelection = useCallback(() => {
-    getSelectedElements().forEach((el) => el?.classList.remove(selected))
-    setSelectedElements(null)
-  }, [getSelectedElements])
-
   const addSelectedClassToElements = useCallback(
     (elements: Element[]) => {
       elements.forEach((el) => el?.classList.add(selected))
-      setSelectedElements(getSelectedElements())
+
+      const selectedArray = Array.from(getSelectedElements())
+      const hasHeader = selectedArray[0]?.tagName === headerTag
+      if (hasHeader) selectedArray.shift()
+      // FIX_ME:
+      // if (selectedElements?.every((el, i) => el === selectedArray[i])) return
+
+      setSelectedElements(selectedArray)
     },
     [getSelectedElements]
   )
 
-  const selectColumn = (index: number) => (event: MouseEvent<HTMLElement>) => {
+  const removeSelection = useCallback(() => {
+    getSelectedElements().forEach((el) => el.classList.remove(selected))
+    if (selectedElements == null) return
+    setSelectedElements(null)
+  }, [getSelectedElements])
+
+  const selectColumn = (index: number) => (event: MouseEvent) => {
     event.stopPropagation()
     removeSelection()
     const element = event.currentTarget
@@ -82,7 +91,7 @@ export function useSelection() {
     else addSelectedClassToElements(headerElements)
   }
 
-  const selectRow = (index: number) => (event: MouseEvent<HTMLElement>) => {
+  const selectRow = (index: number) => (event: MouseEvent) => {
     event.stopPropagation()
     removeSelection()
     const element = event.currentTarget

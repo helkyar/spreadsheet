@@ -18,7 +18,7 @@ export function Header() {
   const { toggleDarkTheme, isDark } = useToggleDarkTheme()
 
   const [openModal, setOpenModal] = useState(false)
-  const toggleModal = () => setOpenModal((prev) => !prev)
+  const toggleModal = () => setOpenModal((open) => !open)
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { files } = event.target
