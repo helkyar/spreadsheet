@@ -22,6 +22,6 @@ export class ExpressionParser extends AbstractParser {
     const referencePattern = /(^([-+/*]\d+(\.\d+)?)*)|^Math/g
     const safeMatch = expression.match(referencePattern)
     if (!safeMatch) return '##Error: invalid expression'
-    return safeEval(expression)
+    return safeEval(expression, false)
   }
 }
