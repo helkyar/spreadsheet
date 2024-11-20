@@ -36,10 +36,9 @@ export function CellHeader({ label, index, col, row }: PropTypes) {
     event.stopPropagation()
     event.preventDefault()
     if (event.button === 2) setOpenMenu(true)
-    if (row) {
-      selectRow(index)(event)
-      if (row) if (event.pageY > 400) setCoords({ y: 380 - event.pageY })
-    }
+    selectRow(index)(event)
+    if (row) if (event.pageY > 400) setCoords({ y: 380 - event.pageY })
+
     if (col) selectColumn(index)(event)
   }
 

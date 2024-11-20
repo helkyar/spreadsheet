@@ -16,13 +16,16 @@ export function Tabs() {
         +
       </button>
       {matrixArray.map((matrix, i) => (
-        <div
-          key={matrix.id}
-          onClick={() => viewMatrix(i)}
-          onTouchEnd={() => viewMatrix(i)}
-          className={`tab flex-center ${matrixIdx === i ? 'selected-tab' : ''}`}
-        >
-          {`Sheet ${i + 1}`}
+        <div key={matrix.id} className='tab-wrapper'>
+          <button
+            role='tab'
+            onClick={() => viewMatrix(i)}
+            className={`tab flex-center ${
+              matrixIdx === i ? 'selected-tab' : ''
+            }`}
+          >
+            {`Sheet ${i + 1}`}
+          </button>
           <button
             className='remove-tab flex-center'
             onClick={handleRemoveTab(i)}
