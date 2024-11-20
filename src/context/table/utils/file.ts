@@ -41,7 +41,7 @@ export const downloadTable = ({
   const fileType = file === 'csv' ? '.csv' : '.txt'
   aElement.setAttribute('download', id + fileType)
 
-  const matrix = $$(parentTag) as NodeListOf<HTMLCell>
+  const matrix = Array.from($$(parentTag)) as HTMLCell[]
   const isPlainText = value === 'expression'
   const text = formatCellValuesToText({
     elements: matrix,

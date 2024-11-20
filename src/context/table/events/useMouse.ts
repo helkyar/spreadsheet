@@ -25,6 +25,7 @@ export function useMouse(
 
       const data = getEventData(event)
       const { cell, isCell, isSelected, isRightClick } = data
+      if (!isCell) removeSelection()
       if (!isCell || isSelected || isRightClick) return
 
       firstElement.current = cell

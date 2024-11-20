@@ -50,63 +50,68 @@ export function useKeyPress(
     firstSelection.current = null
   }, [removeSelected])
 
+  const generalHandler = (event: KeyboardEvent) => {
+    if (keyGroups.tab.includes(event.key)) {
+      if (selectedElements) handleRemoveSelected()
+    }
+  }
+
+  const inputHandler = (event: KeyboardEvent) => {
+    const element = document.activeElement as HTMLInput
+    if (keyGroups.execute.includes(event.key)) {
+      const cell = element.parentElement as HTMLCell
+      if (!selectedElements) {
+        const { x, y } = getCellCoordinates(cell)
+        // FIX_ME: double call to prevent out of bounds
+        focusCell({ x, y })
+        focusCell({ x: x + 1, y })
+        return
+      }
+      updateSelectedCellsValues(element.value, cell, selectedElements)
+    } else if (keyGroups.escape.includes(event.key)) {
+      element.parentElement!.focus()
+    } else if (keyGroups.navigation.includes(event.key)) {
+      if (selectedElements) handleRemoveSelected()
+      const cell = element.parentElement as HTMLCell
+      arrowNavigation(event, cell)
+    }
+  }
+
+  const cellHandler = (event: KeyboardEvent) => {
+    const element = document.activeElement as HTMLCell
+    if (keyGroups.execute.includes(event.key)) {
+      getInput(element).focus()
+    } else if (keyGroups.escape.includes(event.key) && selectedElements) {
+      handleRemoveSelected()
+    } else if (keyGroups.delete.includes(event.key) && selectedElements) {
+      updateSelectedCellsValues('', element, selectedElements)
+    } else if (keyGroups.navigation.includes(event.key) && event.shiftKey) {
+      if (!firstSelection.current) firstSelection.current = element
+      const nextElement = arrowNavigation(event, element)
+      selectArea(firstSelection.current, nextElement)
+    } else if (keyGroups.navigation.includes(event.key)) {
+      if (selectedElements) handleRemoveSelected()
+      arrowNavigation(event, element)
+    } else if (
+      keyGroups.skip.includes(event.key) ||
+      (event.ctrlKey && keyGroups.skipCombination.includes(event.key))
+    ) {
+      return
+    } else {
+      const input = getInput(element)
+      input.value = ''
+      input.focus()
+    }
+  }
+
   const handleKeyboardEvent: Record<
     TagsWithHandlers,
     (event: KeyboardEvent) => void
   > = useMemo(
     () => ({
-      [inputTag]: (event) => {
-        const element = document.activeElement as HTMLInput
-        if (keyGroups.execute.includes(event.key)) {
-          const cell = element.parentElement as HTMLCell
-          if (!selectedElements) {
-            const { x, y } = getCellCoordinates(cell)
-            // FIX_ME: double call to prevent out of bounds
-            focusCell({ x, y })
-            focusCell({ x: x + 1, y })
-            return
-          }
-          updateSelectedCellsValues(element.value, cell, selectedElements)
-        } else if (keyGroups.escape.includes(event.key)) {
-          element.parentElement!.focus()
-        } else if (keyGroups.navigation.includes(event.key)) {
-          if (selectedElements) handleRemoveSelected()
-          const cell = element.parentElement as HTMLCell
-          arrowNavigation(event, cell)
-        }
-      },
-
-      [parentTag]: (event) => {
-        const element = document.activeElement as HTMLCell
-        if (keyGroups.execute.includes(event.key)) {
-          getInput(element).focus()
-        } else if (keyGroups.escape.includes(event.key) && selectedElements) {
-          handleRemoveSelected()
-        } else if (keyGroups.delete.includes(event.key) && selectedElements) {
-          updateSelectedCellsValues('', element, selectedElements)
-        } else if (keyGroups.navigation.includes(event.key) && event.shiftKey) {
-          if (!firstSelection.current) firstSelection.current = element
-          const nextElement = arrowNavigation(event, element)
-          selectArea(firstSelection.current, nextElement)
-        } else if (keyGroups.navigation.includes(event.key)) {
-          if (selectedElements) handleRemoveSelected()
-          arrowNavigation(event, element)
-        } else if (
-          keyGroups.skip.includes(event.key) ||
-          (event.ctrlKey && keyGroups.skipCombination.includes(event.key))
-        ) {
-          return
-        } else {
-          const input = getInput(element)
-          input.value = ''
-          input.focus()
-        }
-      },
-      always: (event: KeyboardEvent) => {
-        if (keyGroups.tab.includes(event.key)) {
-          if (selectedElements) handleRemoveSelected()
-        }
-      },
+      [inputTag]: inputHandler,
+      [parentTag]: cellHandler,
+      always: generalHandler,
     }),
     [handleRemoveSelected, selectedElements, selectArea]
   )

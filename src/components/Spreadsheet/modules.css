@@ -91,13 +91,18 @@ th:hover .header-contextmenu {
   padding-left: var(--padding-lg);
   overflow: auto;
 }
+.tab-wrapper {
+  position: relative;
+}
 .tab {
   cursor: pointer;
-  padding-right: var(--padding-md);
-  padding-left: var(--padding-lg);
+  padding-inline: var(--padding-lg);
   border-radius: unset;
   font-size: 1.25rem;
   min-width: 6rem;
+  width: 100%;
+  height: 100%;
+  padding-right: 2rem;
 }
 .selected-tab,
 .tab:hover,
@@ -109,6 +114,9 @@ th:hover .header-contextmenu {
 }
 
 .remove-tab {
+  top: 25%;
+  right: 0.2rem;
+  position: absolute;
   cursor: pointer;
   width: 1.5rem;
   height: 1.5rem;

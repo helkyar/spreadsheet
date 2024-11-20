@@ -36,6 +36,7 @@ export function ContextualMenu({
       onMouseUp={(e) => e.stopPropagation()}
       style={{ top: coords?.y, left: coords?.x }}
       className={`${className} ${row ? 'row' : ''}`}
+      role='none'
     >
       <section onClick={handleClose} role='none'>
         <button onClick={copyExpression} disabled={!isSelected}>
