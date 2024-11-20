@@ -20,8 +20,13 @@ export function useMouse(
       return { cell, isCell, isSelected, isRightClick }
     }
 
+    const isContextualMenu = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
+      return target.closest(`.contextual-menu`)
+    }
+
     const mouseDown = (event: MouseEvent) => {
-      event.stopPropagation()
+      if (isContextualMenu(event)) return
 
       const data = getEventData(event)
       const { cell, isCell, isSelected, isRightClick } = data
@@ -31,9 +36,6 @@ export function useMouse(
       firstElement.current = cell
     }
     const mouseMove = (event: MouseEvent) => {
-      event.preventDefault()
-      event.stopPropagation()
-
       const target = (event.target as HTMLInput).parentElement as HTMLCell
       if (!firstElement.current || target.tagName !== parentTag) return
       isMovingAndDown.current = true
@@ -42,8 +44,7 @@ export function useMouse(
     }
 
     const mouseUp = (event: MouseEvent) => {
-      event.preventDefault()
-      event.stopPropagation()
+      if (isContextualMenu(event)) return
 
       const data = getEventData(event)
       const { isCell, isSelected, isRightClick } = data

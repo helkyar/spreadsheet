@@ -10,7 +10,7 @@ export function TableHead({ length }: PropTypes) {
     <thead>
       <tr>
         {getColumnsHeaderLabels(length).map((columnLabel, y) => (
-          <CellHeader key={columnLabel} label={columnLabel} index={y} col />
+          <CellHeader key={columnLabel} label={columnLabel} y={y} x={-1} />
         ))}
       </tr>
     </thead>

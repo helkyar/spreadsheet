@@ -15,6 +15,7 @@ export function Modal({ children, isOpen, onClose }: PropTypes) {
       className='modal-wrapper flex-center'
       role='none'
       onClick={onClose}
+      onKeyDown={(e) => e.key === 'Escape' && onClose()}
     >
       <div className='modal-content flex-center'>
         <button className='close-modal' onClick={onClose}>

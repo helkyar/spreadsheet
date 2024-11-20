@@ -88,9 +88,13 @@ export function useDraggable(
     }
 
     const handleDragStart = (event: DragEvent) => {
+      if (!selectedElements) return
       const ghost = $('#ghost')
 
-      selectedElements?.forEach((el, i) => {
+      for (let i = 0; i < selectedElements.length; i++) {
+        if (i > 20) break
+
+        const el = selectedElements[i]
         const clone = el.cloneNode(false) as HTMLCell
         Object.assign(clone.style, {
           background: 'var(--selected-cell-background)',
@@ -102,7 +106,7 @@ export function useDraggable(
           height: `${el.offsetHeight}px`,
         })
         ghost.appendChild(clone)
-      })
+      }
 
       if (!event.dataTransfer) return
       event.dataTransfer.effectAllowed = 'move'

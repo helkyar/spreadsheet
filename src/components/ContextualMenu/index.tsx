@@ -1,7 +1,8 @@
 import { className } from '@/components/ContextualMenu/data/constants'
 import { useClipboardContextMenu } from '@/components/ContextualMenu/hooks/useClipboardContextMenu'
 import { useOnClickOutside } from '@/components/ContextualMenu/hooks/useOnClickOutside'
-import { MouseEvent } from 'react'
+import { keyGroups } from '@/context/table/data/constants'
+import { KeyboardEvent, MouseEvent } from 'react'
 
 type PropTypes = {
   readonly row?: boolean
@@ -21,11 +22,26 @@ export function ContextualMenu({
   useOnClickOutside(onClose)
   const { copyExpression, copyValue, cutExpression, cutValue, paste } =
     useClipboardContextMenu()
-  const handleClose = (event: MouseEvent) => {
-    event.preventDefault()
+
+  const handleEvent = (event: MouseEvent | KeyboardEvent) => {
     event.stopPropagation()
     const target = event.target as HTMLElement
     const menu = target.parentElement?.parentElement
+    return menu
+  }
+
+  const handleKey = (event: KeyboardEvent) => {
+    const menu = handleEvent(event)
+    if (
+      keyGroups.execute.includes(event.key) &&
+      menu?.className.includes(className)
+    ) {
+      setTimeout(() => onClose(), 10)
+    }
+  }
+
+  const handleClick = (event: MouseEvent | KeyboardEvent) => {
+    const menu = handleEvent(event)
     if (menu?.className.includes(className)) {
       setTimeout(() => onClose(), 10)
     }
@@ -38,21 +54,21 @@ export function ContextualMenu({
       className={`${className} ${row ? 'row' : ''}`}
       role='none'
     >
-      <section onClick={handleClose} role='none'>
-        <button onClick={copyExpression} disabled={!isSelected}>
+      <section onClick={handleClick} onKeyDown={handleKey} role='none'>
+        <button onMouseDown={copyExpression} disabled={!isSelected}>
           copy expression
         </button>
-        <button onClick={copyValue} disabled={!isSelected}>
+        <button onMouseDown={copyValue} disabled={!isSelected}>
           copy value
         </button>
-        <button onClick={cutExpression} disabled={!isSelected}>
+        <button onMouseDown={cutExpression} disabled={!isSelected}>
           cut expression
         </button>
-        <button onClick={cutValue} disabled={!isSelected}>
+        <button onMouseDown={cutValue} disabled={!isSelected}>
           cut value
         </button>
 
-        <button onClick={paste}>paste</button>
+        <button onMouseDown={paste}>paste</button>
       </section>
       {children}
     </div>
