@@ -19,8 +19,8 @@ export function useOnClickOutside(handler: () => void) {
       if (keyGroups.skip.includes(event.key)) return
 
       const target = event.target as HTMLElement
-      const isMenu = target.closest(`.${selector}`)
-      const isHeader = target.className.includes(selector)
+      const isMenu = target.closest?.(`.${selector}`)
+      const isHeader = target.className?.includes(selector)
       const isMenuButton = isHeader && target.tagName === menuTag
 
       if (!isMenu && !isMenuButton) {

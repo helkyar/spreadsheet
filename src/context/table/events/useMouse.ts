@@ -20,6 +20,7 @@ export function useMouse(
       return { cell, isCell, isSelected, isRightClick }
     }
 
+    // FIX_ME: This function should not be necessary SRP
     const isContextualMenu = (event: MouseEvent) => {
       const target = event.target as HTMLElement
       return target.closest(`.contextual-menu`)
@@ -37,7 +38,7 @@ export function useMouse(
     }
     const mouseMove = (event: MouseEvent) => {
       const target = (event.target as HTMLInput).parentElement as HTMLCell
-      if (!firstElement.current || target.tagName !== parentTag) return
+      if (!firstElement.current || target?.tagName !== parentTag) return
       isMovingAndDown.current = true
 
       selectArea(firstElement.current, target)

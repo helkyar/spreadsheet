@@ -81,12 +81,12 @@ export function Header() {
           <Upload />
           <input
             onKeyDown={handleKey}
+            onChange={handleChange}
             className='upload-input'
             multiple
             accept='.csv, application/vnd.ms-excel, text/plain, .xlsx'
             type='file'
             id='upload'
-            onChange={handleChange}
           />
         </label>
 

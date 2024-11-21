@@ -4,6 +4,7 @@ import { formatCellValuesToText } from '@/context/table/utils/format'
 
 export function useClipboardContextMenu() {
   const { selectedElements } = useTableEvents()
+  //  FIX_ME: This function should not be necessary
   let elements = selectedElements
   if (elements && elements[0].tagName !== parentTag) {
     elements.shift()
