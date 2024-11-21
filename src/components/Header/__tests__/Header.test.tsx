@@ -14,7 +14,7 @@ describe('Header component with context', () => {
     )
   })
   it('should save the matrix on re-render', () => {
-    const saveBtn = screen.getAllByRole('button')[1]
+    const saveBtn = screen.getAllByRole('button')[2]
 
     // TO_DO:
     //  expect matrix with no value
@@ -25,7 +25,7 @@ describe('Header component with context', () => {
   })
 
   it('should change the theme and maintain it on re-render', () => {
-    const darkModeBtn = screen.getAllByRole('button')[2]
+    const darkModeBtn = screen.getAllByRole('button')[3]
 
     const storedTheme = () => window.localStorage.getItem(THEME_KEY)
     const darkThemeEnabled = document.getElementsByClassName('dark')

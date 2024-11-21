@@ -5,22 +5,37 @@ import {
   Save,
   Sun,
   Upload,
-} from '@/components/Header/components/Icons'
+} from '@/components/Header/components/ui/Icons'
 import { useToggleDarkTheme } from '@/components/Header/logic/useToggleDarkTheme'
 import { Modal } from '@/components/Modal'
 import { DownloadOptions as DownloadOptionsType } from '@/context/table/data/types'
 import { parseFilesToMatrix } from '@/context/table/utils/file'
 import { useMatrix } from '@/context/matrix/useMatrix'
-import { ChangeEvent, KeyboardEvent, useState } from 'react'
+import { ChangeEvent, KeyboardEvent, useRef, useState } from 'react'
 import { keyGroups } from '@/context/table/data/constants'
 import useMountTransition from '@/logic/useMountTransition'
+import { Legend } from '@/components/Header/components/Legend'
+
+type ModalProps = {
+  readonly onClose: () => void
+  readonly className: string | boolean
+}
+enum ModalType {
+  Download = 'download',
+  Legend = 'legend',
+}
 
 export function Header() {
-  const { save, download, createNewMatrix } = useMatrix()
+  const { save, createNewMatrix } = useMatrix()
   const { toggleDarkTheme, isDark } = useToggleDarkTheme()
 
   const [openModal, setOpenModal] = useState(false)
-  const toggleModal = () => setOpenModal((open) => !open)
+  const currentModal = useRef<ModalType>(ModalType.Download)
+  const toggleModal = (key: ModalType) => () => {
+    currentModal.current = key
+    setOpenModal(true)
+  }
+
   const isMounted = useMountTransition(openModal)
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -28,22 +43,35 @@ export function Header() {
     if (files) parseFilesToMatrix(files, createNewMatrix)
   }
 
-  const handleDownload = (formData: Omit<DownloadOptionsType, 'id'>) => {
-    download(formData)
-    toggleModal()
-  }
-
   const handleKey = (event: KeyboardEvent) => {
     if (keyGroups.execute.includes(event.key)) {
       document.getElementById('upload')?.click()
     }
   }
+  const ModalOptions = {
+    download: DownloadModal,
+    legend: LegendModal,
+  }
+  const ModalComponent = ModalOptions[currentModal.current]
 
   return (
     <header>
       <h1>Computed File</h1>
 
       <section className='header-icons flex-center'>
+        {(openModal || isMounted) && (
+          <ModalComponent
+            onClose={() => setOpenModal(false)}
+            className={`${isMounted && 'in'} ${openModal && 'visible'}`}
+          />
+        )}
+        <button
+          className='btn-round flex-center info'
+          onClick={toggleModal(ModalType.Legend)}
+          aria-label='information'
+        >
+          i
+        </button>
         <label
           tabIndex={0}
           aria-label='upload'
@@ -64,18 +92,10 @@ export function Header() {
 
         <button
           className='btn-round flex-center'
-          onClick={toggleModal}
+          onClick={toggleModal(ModalType.Download)}
           aria-label='download'
         >
           <Download />
-          {(openModal || isMounted) && (
-            <Modal
-              className={`${isMounted && 'in'} ${openModal && 'visible'}`}
-              onClose={toggleModal}
-            >
-              <DownloadOptions onSubmit={handleDownload} />
-            </Modal>
-          )}
         </button>
 
         <button
@@ -95,5 +115,26 @@ export function Header() {
         </button>
       </section>
     </header>
+  )
+}
+
+function DownloadModal(props: ModalProps) {
+  const { download } = useMatrix()
+  const handleDownload = (formData: Omit<DownloadOptionsType, 'id'>) => {
+    download(formData)
+    props.onClose()
+  }
+  return (
+    <Modal {...props}>
+      <DownloadOptions onSubmit={handleDownload} />
+    </Modal>
+  )
+}
+
+function LegendModal(props: ModalProps) {
+  return (
+    <Modal {...props}>
+      <Legend />
+    </Modal>
   )
 }

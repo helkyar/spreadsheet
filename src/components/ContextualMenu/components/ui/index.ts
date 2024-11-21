@@ -1,0 +1,6 @@
+export { CopyIcon } from '@/components/ContextualMenu/components/ui/Copy'
+export { CutIcon } from '@/components/ContextualMenu/components/ui/Cut'
+export { DeleteIcon } from '@/components/ContextualMenu/components/ui/Delete'
+export { PasteIcon } from '@/components/ContextualMenu/components/ui/PasteIcon'
+export { ArrowRightIcon } from '@/components/ContextualMenu/components/ui/ArrowRight'
+export { ArrowLeftIcon } from '@/components/ContextualMenu/components/ui/ArrowLeft'

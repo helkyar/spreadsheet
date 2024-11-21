@@ -82,9 +82,7 @@ export function useKeyPress(
 
       const elements = {
         firstCell: getCell({ x: 0, y: 0 }),
-        headerButton: document.querySelector(
-          '.header-icons label'
-        ) as HTMLButtonElement,
+        headerButton: document.querySelector('.info') as HTMLButtonElement,
         firstTab: document.querySelector('.selected-tab') as HTMLButtonElement,
       }
 
