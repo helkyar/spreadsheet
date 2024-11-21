@@ -34,3 +34,33 @@
   display: flex;
   gap: 0.5rem;
 }
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.legend h3 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+.legend p {
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.legend span {
+  text-align: center;
+  background-color: var(--muted);
+  color: var(--destructive);
+  border-radius: var(--radius);
+  padding: var(--padding-md) var(--padding-lg);
+  font-weight: bold;
+}
+.space {
+  width: 9rem;
+}
+.info {
+  outline: 1px solid var(--foreground);
+  outline-offset: -5px;
+}

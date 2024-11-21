@@ -1,4 +1,4 @@
-import { useOnClickOutside } from '@/components/Modal/useOnClickOutside'
+import { useOnClickOutside } from '@/components/Modal/hooks/useOnClickOutside'
 import { createPortal } from 'react-dom'
 
 type PropTypes = {
@@ -11,14 +11,9 @@ export function Modal({ children, onClose, className }: PropTypes) {
   useOnClickOutside(onClose)
   const modalRoot = document.getElementById('root-modal')
   return createPortal(
-    <section
-      className={`modal-wrapper flex-center ${className}`}
-      role='none'
-      onClick={onClose}
-      onKeyDown={(e) => e.key === 'Escape' && onClose()}
-    >
-      <div className='modal-content flex-center'>
-        <button className='close-modal' onClick={onClose}>
+    <section className={`modal-wrapper flex-center ${className}`} role='none'>
+      <div className={`${className} modal-content flex-center`}>
+        <button className='close-modal' onClick={() => onClose()}>
           x
         </button>
         {children}

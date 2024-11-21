@@ -10,6 +10,14 @@
   transition: opacity 0.3s;
   opacity: 1;
 }
+.modal-wrapper div {
+  transform: scale(0.8);
+}
+div.visible.in {
+  transition: opacity 0.3s, transform 0.3s;
+  opacity: 1;
+  transform: scale(1);
+}
 .modal-content {
   position: relative;
   width: fit-content;

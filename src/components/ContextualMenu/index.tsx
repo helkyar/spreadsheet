@@ -1,7 +1,9 @@
 import { MenuButton } from '@/components/ContextualMenu/components/MenuButton'
-import { CopyIcon } from '@/components/ContextualMenu/components/ui/Copy'
-import { CutIcon } from '@/components/ContextualMenu/components/ui/Cut'
-import { PasteIcon } from '@/components/ContextualMenu/components/ui/PasteIcon'
+import {
+  CopyIcon,
+  CutIcon,
+  PasteIcon,
+} from '@/components/ContextualMenu/components/ui'
 import { selector } from '@/components/ContextualMenu/data/constants'
 import { useClipboardContextMenu } from '@/components/ContextualMenu/hooks/useClipboardContextMenu'
 import { useOnClickOutside } from '@/components/ContextualMenu/hooks/useOnClickOutside'
