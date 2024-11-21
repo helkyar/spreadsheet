@@ -60,50 +60,68 @@ export function useKeyPress(
     removeSelected()
     firstSelection.current = null
   }, [removeSelected])
-
   const generalHandler = (event: KeyboardEvent) => {
     const activeElement = document.activeElement as HTMLElement
-    if (keyGroups.tab.includes(event.key)) {
-      const isContextMenu = activeElement?.tagName === menuTag
-      if (isContextMenu) return
+
+    const handleTabKey = () => {
+      if (activeElement?.tagName === menuTag) return
       if (selectedElements) handleRemoveSelected()
-      return
     }
 
-    if (keyGroups.escape.includes(event.key)) {
+    const handleEscapeKey = () => {
       if (selectedElements) handleRemoveSelected()
-      const header = document.activeElement?.closest(headerTag) as HTMLHeader
-      const cell = document.activeElement?.closest(parentTag) as HTMLCell
+      const header = activeElement.closest(headerTag) as HTMLHeader
+      const cell = activeElement.closest(parentTag) as HTMLCell
       header?.focus()
       cell?.focus()
     }
 
-    if (keyGroups.navigation.includes(event.key) && event.ctrlKey) {
-      const isTable = activeElement?.closest('table')
-      const isHeader = activeElement?.closest('header')
-      const isTab = activeElement
-        ?.closest('section')
-        ?.className.includes('tabs-wrapper')
-      const firstCell = getCell({ x: 0, y: 0 })
-      const headerButton = document.querySelector(
-        '.header-icons label'
-      ) as HTMLButtonElement
-      const firstTab = document.querySelector(
-        '.selected-tab'
-      ) as HTMLButtonElement
+    const handleCtrlNavigationKey = () => {
+      const navigationUp = ['ArrowUp', 'ArrowRight']
+      const navigationDown = ['ArrowDown', 'ArrowLeft']
 
-      if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
-        firstCell?.focus()
-        if (isTable) headerButton?.focus()
-        if (isHeader) firstTab?.focus()
-        if (isTab) firstCell?.focus()
+      const elements = {
+        firstCell: getCell({ x: 0, y: 0 }),
+        headerButton: document.querySelector(
+          '.header-icons label'
+        ) as HTMLButtonElement,
+        firstTab: document.querySelector('.selected-tab') as HTMLButtonElement,
       }
-      if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
-        firstCell?.focus()
-        if (isTable) firstTab?.focus()
-        if (isHeader) firstCell?.focus()
-        if (isTab) headerButton?.focus()
+
+      const selectors = {
+        isTable: activeElement.closest('table'),
+        isHeader: activeElement.closest('header'),
+        isTabs: activeElement
+          .closest('section')
+          ?.className.includes('tabs-wrapper'),
       }
+
+      const focusElement = (element: HTMLElement | null) => element?.focus()
+
+      if (navigationUp.includes(event.key)) {
+        if (selectors.isTable) focusElement(elements.headerButton)
+        if (selectors.isHeader) focusElement(elements.firstTab)
+        if (selectors.isTabs) focusElement(elements.firstCell)
+      }
+      if (navigationDown.includes(event.key)) {
+        if (selectors.isTable) focusElement(elements.firstTab)
+        if (selectors.isHeader) focusElement(elements.firstCell)
+        if (selectors.isTabs) focusElement(elements.headerButton)
+      }
+    }
+
+    if (keyGroups.tab.includes(event.key)) {
+      handleTabKey()
+      return
+    }
+
+    if (keyGroups.escape.includes(event.key)) {
+      handleEscapeKey()
+      return
+    }
+
+    if (keyGroups.navigation.includes(event.key) && event.ctrlKey) {
+      handleCtrlNavigationKey()
     }
   }
 
@@ -148,10 +166,7 @@ export function useKeyPress(
     const element = document.activeElement as HTMLCell
     const key = event.key
 
-    if (
-      keyGroups.skip.includes(key) ||
-      (event.ctrlKey && keyGroups.skipCombination.includes(key))
-    ) {
+    if (keyGroups.skip.includes(key) || event.ctrlKey) {
       return
     }
 
