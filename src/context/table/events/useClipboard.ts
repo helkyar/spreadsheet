@@ -10,7 +10,6 @@ import { useEffect } from 'react'
 export const useClipboard = (selectedElements: Selected) => {
   useEffect(() => {
     const copy = (event: ClipboardEvent) => {
-      console.log('🚀 ~ copy ~ selectedElements:', selectedElements)
       if (!selectedElements) return
 
       const result = formatCellValuesToText({ elements: selectedElements })

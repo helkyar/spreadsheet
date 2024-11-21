@@ -1,5 +1,5 @@
 import { useMatrix } from '@/context/matrix/useMatrix'
-import { keyGroups, menuTag } from '@/context/table/data/constants'
+import { headerTag, keyGroups, menuTag } from '@/context/table/data/constants'
 import { useTableEvents } from '@/context/table/useTableEvents'
 import { KeyboardEvent, MouseEvent, useRef, useState } from 'react'
 
@@ -29,20 +29,36 @@ export function useHeaderEvents({ x, y }: Params) {
   const handleMouseUp = (event: MouseEvent<HTMLElement>) => {
     event.stopPropagation()
     event.preventDefault()
+
     if (event.button === 2) setOpenMenu(true)
-    if (event.pageY > 400 && x >= 0) coords.current = { y: 380 - event.pageY }
+    updatePositionOnTarget(event)
     handleSelection(event)
   }
   const handleKeyDown = (event: KeyboardEvent) => {
     if (keyGroups.execute.includes(event.key)) {
       handleSelection(event)
-      const target = event.target as HTMLElement
-      const isContextMenu = target.tagName === menuTag
-      const positionY = target.getBoundingClientRect().y
-      if (positionY > 400 && isContextMenu) {
-        coords.current = { y: 380 - positionY }
-      }
+      updatePositionOnTarget(event)
     }
+  }
+  const updatePositionOnTarget = (event: MouseEvent | KeyboardEvent) => {
+    coords.current = {}
+    const target = event.target as HTMLElement
+    const isContextMenu = target.tagName === menuTag
+    const isHeader = target.tagName === headerTag
+    const positionY = target.getBoundingClientRect().y
+    const positionX = target.getBoundingClientRect().x
+    const changeX =
+      window.innerHeight > 700 && positionY > window.innerHeight - 500
+    const changeY =
+      window.innerWidth > 600 && positionX > window.innerWidth - 400
+
+    if (changeX && isContextMenu) coords.current = { y: -370 }
+
+    if (changeX && isHeader) coords.current = { y: -370 }
+
+    if (changeY && isContextMenu) coords.current = { x: -200 }
+
+    if (changeY && isHeader) coords.current = { x: -200 }
   }
 
   return {

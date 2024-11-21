@@ -100,13 +100,13 @@ export function useKeyPress(
 
       if (navigationUp.includes(event.key)) {
         if (selectors.isTable) focusElement(elements.headerButton)
-        if (selectors.isHeader) focusElement(elements.firstTab)
-        if (selectors.isTabs) focusElement(elements.firstCell)
+        else if (selectors.isHeader) focusElement(elements.firstTab)
+        else focusElement(elements.firstCell)
       }
       if (navigationDown.includes(event.key)) {
         if (selectors.isTable) focusElement(elements.firstTab)
-        if (selectors.isHeader) focusElement(elements.firstCell)
-        if (selectors.isTabs) focusElement(elements.headerButton)
+        else if (selectors.isTabs) focusElement(elements.headerButton)
+        else focusElement(elements.firstCell)
       }
     }
 

@@ -1,1 +1,1 @@
-export const className = 'contextual-menu'
+export const selector = 'contextual-menu'

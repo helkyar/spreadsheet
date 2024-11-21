@@ -1,9 +1,4 @@
-import {
-  drag,
-  headerTag,
-  parentTag,
-  selected,
-} from '@/context/table/data/constants'
+import { drag, parentTag, selected } from '@/context/table/data/constants'
 import { HTMLCell, Selected } from '@/context/table/data/types'
 import {
   $$,
@@ -69,7 +64,8 @@ export function useSelection() {
       elements.forEach((el) => el?.classList.add(selected))
 
       const selectedArray = Array.from(getSelectedElements())
-      const hasHeader = selectedArray[0]?.tagName === headerTag
+      // const hasHeader = selectedArray[0]?.tagName !== parentTag
+      const hasHeader = false
       if (hasHeader) selectedArray.shift()
       if (selectedElements === selectedArray) return
 

@@ -1,5 +1,10 @@
 import { ContextualMenu } from '@/components/ContextualMenu'
+import { MenuButton } from '@/components/ContextualMenu/components/MenuButton'
+import { ArrowLeftIcon } from '@/components/ContextualMenu/components/ui/ArrowLeft'
+import { ArrowRightIcon } from '@/components/ContextualMenu/components/ui/ArrowRight'
+import { DeleteIcon } from '@/components/ContextualMenu/components/ui/Delete'
 import { useHeaderEvents } from '@/components/Spreadsheet/hooks/useHeaderEvents'
+import useMountTransition from '@/logic/useMountTransition'
 
 type PropTypes = {
   readonly label: string | number
@@ -23,6 +28,7 @@ export function CellHeader({ label, x, y }: PropTypes) {
     addRow,
     setOpenMenu,
   } = useHeaderEvents({ x, y })
+  const isMounted = useMountTransition(openMenu)
 
   if (!y) {
     return (
@@ -36,11 +42,6 @@ export function CellHeader({ label, x, y }: PropTypes) {
     )
   }
 
-  let headerType = ''
-  if (col) headerType = 'col'
-  else if (row) headerType = 'row'
-  const className = `${headerType} flex-center header-contextmenu`
-
   return (
     <th
       onMouseUp={handleMouseUp}
@@ -52,32 +53,55 @@ export function CellHeader({ label, x, y }: PropTypes) {
       <button
         onClick={() => setOpenMenu(true)}
         onKeyDown={handleKeyDown}
-        className={className}
+        className={`${col && 'col'} ${
+          row && 'row'
+        } flex-center header-contextmenu`}
       >
         {label}
       </button>
 
-      {openMenu && (
+      {(openMenu || isMounted) && (
         <ContextualMenu
           onClose={() => setOpenMenu(false)}
-          row={row}
+          className={`${isMounted && 'in'} ${openMenu && 'visible'}`}
           coords={coords.current}
+          row={row}
+          col={col}
           isSelected
         >
           <section>
-            <button onClick={handleRemove(index - indexCorrection)}>
-              delete
-            </button>
+            <MenuButton
+              label='delete'
+              onClick={handleRemove(index - indexCorrection)}
+              Icon={<DeleteIcon />}
+            />
+
             {col && (
               <>
-                <button onClick={addColumn(y - 1)}>add left</button>
-                <button onClick={addColumn(y)}>add right</button>
+                <MenuButton
+                  label='add left'
+                  onClick={addColumn(y - 1)}
+                  Icon={<ArrowLeftIcon />}
+                />
+                <MenuButton
+                  label='add right'
+                  onClick={addColumn(y)}
+                  Icon={<ArrowRightIcon />}
+                />
               </>
             )}
             {row && (
               <>
-                <button onClick={addRow(x)}>add above</button>
-                <button onClick={addRow(x + 1)}>add below</button>
+                <MenuButton
+                  label='add above'
+                  onClick={addRow(x)}
+                  Icon={<ArrowLeftIcon />}
+                />
+                <MenuButton
+                  label='add below'
+                  onClick={addRow(x + 1)}
+                  Icon={<ArrowRightIcon />}
+                />
               </>
             )}
           </section>
