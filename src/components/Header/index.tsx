@@ -13,6 +13,7 @@ import { parseFilesToMatrix } from '@/context/table/utils/file'
 import { useMatrix } from '@/context/matrix/useMatrix'
 import { ChangeEvent, KeyboardEvent, useState } from 'react'
 import { keyGroups } from '@/context/table/data/constants'
+import useMountTransition from '@/logic/useMountTransition'
 
 export function Header() {
   const { save, download, createNewMatrix } = useMatrix()
@@ -20,6 +21,7 @@ export function Header() {
 
   const [openModal, setOpenModal] = useState(false)
   const toggleModal = () => setOpenModal((open) => !open)
+  const isMounted = useMountTransition(openModal)
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { files } = event.target
@@ -66,9 +68,14 @@ export function Header() {
           aria-label='download'
         >
           <Download />
-          <Modal isOpen={openModal} onClose={toggleModal}>
-            <DownloadOptions onSubmit={handleDownload} />
-          </Modal>
+          {(openModal || isMounted) && (
+            <Modal
+              className={`${isMounted && 'in'} ${openModal && 'visible'}`}
+              onClose={toggleModal}
+            >
+              <DownloadOptions onSubmit={handleDownload} />
+            </Modal>
+          )}
         </button>
 
         <button

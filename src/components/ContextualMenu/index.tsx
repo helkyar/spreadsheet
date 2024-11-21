@@ -1,22 +1,29 @@
-import { className } from '@/components/ContextualMenu/data/constants'
+import { MenuButton } from '@/components/ContextualMenu/components/MenuButton'
+import { CopyIcon } from '@/components/ContextualMenu/components/ui/Copy'
+import { CutIcon } from '@/components/ContextualMenu/components/ui/Cut'
+import { PasteIcon } from '@/components/ContextualMenu/components/ui/PasteIcon'
+import { selector } from '@/components/ContextualMenu/data/constants'
 import { useClipboardContextMenu } from '@/components/ContextualMenu/hooks/useClipboardContextMenu'
 import { useOnClickOutside } from '@/components/ContextualMenu/hooks/useOnClickOutside'
 import { keyGroups } from '@/context/table/data/constants'
 import { KeyboardEvent, MouseEvent } from 'react'
 
 type PropTypes = {
+  readonly col?: boolean
   readonly row?: boolean
   readonly children?: React.ReactNode
   readonly coords?: { x?: number; y?: number }
   readonly isSelected: boolean
   readonly onClose: () => void
+  readonly className: string | boolean
 }
 
 export function ContextualMenu({
   children,
+  col,
   row,
   coords,
-  isSelected,
+  className,
   onClose,
 }: PropTypes) {
   useOnClickOutside(onClose)
@@ -34,15 +41,15 @@ export function ContextualMenu({
     const menu = handleEvent(event)
     if (
       keyGroups.execute.includes(event.key) &&
-      menu?.className.includes(className)
+      menu?.className.includes(selector)
     ) {
-      setTimeout(() => onClose(), 10)
+      onClose()
     }
   }
 
   const handleClick = (event: MouseEvent | KeyboardEvent) => {
     const menu = handleEvent(event)
-    if (menu?.className.includes(className)) {
+    if (menu?.className.includes(selector)) {
       setTimeout(() => onClose(), 10)
     }
   }
@@ -51,24 +58,27 @@ export function ContextualMenu({
     <div
       onMouseUp={(e) => e.stopPropagation()}
       style={{ top: coords?.y, left: coords?.x }}
-      className={`${className} ${row ? 'row' : ''}`}
+      className={`${selector} ${className} ${col && 'col'} ${row && 'row'}`}
       role='none'
     >
       <section onClick={handleClick} onKeyDown={handleKey} role='none'>
-        <button onMouseDown={copyExpression} disabled={!isSelected}>
-          copy expression
-        </button>
-        <button onMouseDown={copyValue} disabled={!isSelected}>
-          copy value
-        </button>
-        <button onMouseDown={cutExpression} disabled={!isSelected}>
-          cut expression
-        </button>
-        <button onMouseDown={cutValue} disabled={!isSelected}>
-          cut value
-        </button>
-
-        <button onMouseDown={paste}>paste</button>
+        <MenuButton
+          label='copy expression'
+          onClick={copyExpression}
+          Icon={<CopyIcon />}
+        />
+        <MenuButton
+          label='copy value'
+          onClick={copyValue}
+          Icon={<CopyIcon />}
+        />
+        <MenuButton
+          label='cut expression'
+          onClick={cutExpression}
+          Icon={<CutIcon />}
+        />
+        <MenuButton label='cut value' onClick={cutValue} Icon={<CutIcon />} />
+        <MenuButton label='paste' onClick={paste} Icon={<PasteIcon />} />
       </section>
       {children}
     </div>

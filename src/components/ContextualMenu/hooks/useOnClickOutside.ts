@@ -1,25 +1,29 @@
-import { className } from '@/components/ContextualMenu/data/constants'
+import { selector } from '@/components/ContextualMenu/data/constants'
+import { keyGroups } from '@/context/table/data/constants'
 import { useEffect } from 'react'
 
 export function useOnClickOutside(handler: () => void) {
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement
-      if (!target.closest(`.${className}`)) {
+      if (!target.closest(`.${selector}`)) {
         handler()
       }
     }
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (keyGroups.escape.includes(event.key)) {
         handler()
       }
     }
 
     document.addEventListener('keydown', handleKeyDown)
-    document.addEventListener('mousedown', handleClick)
+    setTimeout(() => document.addEventListener('mousedown', handleClick), 0)
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
-      document.removeEventListener('mousedown', handleClick)
+      setTimeout(
+        () => document.removeEventListener('mousedown', handleClick),
+        0
+      )
     }
   }, [handler])
 }

@@ -12,6 +12,9 @@
   border: none;
   padding: var(--padding-sm) var(--padding-md);
 }
+.cell-text {
+  overflow: auto;
+}
 
 .cell-input {
   opacity: 0;
@@ -45,44 +48,48 @@
   border-right: 2px dashed var(--selected-cell-accent);
 }
 
-th:hover .header-contextmenu {
-  outline: 1px solid var(--cell-outline);
-  display: flex;
-  gap: 0.5rem;
-  justify-content: space-between;
-  &::after {
-    opacity: 1;
-  }
-}
-
 .header-contextmenu {
   margin: 0 auto;
-  width: 50%;
   border-radius: var(--radius);
   position: relative;
-  padding: 0 var(--padding-md);
+  padding: var(--padding-sm) var(--padding-md);
   background-color: transparent;
+  outline: 1px solid transparent;
 
   &::after {
     opacity: 0;
     content: '';
     position: absolute;
     right: 0.5rem;
-    top: 0.5rem;
+    top: 0.4rem;
     border: 0.25em solid transparent;
     border-top-color: var(--foreground);
-
-    &:hover {
-      border-top-color: var(--foreground);
-    }
   }
 }
-.header-contextmenu.row {
+
+th:hover .header-contextmenu,
+th:focus .header-contextmenu,
+.header-contextmenu:focus {
+  outline: 1px solid var(--cell-outline);
+  justify-content: space-around;
+  padding-right: var(--padding-lg);
+  width: 50%;
+  transition: outline-color 0.3s;
+  &::after {
+    transition: opacity 0.3s;
+    opacity: 1;
+  }
+}
+
+th:hover .header-contextmenu.row,
+th:focus .header-contextmenu.row,
+.header-contextmenu.row:focus {
   width: 100%;
   &::after {
     right: 0.5rem;
   }
 }
+
 .tabs-wrapper {
   border-top: var(--background) 1px solid;
   display: flex;
@@ -111,6 +118,9 @@ th:hover .header-contextmenu {
   border-radius: unset;
   background: var(--selected-cell-background);
   color: var(--selected-cell-foreground);
+}
+.tab:focus-visible {
+  border: 1px solid var(--foreground);
 }
 
 .remove-tab {

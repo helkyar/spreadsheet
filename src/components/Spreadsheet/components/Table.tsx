@@ -1,5 +1,6 @@
 import { ContextualMenu } from '@/components/ContextualMenu'
 import { useContextMenu } from '@/components/ContextualMenu/hooks/useContextMenu'
+import useMountTransition from '@/logic/useMountTransition'
 import { useState } from 'react'
 
 type PropTypes = {
@@ -8,6 +9,7 @@ type PropTypes = {
 
 export function Table({ children }: PropTypes) {
   const [openMenu, setOpenMenu] = useState(false)
+  const isMounted = useMountTransition(openMenu)
   const { setMenuPosition, coords, isSelected } = useContextMenu(() =>
     setOpenMenu(true)
   )
@@ -19,8 +21,9 @@ export function Table({ children }: PropTypes) {
     >
       <table aria-label='spreadsheet'>{children}</table>
 
-      {openMenu && (
+      {(openMenu || isMounted) && (
         <ContextualMenu
+          className={`${isMounted && 'in'} ${openMenu && 'visible'}`}
           onClose={() => setOpenMenu(false)}
           coords={coords}
           isSelected={isSelected}

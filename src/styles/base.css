@@ -19,6 +19,14 @@ body {
   background-color: var(--background);
   color: var(--foreground);
 }
+body,
+th,
+td,
+input,
+button,
+label {
+  transition: background-color 0.2s, color 0.3s linear;
+}
 header {
   display: flex;
   justify-content: space-between;
@@ -65,12 +73,12 @@ table {
 thead {
   position: sticky;
   top: 0;
-  z-index: 11;
+  z-index: 10;
 }
 tbody th {
   position: sticky;
   left: 0;
-  z-index: 10;
+  z-index: 11;
 }
 
 /* All column th except first */
@@ -100,7 +108,7 @@ td {
 td:focus,
 th:focus {
   outline: 1px solid var(--cell-outline);
-  outline-offset: -1px;
+  outline-offset: -2px;
 }
 
 /* Scroll Bar ========================================================== */
