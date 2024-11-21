@@ -4,22 +4,22 @@ import { useEffect } from 'react'
 export function useOnClickOutside(handler: () => void) {
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
-      event.stopPropagation()
       const target = event.target as HTMLElement
-      const parent = target.parentElement as HTMLElement
-      const menu = parent.parentElement as HTMLElement
-      if (
-        target?.className.includes(className) ||
-        parent?.className.includes(className) ||
-        menu?.className.includes(className)
-      ) {
-        return
+      if (!target.closest(`.${className}`)) {
+        handler()
       }
-      handler()
     }
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        handler()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
     document.addEventListener('mousedown', handleClick)
     return () => {
+      document.removeEventListener('keydown', handleKeyDown)
       document.removeEventListener('mousedown', handleClick)
     }
-  })
+  }, [handler])
 }

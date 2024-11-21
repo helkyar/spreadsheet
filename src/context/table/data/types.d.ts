@@ -1,8 +1,8 @@
-import { MouseEvent } from 'react'
+import { KeyboardEvent, MouseEvent } from 'react'
 
 type TableContext = {
-  selectColumn: (index: number) => (event: MouseEvent) => void
-  selectRow: (index: number) => (event: MouseEvent) => void
+  selectColumn: (index: number) => (event: MouseEvent | KeyboardEvent) => void
+  selectRow: (index: number) => (event: MouseEvent | KeyboardEvent) => void
   selectedElements: Selected
 }
 export type HTMLCell = HTMLTableCellElement

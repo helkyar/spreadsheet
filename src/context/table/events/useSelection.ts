@@ -13,7 +13,13 @@ import {
   getOutput,
 } from '@/context/table/utils/cell'
 
-import { MouseEvent, useCallback, useEffect, useState } from 'react'
+import {
+  KeyboardEvent,
+  MouseEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 
 export function useSelection() {
   const [selectedElements, setSelectedElements] = useState<Selected>(null)
@@ -65,8 +71,7 @@ export function useSelection() {
       const selectedArray = Array.from(getSelectedElements())
       const hasHeader = selectedArray[0]?.tagName === headerTag
       if (hasHeader) selectedArray.shift()
-      // FIX_ME:
-      if (selectedElements?.every((el, i) => el === selectedArray[i])) return
+      if (selectedElements === selectedArray) return
 
       setSelectedElements(selectedArray)
     },
@@ -78,21 +83,22 @@ export function useSelection() {
     setSelectedElements(null)
   }, [getSelectedElements])
 
-  const selectColumn = (index: number) => (event: MouseEvent) => {
+  const selectColumn =
+    (index: number) => (event: MouseEvent | KeyboardEvent) => {
+      event.stopPropagation()
+      removeSelection()
+      const element = event.currentTarget as Element
+      const headerElements = [element, ...$$(`tr td:nth-child(${index + 1})`)]
+      const allElements = [element, ...$$(parentTag)]
+
+      if (index === 0) addSelectedClassToElements(allElements)
+      else addSelectedClassToElements(headerElements)
+    }
+
+  const selectRow = (index: number) => (event: MouseEvent | KeyboardEvent) => {
     event.stopPropagation()
     removeSelection()
-    const element = event.currentTarget
-    const headerElements = [element, ...$$(`tr td:nth-child(${index + 1})`)]
-    const allElements = [event.currentTarget, ...$$(parentTag)]
-
-    if (index === 0) addSelectedClassToElements(allElements)
-    else addSelectedClassToElements(headerElements)
-  }
-
-  const selectRow = (index: number) => (event: MouseEvent) => {
-    event.stopPropagation()
-    removeSelection()
-    const element = event.currentTarget
+    const element = event.currentTarget as Element
     const rowCells = $$(`tr:nth-child(${index + 1}) td`)
     addSelectedClassToElements([element, ...rowCells])
   }

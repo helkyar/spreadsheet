@@ -11,7 +11,7 @@ export function TableBody({ matrix }: PropTypes) {
     <tbody>
       {matrix?.map((row, x) => (
         <tr key={row[0].id}>
-          <CellHeader label={x + 1} row index={x} />
+          <CellHeader label={x + 1} x={x} y={-1} />
 
           {row.map((cell, y) => (
             <Cell key={cell.id} cellValues={cell} x={x} y={y} />

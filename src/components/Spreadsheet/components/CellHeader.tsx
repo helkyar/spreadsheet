@@ -1,48 +1,40 @@
 import { ContextualMenu } from '@/components/ContextualMenu'
-import { useContextMenu } from '@/components/ContextualMenu/hooks/useContextMenu'
-import { useMatrix } from '@/context/matrix/useMatrix'
-import { useTableEvents } from '@/context/table/useTableEvents'
-import { KeyboardEvent, MouseEvent, useState } from 'react'
+import { useHeaderEvents } from '@/components/Spreadsheet/hooks/useHeaderEvents'
 
 type PropTypes = {
   readonly label: string | number
-  readonly index: number
-  readonly col?: boolean
-  readonly row?: boolean
+  readonly x: number
+  readonly y: number
 }
 
-const eventKeys = ['Enter', 'Space']
+export function CellHeader({ label, x, y }: PropTypes) {
+  const {
+    index,
+    row,
+    col,
+    indexCorrection,
+    openMenu,
+    coords,
+    selectColumn,
+    handleMouseUp,
+    handleKeyDown,
+    handleRemove,
+    addColumn,
+    addRow,
+    setOpenMenu,
+  } = useHeaderEvents({ x, y })
 
-export function CellHeader({ label, index, col, row }: PropTypes) {
-  const [openMenu, setOpenMenu] = useState(false)
-  const { coords, setCoords } = useContextMenu()
-
-  const toggleMenu = () => setOpenMenu((open) => !open)
-
-  const { removeColumn, removeRow, addColumn, addRow } = useMatrix()
-  const { selectColumn, selectRow } = useTableEvents()
-
-  const handleRemove = col ? removeColumn : removeRow
-  const indexCorrection = col ? 1 : 0
-
-  const handleKeyDown = (event: KeyboardEvent) => {
-    event.stopPropagation()
-    if (eventKeys.includes(event.key)) {
-      toggleMenu()
-    }
+  if (!y) {
+    return (
+      <th
+        onMouseUp={selectColumn(y)}
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
+        data-x={x}
+        data-y={y}
+      />
+    )
   }
-
-  const handleMouseUp = (event: MouseEvent<HTMLElement>) => {
-    event.stopPropagation()
-    event.preventDefault()
-    if (event.button === 2) setOpenMenu(true)
-    selectRow(index)(event)
-    if (row) if (event.pageY > 400) setCoords({ y: 380 - event.pageY })
-
-    if (col) selectColumn(index)(event)
-  }
-
-  if (!index && col) return <th onMouseUp={handleMouseUp} />
 
   let headerType = ''
   if (col) headerType = 'col'
@@ -50,10 +42,16 @@ export function CellHeader({ label, index, col, row }: PropTypes) {
   const className = `${headerType} flex-center header-contextmenu`
 
   return (
-    <th onMouseUp={handleMouseUp} tabIndex={0}>
+    <th
+      onMouseUp={handleMouseUp}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      data-x={x}
+      data-y={y}
+    >
       <button
-        onKeyDown={handleKeyDown}
         onClick={() => setOpenMenu(true)}
+        onKeyDown={handleKeyDown}
         className={className}
       >
         {label}
@@ -63,7 +61,7 @@ export function CellHeader({ label, index, col, row }: PropTypes) {
         <ContextualMenu
           onClose={() => setOpenMenu(false)}
           row={row}
-          coords={coords}
+          coords={coords.current}
           isSelected
         >
           <section>
@@ -72,14 +70,14 @@ export function CellHeader({ label, index, col, row }: PropTypes) {
             </button>
             {col && (
               <>
-                <button onClick={addColumn(index - 1)}>add left</button>
-                <button onClick={addColumn(index)}>add right</button>
+                <button onClick={addColumn(y - 1)}>add left</button>
+                <button onClick={addColumn(y)}>add right</button>
               </>
             )}
             {row && (
               <>
-                <button onClick={addRow(index)}>add above</button>
-                <button onClick={addRow(index + 1)}>add below</button>
+                <button onClick={addRow(x)}>add above</button>
+                <button onClick={addRow(x + 1)}>add below</button>
               </>
             )}
           </section>

@@ -36,10 +36,10 @@
 .action-button {
   border: 1px solid var(--foreground);
   padding: var(--padding-lg);
-  background-color: var(--muted);
-  color: var(--muted-foreground);
+  background-color: var(--selected-cell-background);
+  color: var(--selected-cell-foreground);
   &:hover {
+    opacity: 0.8;
     background-color: var(--selected-cell-background);
-    color: var(--selected-cell-foreground);
   }
 }

@@ -6,15 +6,12 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { THEME_KEY } from '@/components/Header/logic/useToggleDarkTheme'
 
 describe('Header component with context', () => {
-  // let container: HTMLElement
   beforeAll(() => {
-    // const result =
     render(
       <MatrixProvider rows={10} cols={10}>
         <Header />
       </MatrixProvider>
     )
-    // container = result.container
   })
   it('should save the matrix on re-render', () => {
     const saveBtn = screen.getAllByRole('button')[1]

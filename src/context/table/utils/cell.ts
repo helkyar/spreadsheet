@@ -8,6 +8,7 @@ import {
 } from '@/context/table/data/constants'
 import {
   HTMLCell,
+  HTMLHeader,
   HTMLInput,
   HTMLText,
   Selected,
@@ -24,18 +25,22 @@ export const getOutput = (element: HTMLCell) =>
 
 export const getText = (element: HTMLCell) => getOutput(element).innerText
 
-export const getCellCoordinates = (element: HTMLCell) => {
+export const getHeaderIndex = (element: HTMLHeader) => {
+  const { i } = element.dataset
+  return Number(i)
+}
+export const getCellCoordinates = (element: HTMLCell | HTMLHeader) => {
   const { x: xString = -1, y: yString = -1 } = element.dataset
   const x = Number(xString)
   const y = Number(yString)
   return { x, y }
 }
 
-export const getCell = ({ x, y }: { x: number; y: number }) =>
-  $(`[data-x="${x}"][data-y="${y}"]`) as HTMLCell
+export const getCell = ({ x, y }: { x: number; y: number }) => {
+  return $(`[data-x="${x}"][data-y="${y}"]`) as HTMLCell
+}
 
 export const focusCell = ({ x, y }: { x: number; y: number }) => {
-  if (x < 0 || y < 0 /* || x > rows.length || y > columns.length */) return
   const cell = getCell({ x, y })
   cell?.focus()
   return cell

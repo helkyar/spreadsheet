@@ -8,7 +8,6 @@
   position: absolute;
   top: -100%;
   background-color: var(--selected-cell-background);
-  max-height: 100px;
 }
 
 * {
@@ -80,6 +79,7 @@ thead th:nth-child(n + 2) {
 }
 
 th {
+  user-select: none;
   border: 1px solid var(--border);
   outline: 1px inset var(--border);
   background-color: var(--muted);
@@ -97,7 +97,8 @@ td {
   min-width: 3.12rem;
 }
 
-td:focus {
+td:focus,
+th:focus {
   outline: 1px solid var(--cell-outline);
   outline-offset: -1px;
 }

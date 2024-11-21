@@ -11,7 +11,8 @@ import { Modal } from '@/components/Modal'
 import { DownloadOptions as DownloadOptionsType } from '@/context/table/data/types'
 import { parseFilesToMatrix } from '@/context/table/utils/file'
 import { useMatrix } from '@/context/matrix/useMatrix'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, KeyboardEvent, useState } from 'react'
+import { keyGroups } from '@/context/table/data/constants'
 
 export function Header() {
   const { save, download, createNewMatrix } = useMatrix()
@@ -30,15 +31,23 @@ export function Header() {
     toggleModal()
   }
 
+  const handleKey = (event: KeyboardEvent) => {
+    if (keyGroups.execute.includes(event.key)) {
+      document.getElementById('upload')?.click()
+    }
+  }
+
   return (
     <header>
       <h1>Computed File</h1>
 
       <section className='header-icons flex-center'>
         <label
+          tabIndex={0}
           aria-label='upload'
           className='btn-round flex-center button'
           htmlFor='upload'
+          onKeyDown={handleKey}
         >
           <Upload />
           <input

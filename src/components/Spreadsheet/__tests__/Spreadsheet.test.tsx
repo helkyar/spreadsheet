@@ -18,7 +18,7 @@ describe('Spreadsheet component with context', () => {
   it('should render the component with specified parameters from matrix', () => {
     expect(screen.getAllByText(/[A-J]/).length).toBe(10)
     // 10 rows + 1 sheet name
-    expect(screen.getAllByText(/[0-9]{1,2}/).length).toBe(11)
+    expect(screen.getAllByText(/\d{1,2}/).length).toBe(11)
     expect(document.getElementsByTagName(parentTag).length).toBe(100)
     expect(screen.queryByText('K')).toBeFalsy()
     expect(screen.queryByText('0')).toBeFalsy()

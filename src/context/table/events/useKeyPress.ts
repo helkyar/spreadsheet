@@ -1,35 +1,46 @@
-import { inputTag, parentTag } from '@/context/table/data/constants'
-import { HTMLCell, HTMLInput, Selected } from '@/context/table/data/types'
+import {
+  headerTag,
+  inputTag,
+  keyGroups,
+  menuTag,
+  parentTag,
+} from '@/context/table/data/constants'
+import {
+  HTMLCell,
+  HTMLHeader,
+  HTMLInput,
+  Selected,
+} from '@/context/table/data/types'
 import {
   focusCell,
+  getCell,
   getCellCoordinates,
   getInput,
   updateSelectedCellsValues,
 } from '@/context/table/utils/cell'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
-type TagsWithHandlers = typeof parentTag | typeof inputTag | 'always'
+type TagsWithHandlers =
+  | typeof headerTag
+  | typeof parentTag
+  | typeof inputTag
+  | 'always'
 
-const allowedTagHandlers: TagsWithHandlers[] = [parentTag, inputTag]
+const allowedTagHandlers: TagsWithHandlers[] = [parentTag, inputTag, headerTag]
 
-const keyGroups = {
-  skip: ['Control', 'Alt', 'Shift', 'Escape', 'Tab'],
-  skipCombination: ['c', 'C', 'z', 'Z', 'v', 'V', 'x', 'X'],
-  escape: ['Escape'],
-  delete: ['Backspace', 'Delete'],
-  navigation: ['ArrowLeft', 'ArrowDown', 'ArrowUp', 'ArrowRight'],
-  execute: ['Enter'],
-  tab: ['Tab'],
-}
-
-const arrowNavigation = (event: KeyboardEvent, element: HTMLCell) => {
+const arrowNavigation = (
+  event: KeyboardEvent,
+  element: HTMLCell | HTMLHeader
+) => {
   const { x, y } = getCellCoordinates(element)
 
   if (event.key === 'ArrowDown') {
-    return focusCell({ x: x + 1, y })
+    const finalY = x < 0 ? y - 1 : y // header
+    return focusCell({ x: x + 1, y: finalY })
   }
   if (event.key === 'ArrowUp') {
-    return focusCell({ x: x - 1, y })
+    const finalY = x === 0 ? y + 1 : y // header
+    return focusCell({ x: x - 1, y: finalY })
   }
   if (event.key === 'ArrowRight') {
     return focusCell({ x, y: y + 1 })
@@ -49,14 +60,75 @@ export function useKeyPress(
     removeSelected()
     firstSelection.current = null
   }, [removeSelected])
-
   const generalHandler = (event: KeyboardEvent) => {
-    if (keyGroups.tab.includes(event.key)) {
+    const activeElement = document.activeElement as HTMLElement
+
+    const handleTabKey = () => {
+      if (activeElement?.tagName === menuTag) return
       if (selectedElements) handleRemoveSelected()
+    }
+
+    const handleEscapeKey = () => {
+      if (selectedElements) handleRemoveSelected()
+      const header = activeElement.closest(headerTag) as HTMLHeader
+      const cell = activeElement.closest(parentTag) as HTMLCell
+      header?.focus()
+      cell?.focus()
+    }
+
+    const handleCtrlNavigationKey = () => {
+      const navigationUp = ['ArrowUp', 'ArrowRight']
+      const navigationDown = ['ArrowDown', 'ArrowLeft']
+
+      const elements = {
+        firstCell: getCell({ x: 0, y: 0 }),
+        headerButton: document.querySelector(
+          '.header-icons label'
+        ) as HTMLButtonElement,
+        firstTab: document.querySelector('.selected-tab') as HTMLButtonElement,
+      }
+
+      const selectors = {
+        isTable: activeElement.closest('table'),
+        isHeader: activeElement.closest('header'),
+        isTabs: activeElement
+          .closest('section')
+          ?.className.includes('tabs-wrapper'),
+      }
+
+      const focusElement = (element: HTMLElement | null) => element?.focus()
+
+      if (navigationUp.includes(event.key)) {
+        if (selectors.isTable) focusElement(elements.headerButton)
+        if (selectors.isHeader) focusElement(elements.firstTab)
+        if (selectors.isTabs) focusElement(elements.firstCell)
+      }
+      if (navigationDown.includes(event.key)) {
+        if (selectors.isTable) focusElement(elements.firstTab)
+        if (selectors.isHeader) focusElement(elements.firstCell)
+        if (selectors.isTabs) focusElement(elements.headerButton)
+      }
+    }
+
+    if (keyGroups.tab.includes(event.key)) {
+      handleTabKey()
+      return
+    }
+
+    if (keyGroups.escape.includes(event.key)) {
+      handleEscapeKey()
+      return
+    }
+
+    if (keyGroups.navigation.includes(event.key) && event.ctrlKey) {
+      handleCtrlNavigationKey()
     }
   }
 
-  const handleNavigationKey = (event: KeyboardEvent, cell: HTMLCell) => {
+  const handleNavigationKey = (
+    event: KeyboardEvent,
+    cell: HTMLCell | HTMLHeader
+  ) => {
     if (selectedElements) handleRemoveSelected()
     arrowNavigation(event, cell)
   }
@@ -94,20 +166,12 @@ export function useKeyPress(
     const element = document.activeElement as HTMLCell
     const key = event.key
 
-    if (
-      keyGroups.skip.includes(key) ||
-      (event.ctrlKey && keyGroups.skipCombination.includes(key))
-    ) {
+    if (keyGroups.skip.includes(key) || event.ctrlKey) {
       return
     }
 
     if (keyGroups.execute.includes(key)) {
       getInput(element).focus()
-      return
-    }
-
-    if (keyGroups.escape.includes(key) && selectedElements) {
-      handleRemoveSelected()
       return
     }
 
@@ -132,6 +196,14 @@ export function useKeyPress(
     input.focus()
   }
 
+  const headerHandler = (event: KeyboardEvent) => {
+    const element = document.activeElement as HTMLHeader
+    const key = event.key
+    if (keyGroups.navigation.includes(key)) {
+      handleNavigationKey(event, element)
+    }
+  }
+
   const handleKeyboardEvent: Record<
     TagsWithHandlers,
     (event: KeyboardEvent) => void
@@ -139,6 +211,7 @@ export function useKeyPress(
     () => ({
       [inputTag]: inputHandler,
       [parentTag]: cellHandler,
+      [headerTag]: headerHandler,
       always: generalHandler,
     }),
     [handleRemoveSelected, selectedElements, selectArea]

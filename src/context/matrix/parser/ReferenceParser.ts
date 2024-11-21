@@ -5,12 +5,17 @@ import {
   MatrixData,
 } from '@/context/matrix/parser/AbstractParser'
 import { EVAL_CODE } from '@/context/matrix/parser/constants'
+import { isPolluted, safeEval } from '@/context/matrix/parser/eval'
 
 export class ReferenceParser extends AbstractParser {
   parse({ id, expression, matrix }: MatrixData) {
     const referencePattern = /([A-Z]{1,3}\d{1,7})/g
     const referenceFound = expression.match(referencePattern)
-    const refArray = referenceFound!.filter(
+    if (!referenceFound) {
+      return super.parse({ id, expression, matrix })
+    }
+
+    const refArray = referenceFound.filter(
       (ref, i, self) => i === self.findIndex((r) => r === ref)
     )
 
@@ -30,8 +35,10 @@ export class ReferenceParser extends AbstractParser {
     expression: string
     refArray: string[]
   }) {
-    let error = ''
+    let error: string | null = null
     const refIndexArray = this.generateCoordinatesFromReferences(refArray)
+    if (isPolluted(expression)) return '##Error: security risk'
+
     const formula = `(function(){
             ${refIndexArray
               ?.map((cell) => {
@@ -46,7 +53,8 @@ export class ReferenceParser extends AbstractParser {
             return %{expression}%
           })()`
 
-    return formula.replace('%{expression}%', error ?? expression)
+    if (error) return error
+    return formula.replace('%{expression}%', expression)
   }
 
   private findCyclicReferences({
@@ -113,10 +121,6 @@ export class ReferenceParser extends AbstractParser {
 
   private evaluateInput(expression: string) {
     if (expression.startsWith('##Error')) return expression
-    try {
-      return eval(expression)
-    } catch (error) {
-      return `##Error: ${error}`
-    }
+    return safeEval(expression, true)
   }
 }
