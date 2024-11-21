@@ -22,7 +22,8 @@
 
   &:hover,
   &:focus-visible,
-  &:active {
+  &:active,
+  &:focus-within {
     background-color: var(--muted);
     outline: var(--muted-foreground) solid 1px;
   }

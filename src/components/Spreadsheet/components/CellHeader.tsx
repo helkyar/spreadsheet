@@ -3,6 +3,7 @@ import { MenuButton } from '@/components/ContextualMenu/components/MenuButton'
 import { ArrowLeftIcon } from '@/components/ContextualMenu/components/ui/ArrowLeft'
 import { ArrowRightIcon } from '@/components/ContextualMenu/components/ui/ArrowRight'
 import { DeleteIcon } from '@/components/ContextualMenu/components/ui/Delete'
+import { selector } from '@/components/ContextualMenu/data/constants'
 import { useHeaderEvents } from '@/components/Spreadsheet/hooks/useHeaderEvents'
 import useMountTransition from '@/logic/useMountTransition'
 
@@ -55,7 +56,7 @@ export function CellHeader({ label, x, y }: PropTypes) {
         onKeyDown={handleKeyDown}
         className={`${col && 'col'} ${
           row && 'row'
-        } flex-center header-contextmenu`}
+        } flex-center header-${selector}`}
       >
         {label}
       </button>
@@ -67,7 +68,6 @@ export function CellHeader({ label, x, y }: PropTypes) {
           coords={coords.current}
           row={row}
           col={col}
-          isSelected
         >
           <section>
             <MenuButton

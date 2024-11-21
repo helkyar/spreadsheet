@@ -48,7 +48,7 @@
   border-right: 2px dashed var(--selected-cell-accent);
 }
 
-.header-contextmenu {
+.header-contextual-menu {
   margin: 0 auto;
   border-radius: var(--radius);
   position: relative;
@@ -67,9 +67,9 @@
   }
 }
 
-th:hover .header-contextmenu,
-th:focus .header-contextmenu,
-.header-contextmenu:focus {
+th:hover .header-contextual-menu,
+th:focus .header-contextual-menu,
+.header-contextual-menu:focus {
   outline: 1px solid var(--cell-outline);
   justify-content: space-around;
   padding-right: var(--padding-lg);
@@ -81,9 +81,9 @@ th:focus .header-contextmenu,
   }
 }
 
-th:hover .header-contextmenu.row,
-th:focus .header-contextmenu.row,
-.header-contextmenu.row:focus {
+th:hover .header-contextual-menu.row,
+th:focus .header-contextual-menu.row,
+.header-contextual-menu.row:focus {
   width: 100%;
   &::after {
     right: 0.5rem;

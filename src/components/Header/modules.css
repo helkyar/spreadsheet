@@ -2,13 +2,21 @@
 .header-icons {
   flex-wrap: wrap;
 }
+.header-icons label {
+  overflow: hidden;
+  position: relative;
+}
+.header-icons label svg {
+  z-index: 1;
+  position: absolute;
+}
 
 .icon-fill {
   fill: var(--foreground);
 }
 
 .upload-input {
-  display: none;
+  opacity: 0;
 }
 
 /* DOWNLOAD FORM ================================================== */
@@ -60,7 +68,7 @@
 .space {
   width: 9rem;
 }
-.info {
+/* .info {
   outline: 1px solid var(--foreground);
   outline-offset: -5px;
-}
+} */
