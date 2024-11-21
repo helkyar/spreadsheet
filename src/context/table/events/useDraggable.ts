@@ -49,15 +49,6 @@ export function useDraggable(
       event.preventDefault()
     }
 
-    const handleDropFromDesktop = (event: DragEvent) => {
-      const { dataTransfer } = event
-
-      if (dataTransfer?.types.includes('Files')) {
-        const { files } = dataTransfer
-        parseFilesToMatrix(files, createNewMatrix)
-      }
-    }
-
     const handleDrop = (event: DragEvent) => {
       event.preventDefault()
       handleDropFromDesktop(event)
@@ -87,6 +78,15 @@ export function useDraggable(
       finalCell.focus()
     }
 
+    const handleDropFromDesktop = (event: DragEvent) => {
+      const { dataTransfer } = event
+
+      if (dataTransfer?.types.includes('Files')) {
+        const { files } = dataTransfer
+        parseFilesToMatrix(files, createNewMatrix)
+      }
+    }
+
     const handleDragStart = (event: DragEvent) => {
       if (!selectedElements) return
       const ghost = $('#ghost')
@@ -114,9 +114,9 @@ export function useDraggable(
     }
 
     const handleDragEnd = () => {
-      if (!selectedElements) return
-
       $('#ghost').innerHTML = ''
+
+      if (!selectedElements) return
 
       removeSelection()
     }
