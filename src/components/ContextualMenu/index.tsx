@@ -15,7 +15,6 @@ type PropTypes = {
   readonly row?: boolean
   readonly children?: React.ReactNode
   readonly coords?: { x?: number; y?: number }
-  readonly isSelected: boolean
   readonly onClose: () => void
   readonly className: string | boolean
 }
@@ -33,7 +32,6 @@ export function ContextualMenu({
     useClipboardContextMenu()
 
   const handleEvent = (event: MouseEvent | KeyboardEvent) => {
-    event.stopPropagation()
     const target = event.target as HTMLElement
     const menu = target.parentElement?.parentElement
     return menu

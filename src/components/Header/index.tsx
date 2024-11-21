@@ -1,6 +1,7 @@
 import { DownloadOptions } from '@/components/Header/components/DownloadOptions'
 import {
   Download,
+  InfoIcon,
   Moon,
   Save,
   Sun,
@@ -20,9 +21,15 @@ type ModalProps = {
   readonly onClose: () => void
   readonly className: string | boolean
 }
-enum ModalType {
+
+const enum ModalType {
   Download = 'download',
   Legend = 'legend',
+}
+
+const ModalOptions = {
+  download: DownloadModal,
+  legend: LegendModal,
 }
 
 export function Header() {
@@ -48,10 +55,7 @@ export function Header() {
       document.getElementById('upload')?.click()
     }
   }
-  const ModalOptions = {
-    download: DownloadModal,
-    legend: LegendModal,
-  }
+
   const ModalComponent = ModalOptions[currentModal.current]
 
   return (
@@ -59,7 +63,7 @@ export function Header() {
       <h1>Computed File</h1>
 
       <section className='header-icons flex-center'>
-        {(openModal || isMounted) && (
+        {(isMounted || openModal) && (
           <ModalComponent
             onClose={() => setOpenModal(false)}
             className={`${isMounted && 'in'} ${openModal && 'visible'}`}
@@ -70,17 +74,13 @@ export function Header() {
           onClick={toggleModal(ModalType.Legend)}
           aria-label='information'
         >
-          i
+          <InfoIcon />
         </button>
-        <label
-          tabIndex={0}
-          aria-label='upload'
-          className='btn-round flex-center button'
-          htmlFor='upload'
-          onKeyDown={handleKey}
-        >
+
+        <label className='btn-round flex-center button' htmlFor='upload'>
           <Upload />
           <input
+            onKeyDown={handleKey}
             className='upload-input'
             multiple
             accept='.csv, application/vnd.ms-excel, text/plain, .xlsx'
