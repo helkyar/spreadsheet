@@ -10,9 +10,7 @@ type PropTypes = {
 export function Table({ children }: PropTypes) {
   const [openMenu, setOpenMenu] = useState(false)
   const isMounted = useMountTransition(openMenu)
-  const { setMenuPosition, coords, isSelected } = useContextMenu(() =>
-    setOpenMenu(true)
-  )
+  const { setMenuPosition, coords } = useContextMenu(() => setOpenMenu(true))
   return (
     <section
       className='table-wrapper'
@@ -26,7 +24,6 @@ export function Table({ children }: PropTypes) {
           className={`${isMounted && 'in'} ${openMenu && 'visible'}`}
           onClose={() => setOpenMenu(false)}
           coords={coords}
-          isSelected={isSelected}
         />
       )}
     </section>

@@ -56,6 +56,7 @@ export function DownloadOptions({ onSubmit }: PropTypes) {
           <span>Plain Text</span>
         </label>
         <label>
+          {/* FIX_ME: block separation selection if csv */}
           <input type='radio' name='fileType' value='csv' /> CSV
         </label>
       </fieldset>
