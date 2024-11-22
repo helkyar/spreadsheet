@@ -7,12 +7,13 @@
     "dev": "vite",
     "test": "vitest",
     "coverage": "vitest run --coverage",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "@million/lint": "^1.0.12",
+    "@types/css-font-loading-module": "^0.0.14",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "sonner": "^1.7.0",
