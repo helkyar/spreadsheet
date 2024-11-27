@@ -1,4 +1,4 @@
-import { keyGroups } from '@/context/table/data/constants'
+import { keyGroups } from '@/components/Spreadsheet/data/constants'
 import { useEffect } from 'react'
 
 export function useOnClickOutside(handler: (event?: MouseEvent) => void) {

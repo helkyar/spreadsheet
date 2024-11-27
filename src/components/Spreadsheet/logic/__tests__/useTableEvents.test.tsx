@@ -3,9 +3,8 @@ import { MatrixProvider } from '@/context/matrix/MatrixProvider'
 import { beforeAll, describe, expect, it } from 'vitest'
 
 import { fireEvent, render, screen } from '@testing-library/react'
-import { parentTag } from '@/context/table/data/constants'
+import { parentTag } from '@/components/Spreadsheet/data/constants'
 import { act } from 'react'
-import { TableProvider } from '@/context/table/TableProvider'
 import { Toaster } from '@/components/ui/toast'
 
 describe('useTableEvents hook tested through ui', () => {
@@ -17,10 +16,8 @@ describe('useTableEvents hook tested through ui', () => {
   beforeAll(() => {
     render(
       <MatrixProvider rows={10} cols={10}>
-        <TableProvider>
-          <SpreadSheet />
-          <Toaster />
-        </TableProvider>
+        <SpreadSheet />
+        <Toaster />
       </MatrixProvider>
     )
   })

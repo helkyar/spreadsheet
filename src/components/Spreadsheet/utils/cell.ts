@@ -5,14 +5,14 @@ import {
   selectedL,
   selectedR,
   selectedT,
-} from '@/context/table/data/constants'
+} from '@/components/Spreadsheet/data/constants'
 import {
   HTMLCell,
   HTMLHeader,
   HTMLInput,
   HTMLText,
   Selected,
-} from '@/context/table/data/types'
+} from '@/components/Spreadsheet/data/types'
 
 export const $$ = (el: string) => document.querySelectorAll(el)
 export const $ = (el: string) => document.querySelector(el) as HTMLElement

@@ -7,7 +7,7 @@ import {
 import { selector } from '@/components/ContextualMenu/data/constants'
 import { useClipboardContextMenu } from '@/components/ContextualMenu/hooks/useClipboardContextMenu'
 import { useOnClickOutside } from '@/components/ContextualMenu/hooks/useOnClickOutside'
-import { keyGroups } from '@/context/table/data/constants'
+import { keyGroups } from '@/components/Spreadsheet/data/constants'
 import { KeyboardEvent, MouseEvent } from 'react'
 
 type PropTypes = {
@@ -28,8 +28,7 @@ export function ContextualMenu({
   onClose,
 }: PropTypes) {
   useOnClickOutside(onClose)
-  const { copyExpression, copyValue, cutExpression, cutValue, paste } =
-    useClipboardContextMenu()
+  const nothing = useClipboardContextMenu()
 
   const handleEvent = (event: MouseEvent | KeyboardEvent) => {
     const target = event.target as HTMLElement
@@ -62,7 +61,7 @@ export function ContextualMenu({
       role='none'
     >
       <section onClick={handleClick} onKeyDown={handleKey} role='none'>
-        <MenuButton
+        {/* <MenuButton
           label='copy expression'
           onClick={copyExpression}
           Icon={<CopyIcon />}
@@ -78,7 +77,7 @@ export function ContextualMenu({
           Icon={<CutIcon />}
         />
         <MenuButton label='cut value' onClick={cutValue} Icon={<CutIcon />} />
-        <MenuButton label='paste' onClick={paste} Icon={<PasteIcon />} />
+        <MenuButton label='paste' onClick={paste} Icon={<PasteIcon />} /> */}
       </section>
       {children}
     </div>

@@ -9,13 +9,13 @@ import {
 } from '@/components/Header/components/ui/Icons'
 import { useToggleDarkTheme } from '@/components/Header/logic/useToggleDarkTheme'
 import { Modal } from '@/components/Modal'
-import { DownloadOptions as DownloadOptionsType } from '@/context/table/data/types'
-import { parseFilesToMatrix } from '@/context/table/utils/file'
+import { DownloadOptions as DownloadOptionsType } from '@/components/Spreadsheet/data/types'
 import { useMatrix } from '@/context/matrix/useMatrix'
 import { ChangeEvent, KeyboardEvent, useRef, useState } from 'react'
-import { keyGroups } from '@/context/table/data/constants'
+import { keyGroups } from '@/components/Spreadsheet/data/constants'
 import useMountTransition from '@/logic/useMountTransition'
 import { Legend } from '@/components/Header/components/Legend'
+import { parseFilesToMatrix } from '@/components/Spreadsheet/utils/file'
 
 type ModalProps = {
   readonly onClose: () => void

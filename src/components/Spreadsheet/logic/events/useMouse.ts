@@ -1,5 +1,9 @@
-import { parentTag, selected } from '@/context/table/data/constants'
-import { HTMLCell, HTMLInput, Selected } from '@/context/table/data/types'
+import { parentTag, selected } from '@/components/Spreadsheet/data/constants'
+import {
+  HTMLCell,
+  HTMLInput,
+  Selected,
+} from '@/components/Spreadsheet/data/types'
 import { useEffect, useRef } from 'react'
 
 export function useMouse(

@@ -1,5 +1,9 @@
-import { inputTag, outputTag, selected } from '@/context/table/data/constants'
-import { HTMLCell, HTMLInput } from '@/context/table/data/types'
+import {
+  inputTag,
+  outputTag,
+  selected,
+} from '@/components/Spreadsheet/data/constants'
+import { HTMLCell, HTMLInput } from '@/components/Spreadsheet/data/types'
 import { MouseEvent, useState } from 'react'
 
 export function useContextMenu(onClick?: () => void) {

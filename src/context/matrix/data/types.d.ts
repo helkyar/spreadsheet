@@ -1,5 +1,5 @@
 import ComputedMatrix from '@/context/matrix/ComputedMatrix'
-import { DownloadOptions } from '@/context/table/data/types'
+import { DownloadOptions } from '@/components/Spreadsheet/data/types'
 import { MouseEvent } from 'react'
 
 export type Matrix = Cell[][]

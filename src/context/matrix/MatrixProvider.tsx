@@ -5,8 +5,8 @@ import { MouseEvent, ReactNode, useCallback, useState } from 'react'
 import ComputedMatrix from '@/context/matrix/ComputedMatrix'
 import { v4 as uuidv4 } from 'uuid'
 import { toast } from '@/components/ui/toast'
-import { downloadTable } from '@/context/table/utils/file'
-import { DownloadOptions } from '@/context/table/data/types'
+import { DownloadOptions } from '@/components/Spreadsheet/data/types'
+import { downloadTable } from '@/components/Spreadsheet/utils/file'
 
 type Params = {
   rows: number
