@@ -1,10 +1,13 @@
-import { parentTag, supportedFileTypes } from '@/context/table/data/constants'
-import { DownloadOptions, HTMLCell } from '@/context/table/data/types'
-import { $$ } from '@/context/table/utils/cell'
+import {
+  parentTag,
+  supportedFileTypes,
+} from '@/components/Spreadsheet/data/constants'
+import { DownloadOptions, HTMLCell } from '@/components/Spreadsheet/data/types'
+import { $$ } from '@/components/Spreadsheet/utils/cell'
 import {
   formatCellValuesToText,
   formatTextToCellValues,
-} from '@/context/table/utils/format'
+} from '@/components/Spreadsheet/utils/format'
 import { toast } from '@/components/ui/toast'
 import { Matrix } from '@/context/matrix/data/types'
 

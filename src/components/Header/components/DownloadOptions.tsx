@@ -3,7 +3,7 @@ import {
   File,
   Separation,
   type DownloadOptions,
-} from '@/context/table/data/types'
+} from '@/components/Spreadsheet/data/types'
 import { FormEvent } from 'react'
 
 type PropTypes = {

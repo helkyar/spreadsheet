@@ -3,8 +3,7 @@ import { MatrixProvider } from '@/context/matrix/MatrixProvider'
 import { beforeAll, describe, expect, it } from 'vitest'
 
 import { fireEvent, render, screen } from '@testing-library/react'
-import { parentTag } from '@/context/table/data/constants'
-import { TableProvider } from '@/context/table/TableProvider'
+import { parentTag } from '@/components/Spreadsheet/data/constants'
 import { Toaster } from '@/components/ui/toast'
 
 const selectedClassName = 'selected-tab'
@@ -13,10 +12,8 @@ describe('Spreadsheet component with context', () => {
   beforeAll(() => {
     render(
       <MatrixProvider rows={10} cols={10}>
-        <TableProvider>
-          <SpreadSheet />
-          <Toaster />
-        </TableProvider>
+        <SpreadSheet />
+        <Toaster />
       </MatrixProvider>
     )
   })

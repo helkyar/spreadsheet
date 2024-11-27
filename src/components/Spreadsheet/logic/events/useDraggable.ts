@@ -1,5 +1,12 @@
 import { useEffect } from 'react'
 import { useMatrix } from '@/context/matrix/useMatrix'
+
+import {
+  HTMLCell,
+  HTMLInput,
+  Selected,
+} from '@/components/Spreadsheet/data/types'
+import { inputTag, outputTag } from '@/components/Spreadsheet/data/constants'
 import {
   $,
   getCell,
@@ -7,10 +14,8 @@ import {
   getInput,
   manageBoundaryClassName,
   updateCell,
-} from '@/context/table/utils/cell'
-import { parseFilesToMatrix } from '@/context/table/utils/file'
-import { HTMLCell, HTMLInput, Selected } from '@/context/table/data/types'
-import { inputTag, outputTag } from '@/context/table/data/constants'
+} from '@/components/Spreadsheet/utils/cell'
+import { parseFilesToMatrix } from '@/components/Spreadsheet/utils/file'
 
 export function useDraggable(
   selectedElements: Selected,

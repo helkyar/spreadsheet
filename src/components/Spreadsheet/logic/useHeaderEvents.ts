@@ -1,7 +1,11 @@
 import { useMatrix } from '@/context/matrix/useMatrix'
-import { headerTag, keyGroups, menuTag } from '@/context/table/data/constants'
-import { useTableEvents } from '@/context/table/useTableEvents'
+import {
+  headerTag,
+  keyGroups,
+  menuTag,
+} from '@/components/Spreadsheet/data/constants'
 import { KeyboardEvent, MouseEvent, useRef, useState } from 'react'
+import { useTableEvents } from '@/components/Spreadsheet/logic/useTableEvents'
 
 type Params = {
   readonly x: number

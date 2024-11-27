@@ -1,11 +1,15 @@
-import { HTMLCell, Selected, Separation } from '@/context/table/data/types'
+import {
+  HTMLCell,
+  Selected,
+  Separation,
+} from '@/components/Spreadsheet/data/types'
 import {
   getCell,
   getCellCoordinates,
   getInput,
   getText,
   updateCell,
-} from '@/context/table/utils/cell'
+} from '@/components/Spreadsheet/utils/cell'
 import { Matrix } from '@/context/matrix/data/types'
 
 export const formatCellValuesToText = ({

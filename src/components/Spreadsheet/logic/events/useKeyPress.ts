@@ -4,20 +4,20 @@ import {
   keyGroups,
   menuTag,
   parentTag,
-} from '@/context/table/data/constants'
+} from '@/components/Spreadsheet/data/constants'
 import {
   HTMLCell,
   HTMLHeader,
   HTMLInput,
   Selected,
-} from '@/context/table/data/types'
+} from '@/components/Spreadsheet/data/types'
 import {
   focusCell,
   getCell,
   getCellCoordinates,
   getInput,
   updateSelectedCellsValues,
-} from '@/context/table/utils/cell'
+} from '@/components/Spreadsheet/utils/cell'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 type TagsWithHandlers =

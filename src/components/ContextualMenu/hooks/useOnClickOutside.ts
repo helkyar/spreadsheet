@@ -1,5 +1,5 @@
 import { selector } from '@/components/ContextualMenu/data/constants'
-import { keyGroups, menuTag } from '@/context/table/data/constants'
+import { keyGroups, menuTag } from '@/components/Spreadsheet/data/constants'
 import { useEffect } from 'react'
 
 export function useOnClickOutside(handler: () => void) {

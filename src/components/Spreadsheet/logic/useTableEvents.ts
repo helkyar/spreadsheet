@@ -1,12 +1,11 @@
-import { TableContext } from '@/context/table/TableContext'
-import { useClipboard } from '@/context/table/events/useClipboard'
-import { useDraggable } from '@/context/table/events/useDraggable'
-import { useKeyPress } from '@/context/table/events/useKeyPress'
-import { useMouse } from '@/context/table/events/useMouse'
-import { useSelection } from '@/context/table/events/useSelection'
+import { useClipboard } from '@/components/Spreadsheet/logic/events/useClipboard'
+import { useDraggable } from '@/components/Spreadsheet/logic/events/useDraggable'
+import { useKeyPress } from '@/components/Spreadsheet/logic/events/useKeyPress'
+import { useMouse } from '@/components/Spreadsheet/logic/events/useMouse'
+import { useSelection } from '@/components/Spreadsheet/logic/events/useSelection'
 import { useMemo } from 'react'
 
-export const TableProvider = ({ children }: { children: React.ReactNode }) => {
+export const useTableEvents = () => {
   const { removeSelection, selectArea, selectedElements, ...selectors } =
     useSelection()
   useClipboard(selectedElements)
@@ -24,6 +23,5 @@ export const TableProvider = ({ children }: { children: React.ReactNode }) => {
     }),
     [selectColumn, selectRow, removeSelection, selectedElements]
   )
-
-  return <TableContext.Provider value={value}>{children}</TableContext.Provider>
+  return value
 }

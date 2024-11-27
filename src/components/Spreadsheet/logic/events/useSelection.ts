@@ -3,16 +3,15 @@ import {
   headerTag,
   parentTag,
   selected,
-} from '@/context/table/data/constants'
-import { HTMLCell, Selected } from '@/context/table/data/types'
+} from '@/components/Spreadsheet/data/constants'
+import { HTMLCell, Selected } from '@/components/Spreadsheet/data/types'
 import {
   $$,
-  manageBoundaryClassName,
   getCell,
   getCellCoordinates,
   getOutput,
-} from '@/context/table/utils/cell'
-
+  manageBoundaryClassName,
+} from '@/components/Spreadsheet/utils/cell'
 import {
   KeyboardEvent,
   MouseEvent,
@@ -24,6 +23,7 @@ import {
 export function useSelection() {
   const [selectedElements, setSelectedElements] = useState<Selected>(null)
 
+  // adds class tos show selected cells boundaries
   useEffect(() => {
     const { removeCellBoundary, addCellBoundary } =
       manageBoundaryClassName(selectedElements)
