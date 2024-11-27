@@ -3,7 +3,7 @@ import {
   inputTag,
   keyGroups,
   menuTag,
-  parentTag,
+  cellTag,
 } from '@/components/Spreadsheet/data/constants'
 import {
   HTMLCell,
@@ -22,11 +22,11 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 type TagsWithHandlers =
   | typeof headerTag
-  | typeof parentTag
+  | typeof cellTag
   | typeof inputTag
   | 'always'
 
-const allowedTagHandlers: TagsWithHandlers[] = [parentTag, inputTag, headerTag]
+const allowedTagHandlers: TagsWithHandlers[] = [cellTag, inputTag, headerTag]
 
 const arrowNavigation = (
   event: KeyboardEvent,
@@ -71,7 +71,7 @@ export function useKeyPress(
     const handleEscapeKey = () => {
       if (selectedElements) handleRemoveSelected()
       const header = activeElement.closest(headerTag) as HTMLHeader
-      const cell = activeElement.closest(parentTag) as HTMLCell
+      const cell = activeElement.closest(cellTag) as HTMLCell
       header?.focus()
       cell?.focus()
     }
@@ -208,7 +208,7 @@ export function useKeyPress(
   > = useMemo(
     () => ({
       [inputTag]: inputHandler,
-      [parentTag]: cellHandler,
+      [cellTag]: cellHandler,
       [headerTag]: headerHandler,
       always: generalHandler,
     }),

@@ -1,4 +1,4 @@
-import { parentTag, selected } from '@/components/Spreadsheet/data/constants'
+import { cellTag, selected } from '@/components/Spreadsheet/data/constants'
 import {
   HTMLCell,
   HTMLInput,
@@ -18,7 +18,7 @@ export function useMouse(
     const getEventData = (event: MouseEvent) => {
       const target = event.target as HTMLElement
       const cell = target.parentElement as HTMLCell
-      const isCell = cell.tagName === parentTag
+      const isCell = cell.tagName === cellTag
       const isSelected = cell.classList.contains(selected)
       const isRightClick = event.button === 2
       return { cell, isCell, isSelected, isRightClick }
@@ -42,7 +42,7 @@ export function useMouse(
     }
     const mouseMove = (event: MouseEvent) => {
       const target = (event.target as HTMLInput).parentElement as HTMLCell
-      if (!firstElement.current || target?.tagName !== parentTag) return
+      if (!firstElement.current || target?.tagName !== cellTag) return
       isMovingAndDown.current = true
 
       selectArea(firstElement.current, target)

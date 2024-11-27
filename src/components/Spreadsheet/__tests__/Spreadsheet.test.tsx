@@ -3,7 +3,7 @@ import { MatrixProvider } from '@/context/matrix/MatrixProvider'
 import { beforeAll, describe, expect, it } from 'vitest'
 
 import { fireEvent, render, screen } from '@testing-library/react'
-import { parentTag } from '@/components/Spreadsheet/data/constants'
+import { cellTag } from '@/components/Spreadsheet/data/constants'
 import { Toaster } from '@/components/ui/toast'
 
 const selectedClassName = 'selected-tab'
@@ -22,7 +22,7 @@ describe('Spreadsheet component with context', () => {
     expect(screen.getAllByText(/[A-J]/).length).toBe(10)
     // 10 rows + 1 sheet name
     expect(screen.getAllByText(/\d{1,2}/).length).toBe(11)
-    expect(document.getElementsByTagName(parentTag).length).toBe(100)
+    expect(document.getElementsByTagName(cellTag).length).toBe(100)
     expect(screen.queryByText('K')).toBeFalsy()
     expect(screen.queryByText('0')).toBeFalsy()
     expect(screen.queryByText('11')).toBeFalsy()

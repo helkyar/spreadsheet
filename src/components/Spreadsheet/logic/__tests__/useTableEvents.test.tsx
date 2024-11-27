@@ -3,7 +3,7 @@ import { MatrixProvider } from '@/context/matrix/MatrixProvider'
 import { beforeAll, describe, expect, it } from 'vitest'
 
 import { fireEvent, render, screen } from '@testing-library/react'
-import { parentTag } from '@/components/Spreadsheet/data/constants'
+import { cellTag } from '@/components/Spreadsheet/data/constants'
 import { act } from 'react'
 import { Toaster } from '@/components/ui/toast'
 
@@ -44,7 +44,7 @@ describe('useTableEvents hook tested through ui', () => {
 
   it('should update all selected cells values on write and Enter', async () => {
     fireEvent.keyDown(document, { key: 'Escape' })
-    const cell = document.getElementsByTagName(parentTag)[0] as HTMLElement
+    const cell = document.getElementsByTagName(cellTag)[0] as HTMLElement
     fireEvent.click(cell)
     fireEvent.keyDown(document, { key: 'Enter' })
     // fireEvent.change(activeElement(), { target: { value: 'c' } })
@@ -96,7 +96,7 @@ describe('useTableEvents hook tested through ui', () => {
 
   it('should select input on Enter and the cell below if pressed again', () => {
     fireEvent.keyDown(document, { key: 'Escape' })
-    const cell = document.getElementsByTagName(parentTag)[0] as HTMLElement
+    const cell = document.getElementsByTagName(cellTag)[0] as HTMLElement
 
     fireEvent.click(cell)
     // expect(isCellFocused()).toBe(true)

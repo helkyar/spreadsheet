@@ -1,4 +1,4 @@
-import { parentTag } from '@/components/Spreadsheet/data/constants'
+import { cellTag } from '@/components/Spreadsheet/data/constants'
 import { HTMLCell, Selected } from '@/components/Spreadsheet/data/types'
 import { updateSelectedCellsValues } from '@/components/Spreadsheet/utils/cell'
 import {
@@ -23,12 +23,12 @@ export const useClipboard = (selectedElements: Selected) => {
       if (!clipboardData) return
 
       const element = document.activeElement as HTMLCell
-      const isCell = element.tagName === parentTag
+      const isCell = element.tagName === cellTag
 
       if (!isCell && !selectedElements) return
 
       const cell = selectedElements![0]
-      const pasteElement = element.tagName === parentTag ? element : cell
+      const pasteElement = element.tagName === cellTag ? element : cell
 
       addTextToCellValues(clipboardData, pasteElement)
 
