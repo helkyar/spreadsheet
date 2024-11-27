@@ -1,5 +1,5 @@
 import {
-  parentTag,
+  cellTag,
   supportedFileTypes,
 } from '@/components/Spreadsheet/data/constants'
 import { DownloadOptions, HTMLCell } from '@/components/Spreadsheet/data/types'
@@ -44,7 +44,7 @@ export const downloadTable = ({
   const fileType = file === 'csv' ? '.csv' : '.txt'
   aElement.setAttribute('download', id + fileType)
 
-  const matrix = Array.from($$(parentTag)) as HTMLCell[]
+  const matrix = Array.from($$(cellTag)) as HTMLCell[]
   const isPlainText = value === 'expression'
   const text = formatCellValuesToText({
     elements: matrix,

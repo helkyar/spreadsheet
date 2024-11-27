@@ -1,4 +1,4 @@
-export const parentTag = 'TD'
+export const cellTag = 'TD'
 export const inputTag = 'INPUT'
 export const outputTag = 'SPAN'
 export const headerTag = 'TH'
