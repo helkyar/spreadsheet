@@ -1,83 +1,95 @@
+import { ColumnHeaderButtons } from '@/components/ContextualMenu/components/ColumnHeaderButtons'
 import { MenuButton } from '@/components/ContextualMenu/components/MenuButton'
+import { RowHeaderButtons } from '@/components/ContextualMenu/components/RowHeaderButtons'
 import {
   CopyIcon,
   CutIcon,
   PasteIcon,
 } from '@/components/ContextualMenu/components/ui'
 import { selector } from '@/components/ContextualMenu/data/constants'
-import { useClipboardContextMenu } from '@/components/ContextualMenu/hooks/useClipboardContextMenu'
-import { useOnClickOutside } from '@/components/ContextualMenu/hooks/useOnClickOutside'
+import { Coords } from '@/components/ContextualMenu/data/types'
+import { useClipboardContextMenu } from '@/components/ContextualMenu/logic/useClipboardContextMenu'
+import { useOnClickOutside } from '@/components/ContextualMenu/logic/useOnClickOutside'
+import { useOnExecuteClipboardEvent } from '@/components/ContextualMenu/logic/useOnExecuteClipboardEvent'
 import { keyGroups } from '@/components/Spreadsheet/data/constants'
-import { KeyboardEvent, MouseEvent } from 'react'
+import { HTMLCell, Selected } from '@/components/Spreadsheet/data/types'
+import { getCellCoordinates } from '@/components/Spreadsheet/utils/cell'
 
 type PropTypes = {
-  readonly col?: boolean
-  readonly row?: boolean
+  readonly cellType: HTMLElement | null
   readonly children?: React.ReactNode
-  readonly coords?: { x?: number; y?: number }
+  readonly coords?: Coords
   readonly onClose: () => void
+  readonly selectedItems: Selected
   readonly className: string | boolean
+}
+
+const getCellData = (cell: HTMLElement | null) => {
+  if (!cell) return { col: false, row: false, index: -1 }
+  const { x, y } = getCellCoordinates(cell as HTMLCell)
+  const index = x < 0 ? y : x
+  return { col: x === -1, row: y === -1, index }
 }
 
 export function ContextualMenu({
   children,
-  col,
-  row,
   coords,
+  cellType,
   className,
+  selectedItems,
   onClose,
 }: PropTypes) {
   useOnClickOutside(onClose)
-  const nothing = useClipboardContextMenu()
+  const clipboard = useClipboardContextMenu(selectedItems)
+  const { handleClick, handleKey } = useOnExecuteClipboardEvent(onClose)
 
-  const handleEvent = (event: MouseEvent | KeyboardEvent) => {
-    const target = event.target as HTMLElement
-    const menu = target.parentElement?.parentElement
-    return menu
-  }
+  const { col, row, index } = getCellData(cellType)
 
-  const handleKey = (event: KeyboardEvent) => {
-    const menu = handleEvent(event)
-    if (
-      keyGroups.execute.includes(event.key) &&
-      menu?.className.includes(selector)
-    ) {
-      onClose()
-    }
-  }
-
-  const handleClick = (event: MouseEvent | KeyboardEvent) => {
-    const menu = handleEvent(event)
-    if (menu?.className.includes(selector)) {
-      setTimeout(() => onClose(), 10)
-    }
+  const closeOnEscape = (event: React.KeyboardEvent) => {
+    event.stopPropagation() // avoid remove selection
+    const closeKeys = [...keyGroups.escape, ...keyGroups.navigation]
+    if (closeKeys.includes(event.key)) onClose()
   }
 
   return (
     <div
-      onMouseUp={(e) => e.stopPropagation()}
-      style={{ top: coords?.y, left: coords?.x }}
+      onMouseDown={(e) => e.stopPropagation()}
+      onKeyDown={closeOnEscape}
+      style={coords}
       className={`${selector} ${className} ${col && 'col'} ${row && 'row'}`}
       role='none'
     >
       <section onClick={handleClick} onKeyDown={handleKey} role='none'>
-        {/* <MenuButton
+        <MenuButton
+          name='copy'
           label='copy expression'
-          onClick={copyExpression}
+          onClick={clipboard.copyExpression}
           Icon={<CopyIcon />}
         />
         <MenuButton
           label='copy value'
-          onClick={copyValue}
+          onClick={clipboard.copyValue}
           Icon={<CopyIcon />}
         />
         <MenuButton
           label='cut expression'
-          onClick={cutExpression}
+          onClick={clipboard.cutExpression}
           Icon={<CutIcon />}
         />
-        <MenuButton label='cut value' onClick={cutValue} Icon={<CutIcon />} />
-        <MenuButton label='paste' onClick={paste} Icon={<PasteIcon />} /> */}
+        <MenuButton
+          label='cut value'
+          onClick={clipboard.cutValue}
+          Icon={<CutIcon />}
+        />
+        <MenuButton
+          label='paste'
+          onClick={clipboard.paste}
+          Icon={<PasteIcon />}
+        />
+      </section>
+      <section>
+        {col && <ColumnHeaderButtons col={index} />}
+        {row && <RowHeaderButtons row={index} />}
       </section>
       {children}
     </div>

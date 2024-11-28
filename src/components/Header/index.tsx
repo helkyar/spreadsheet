@@ -11,8 +11,7 @@ import { useToggleDarkTheme } from '@/components/Header/logic/useToggleDarkTheme
 import { Modal } from '@/components/Modal'
 import { DownloadOptions as DownloadOptionsType } from '@/components/Spreadsheet/data/types'
 import { useMatrix } from '@/context/matrix/useMatrix'
-import { ChangeEvent, KeyboardEvent, useRef, useState } from 'react'
-import { keyGroups } from '@/components/Spreadsheet/data/constants'
+import { ChangeEvent, useRef, useState } from 'react'
 import useMountTransition from '@/logic/useMountTransition'
 import { Legend } from '@/components/Header/components/Legend'
 import { parseFilesToMatrix } from '@/components/Spreadsheet/utils/file'
@@ -50,12 +49,6 @@ export function Header() {
     if (files) parseFilesToMatrix(files, createNewMatrix)
   }
 
-  const handleKey = (event: KeyboardEvent) => {
-    if (keyGroups.execute.includes(event.key)) {
-      document.getElementById('upload')?.click()
-    }
-  }
-
   const ModalComponent = ModalOptions[currentModal.current]
 
   return (
@@ -80,7 +73,6 @@ export function Header() {
         <label className='btn-round flex-center button' htmlFor='upload'>
           <Upload />
           <input
-            onKeyDown={handleKey}
             onChange={handleChange}
             className='upload-input'
             multiple

@@ -1,9 +1,10 @@
-import { MouseEvent } from 'react'
+import { HTMLAttributes, MouseEvent } from 'react'
 
-type PropTypes = {
+type PropTypes = HTMLAttributes<HTMLButtonElement> & {
   label: string
   Icon: JSX.Element
   onClick: (event: MouseEvent) => void
+  name?: string //FIX_ME: should't be necessary
 }
 
 export function MenuButton({ label, onClick, Icon, ...props }: PropTypes) {
