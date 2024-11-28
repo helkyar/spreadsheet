@@ -11,13 +11,7 @@ import {
   getOutput,
   manageBoundaryClassName,
 } from '@/components/Spreadsheet/utils/cell'
-import {
-  KeyboardEvent,
-  MouseEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 export function useSelection() {
   const [selectedElements, setSelectedElements] = useState<Selected>(null)
@@ -53,12 +47,11 @@ export function useSelection() {
   }, [selectedElements])
 
   // selection functions
-  const focusFirstSelectedElement = () => {
+  const focusFirstSelectedElement = (cell: HTMLCell) => {
     const element = document.activeElement as HTMLCell
-    if (element.tagName !== cellTag || !selectedElements) return
+    if (element.tagName === cellTag || !selectedElements) return
 
-    const firstCell = selectedElements[0]
-    firstCell?.focus()
+    cell.focus()
   }
 
   const removeSelectedClass = useCallback(
@@ -83,31 +76,25 @@ export function useSelection() {
 
       elements.forEach((el) => el?.classList.add(selected))
       setSelectedElements(selectedArray)
-      focusFirstSelectedElement()
+      focusFirstSelectedElement(elements[0] as HTMLCell)
     },
     [removeSelectedClass]
   )
 
-  // FIX_ME: shouldn't know about the event
-  const selectColumn =
-    (index: number) => (event: MouseEvent | KeyboardEvent) => {
-      event.stopPropagation()
-      removeSelection()
-      const element = event.currentTarget as Element
-      const headerElements = [element, ...$$(`tr td:nth-child(${index + 1})`)]
-      const allElements = [element, ...$$(cellTag)]
+  const selectColumn = (index: number, header: Element) => {
+    // removeSelection()
+    const column = [header, ...$$(`tr td:nth-child(${index + 1})`)]
+    const allElements = [header, ...$$(cellTag)]
 
-      if (index === 0) addSelection(allElements)
-      else addSelection(headerElements)
-    }
+    if (index === 0) addSelection(allElements)
+    else addSelection(column)
+  }
 
-  // FIX_ME: shouldn't know about the event
-  const selectRow = (index: number) => (event: MouseEvent | KeyboardEvent) => {
-    event.stopPropagation()
-    removeSelection()
-    const element = event.currentTarget as Element
+  const selectRow = (index: number, header: Element) => {
+    // removeSelection()
+
     const rowCells = $$(`tr:nth-child(${index + 1}) td`)
-    addSelection([element, ...rowCells])
+    addSelection([header, ...rowCells])
   }
 
   const selectArea = useCallback(

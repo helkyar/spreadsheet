@@ -1,5 +1,5 @@
 import { selector } from '@/components/ContextualMenu/data/constants'
-import { headerName, menuName } from '@/components/Spreadsheet/data/constants'
+import { menuBtnName } from '@/components/Spreadsheet/data/constants'
 
 type PropTypes = {
   readonly label: string | number
@@ -12,9 +12,9 @@ export function CellHeader({ label, x, y }: PropTypes) {
   const row = y === -1
 
   return (
-    <th tabIndex={0} data-x={x} data-y={y} aria-label={headerName}>
+    <th tabIndex={0} data-x={x} data-y={y}>
       <button
-        aria-label={menuName}
+        name={menuBtnName}
         className={`${col && 'col'} ${
           row && 'row'
         } flex-center header-${selector}`}

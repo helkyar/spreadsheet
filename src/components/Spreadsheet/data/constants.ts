@@ -4,11 +4,7 @@ export const outputTag = 'SPAN'
 export const headerTag = 'TH'
 export const menuTag = 'BUTTON'
 
-export const headerName = 'header cell'
-export const cellName = 'cell'
-export const inputName = 'cell input'
-export const menuName = 'context menu'
-export const outputName = 'cell value'
+export const menuBtnName = 'context menu button'
 
 export const drag = 'drag'
 export const selected = 'selected'
