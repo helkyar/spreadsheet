@@ -15,13 +15,15 @@ export const selectedR = 'selected-right'
 
 export const supportedFileTypes = ['text/plain', 'text/csv']
 
-export const keyGroups = {
-  skip: ['Control', 'Alt', 'Shift', 'Escape', 'Tab', 'F10'],
-  skipCombination: ['c', 'C', 'z', 'Z', 'v', 'V', 'x', 'X', 'F10'],
-  escape: ['Escape'],
-  delete: ['Backspace', 'Delete'],
-  navigation: ['ArrowLeft', 'ArrowDown', 'ArrowUp', 'ArrowRight'],
-  execute: ['Enter', ' '],
-  tab: ['Tab'],
-  menu: ['F10'],
+class KeyGroups {
+  skip: string[] = ['Control', 'Alt', 'Shift', 'Escape', 'Tab', 'F10']
+  escape: string[] = ['Escape']
+  delete: string[] = ['Backspace', 'Delete']
+  navigation: string[] = ['ArrowLeft', 'ArrowDown', 'ArrowUp', 'ArrowRight']
+  execute: string[] = ['Enter', ' ']
+  tab: string[] = ['Tab']
+  menu: string[] = ['F10']
+  skipOnCellFocus: string[] = [...this.skip, ...this.navigation]
 }
+
+export const keyGroups = new KeyGroups()

@@ -97,9 +97,11 @@ export function useKeyPress({
 
       if (event.shiftKey) {
         handleSelectArea(event, cell as HTMLCell)
+      } else if (event.ctrlKey) {
+        handleCtrlNavigationKey()
       } else {
         if (selectedElements) handleRemoveSelection()
-        arrowNavigation(event, cell ?? header)
+        arrowNavigation(event, cell ?? header ?? {})
       }
     }
 
@@ -159,10 +161,6 @@ export function useKeyPress({
       handleNavigationKey()
       return
     }
-
-    if (keyGroups.navigation.includes(event.key) && event.ctrlKey) {
-      handleCtrlNavigationKey()
-    }
   }
 
   const inputHandler = (event: KeyboardEvent) => {
@@ -193,7 +191,7 @@ export function useKeyPress({
     const element = document.activeElement as HTMLCell
     const key = event.key
 
-    if (keyGroups.skip.includes(key) || event.ctrlKey) {
+    if (keyGroups.skipOnCellFocus.includes(key) || event.ctrlKey) {
       return
     }
 
