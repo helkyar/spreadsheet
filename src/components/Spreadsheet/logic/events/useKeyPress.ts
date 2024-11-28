@@ -50,26 +50,35 @@ const arrowNavigation = (
   }
 }
 
-export function useKeyPress(
-  selectedElements: Selected,
-  removeSelected: () => void,
-  selectArea: (elFirst: HTMLCell, el: HTMLCell | undefined) => void
-) {
+type KeyboardTypes = {
+  selectedElements: Selected
+  selectArea: (elFirst: HTMLCell, el?: HTMLCell) => void
+  removeSelection: () => void
+  selectColumn: (index: number, el: HTMLHeader) => void
+  selectRow: (index: number, el: HTMLHeader) => void
+}
+
+export function useKeyPress({
+  selectedElements,
+  selectArea,
+  removeSelection,
+}: KeyboardTypes) {
   const firstSelection = useRef<HTMLCell | null>(null)
-  const handleRemoveSelected = useCallback(() => {
-    removeSelected()
+  const handleRemoveSelection = useCallback(() => {
+    removeSelection()
     firstSelection.current = null
-  }, [removeSelected])
+  }, [removeSelection])
+
   const generalHandler = (event: KeyboardEvent) => {
     const activeElement = document.activeElement as HTMLElement
 
     const handleTabKey = () => {
       if (activeElement?.tagName === menuTag) return
-      if (selectedElements) handleRemoveSelected()
+      if (selectedElements) handleRemoveSelection()
     }
 
     const handleEscapeKey = () => {
-      if (selectedElements) handleRemoveSelected()
+      if (selectedElements) handleRemoveSelection()
       const header = activeElement.closest(headerTag) as HTMLHeader
       const cell = activeElement.closest(cellTag) as HTMLCell
       header?.focus()
@@ -127,7 +136,7 @@ export function useKeyPress(
     event: KeyboardEvent,
     cell: HTMLCell | HTMLHeader
   ) => {
-    if (selectedElements) handleRemoveSelected()
+    if (selectedElements) handleRemoveSelection()
     arrowNavigation(event, cell)
   }
 
@@ -212,7 +221,7 @@ export function useKeyPress(
       [headerTag]: headerHandler,
       always: generalHandler,
     }),
-    [handleRemoveSelected, selectedElements, selectArea]
+    [handleRemoveSelection, selectedElements, selectArea]
   )
 
   useEffect(() => {

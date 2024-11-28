@@ -6,22 +6,17 @@ import { useSelection } from '@/components/Spreadsheet/logic/events/useSelection
 import { useMemo } from 'react'
 
 export const useTableEvents = () => {
-  const { removeSelection, selectArea, selectedElements, ...selectors } =
-    useSelection()
+  const { selectedElements, ...selectors } = useSelection()
   useClipboard(selectedElements)
-  useKeyPress(selectedElements, removeSelection, selectArea)
-  useMouse(selectedElements, selectArea, removeSelection)
-  useDraggable(selectedElements, removeSelection)
-  const { selectColumn, selectRow } = selectors
+  useMouse({ selectedElements, ...selectors })
+  useKeyPress({ selectedElements, ...selectors })
+  useDraggable({ selectedElements, ...selectors })
 
   const value = useMemo(
     () => ({
-      selectColumn,
-      selectRow,
-      removeSelection,
       selectedElements,
     }),
-    [selectColumn, selectRow, removeSelection, selectedElements]
+    [selectedElements]
   )
   return value
 }

@@ -10,17 +10,20 @@ type PropTypes = {
 export function CellHeader({ label, x, y }: PropTypes) {
   const col = x === -1
   const row = y === -1
+  const firstColumnCell = y === 0
 
   return (
     <th tabIndex={0} data-x={x} data-y={y}>
-      <button
-        name={menuBtnName}
-        className={`${col && 'col'} ${
-          row && 'row'
-        } flex-center header-${selector}`}
-      >
-        {label}
-      </button>
+      {!firstColumnCell && (
+        <button
+          name={menuBtnName}
+          className={`${col && 'col'} ${
+            row && 'row'
+          } flex-center header-${selector}`}
+        >
+          {label}
+        </button>
+      )}
     </th>
   )
 }

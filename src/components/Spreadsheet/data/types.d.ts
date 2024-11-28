@@ -9,6 +9,7 @@ export type HTMLCell = HTMLTableCellElement
 export type HTMLInput = HTMLInputElement
 export type HTMLText = HTMLSpanElement
 export type HTMLHeader = HTMLTableElement
+export type HTMLMenu = HTMLButtonElement
 export type DownloadOptions = {
   id: string
   value: ExportValue
