@@ -60,7 +60,7 @@
 .legend span {
   text-align: center;
   background-color: var(--muted);
-  color: var(--destructive);
+  color: var(--foreground);
   border-radius: var(--radius);
   padding: var(--padding-md) var(--padding-lg);
   font-weight: bold;

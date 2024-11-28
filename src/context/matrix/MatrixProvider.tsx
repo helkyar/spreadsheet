@@ -1,7 +1,7 @@
 import { Matrix } from '@/context/matrix/data/types'
 import { MatrixContext } from '@/context/matrix/MatrixContext'
 import { useLocalStorage } from '@/logic/useLocalStorage'
-import { MouseEvent, ReactNode, useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import ComputedMatrix from '@/context/matrix/ComputedMatrix'
 import { v4 as uuidv4 } from 'uuid'
 import { toast } from '@/components/ui/toast'
@@ -11,7 +11,7 @@ import { downloadTable } from '@/components/Spreadsheet/utils/file'
 type Params = {
   rows: number
   cols: number
-  children: ReactNode
+  children: React.ReactNode
 }
 
 const LOCAL_KEY = '_spreadsheet_'
@@ -80,20 +80,16 @@ export const MatrixProvider = ({ children, rows, cols }: Params) => {
     if (index === matrixIdx) setMatrixIdx(0)
   }
 
-  const addColumn = (y: number) => (event?: MouseEvent) => {
-    event?.stopPropagation()
+  const addColumn = (y: number) => {
     matrixArray[matrixIdx].spreadsheet.addColumn(y)
   }
-  const addRow = (x: number) => (event?: MouseEvent) => {
-    event?.stopPropagation()
+  const addRow = (x: number) => {
     matrixArray[matrixIdx].spreadsheet.addRow(x)
   }
-  const removeColumn = (y: number) => (event?: MouseEvent) => {
-    event?.stopPropagation()
+  const removeColumn = (y: number) => {
     matrixArray[matrixIdx].spreadsheet.removeColumn(y)
   }
-  const removeRow = (x: number) => (event?: MouseEvent) => {
-    event?.stopPropagation()
+  const removeRow = (x: number) => {
     matrixArray[matrixIdx].spreadsheet.removeRow(x)
   }
 

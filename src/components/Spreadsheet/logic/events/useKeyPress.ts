@@ -92,12 +92,14 @@ export function useKeyPress({
     }
 
     const handleNavigationKey = () => {
-      const cell = activeElement as HTMLCell | HTMLHeader
+      const cell = activeElement.closest(cellTag) as HTMLCell
+      const header = activeElement.closest(headerTag) as HTMLHeader
+
       if (event.shiftKey) {
         handleSelectArea(event, cell as HTMLCell)
       } else {
         if (selectedElements) handleRemoveSelection()
-        arrowNavigation(event, cell)
+        arrowNavigation(event, cell ?? header)
       }
     }
 

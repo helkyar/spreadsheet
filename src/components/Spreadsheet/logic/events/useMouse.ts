@@ -45,8 +45,9 @@ export function useMouse({
       if (handler) handler(element)
     }
 
-    document.addEventListener('click', handleClick)
-    return () => document.removeEventListener('click', handleClick)
+    // FIX_ME: affects contextual menu close
+    document.addEventListener('mouseup', handleClick)
+    return () => document.removeEventListener('mouseup', handleClick)
   }, [])
 
   // dynamically selects cells when mouse is down and moving
@@ -59,15 +60,14 @@ export function useMouse({
       const cell = target.parentElement as HTMLCell
       const isCell = cell.tagName === cellTag
       const isSelected = cell.classList.contains(selected)
-      const isRightClick = event.button === 2
-      return { cell, isCell, isSelected, isRightClick }
+      return { cell, isCell, isSelected }
     }
 
     const mouseDown = (event: MouseEvent) => {
       const data = getEventData(event)
-      const { cell, isCell, isSelected, isRightClick } = data
+      const { cell, isCell, isSelected } = data
       if (!isCell) removeSelection()
-      if (!isCell || isSelected || isRightClick) return
+      if (!isCell || isSelected) return
 
       firstElement.current = cell
     }
@@ -81,13 +81,13 @@ export function useMouse({
     }
 
     const mouseUp = (event: MouseEvent) => {
-      const data = getEventData(event)
-      const { isCell, isSelected, isRightClick } = data
-      if (!isCell || (isSelected && isRightClick)) return
+      const { isCell, isSelected } = getEventData(event)
 
-      if (!isMovingAndDown.current) removeSelection()
       firstElement.current = null
       isMovingAndDown.current = false
+
+      if (!isCell || isSelected) return
+      if (!isMovingAndDown.current) removeSelection()
     }
 
     document.addEventListener('mousedown', mouseDown)

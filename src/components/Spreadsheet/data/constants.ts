@@ -16,11 +16,12 @@ export const selectedR = 'selected-right'
 export const supportedFileTypes = ['text/plain', 'text/csv']
 
 export const keyGroups = {
-  skip: ['Control', 'Alt', 'Shift', 'Escape', 'Tab'],
-  skipCombination: ['c', 'C', 'z', 'Z', 'v', 'V', 'x', 'X'],
+  skip: ['Control', 'Alt', 'Shift', 'Escape', 'Tab', 'F10'],
+  skipCombination: ['c', 'C', 'z', 'Z', 'v', 'V', 'x', 'X', 'F10'],
   escape: ['Escape'],
   delete: ['Backspace', 'Delete'],
   navigation: ['ArrowLeft', 'ArrowDown', 'ArrowUp', 'ArrowRight'],
   execute: ['Enter', ' '],
   tab: ['Tab'],
+  menu: ['F10'],
 }

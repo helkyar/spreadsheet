@@ -1,6 +1,5 @@
 import ComputedMatrix from '@/context/matrix/ComputedMatrix'
 import { DownloadOptions } from '@/components/Spreadsheet/data/types'
-import { MouseEvent } from 'react'
 
 export type Matrix = Cell[][]
 
@@ -18,10 +17,10 @@ export type MatrixContext = {
   currentMatrix: { id: string; matrix: Matrix }
   createNewMatrix: (matrix?: Matrix) => void
   removeMatrix: (index: number) => void
-  addColumn: (y: number) => (event?: MouseEvent) => void
-  addRow: (x: number) => (event?: MouseEvent) => void
-  removeColumn: (y: number) => (event?: MouseEvent) => void
-  removeRow: (x: number) => (event?: MouseEvent) => void
+  addColumn: (y: number) => void
+  addRow: (x: number) => void
+  removeColumn: (y: number) => void
+  removeRow: (x: number) => void
   save: () => void
 }
 
