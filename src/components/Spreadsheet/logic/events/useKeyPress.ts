@@ -4,11 +4,13 @@ import {
   keyGroups,
   menuTag,
   cellTag,
+  menuBtnName,
 } from '@/components/Spreadsheet/data/constants'
 import {
   HTMLCell,
   HTMLHeader,
   HTMLInput,
+  HTMLMenu,
   Selected,
 } from '@/components/Spreadsheet/data/types'
 import {
@@ -28,24 +30,31 @@ type TagsWithHandlers =
 
 const allowedTagHandlers: TagsWithHandlers[] = [cellTag, inputTag, headerTag]
 
+const arrow = {
+  down: 'ArrowDown',
+  up: 'ArrowUp',
+  right: 'ArrowRight',
+  left: 'ArrowLeft',
+}
+
 const arrowNavigation = (
   event: KeyboardEvent,
   element: HTMLCell | HTMLHeader
 ) => {
   const { x, y } = getCellCoordinates(element)
 
-  if (event.key === 'ArrowDown') {
+  if (event.key === arrow.down) {
     const finalY = x < 0 ? y - 1 : y // header
     return focusCell({ x: x + 1, y: finalY })
   }
-  if (event.key === 'ArrowUp') {
+  if (event.key === arrow.up) {
     const finalY = x === 0 ? y + 1 : y // header
     return focusCell({ x: x - 1, y: finalY })
   }
-  if (event.key === 'ArrowRight') {
+  if (event.key === arrow.right) {
     return focusCell({ x, y: y + 1 })
   }
-  if (event.key === 'ArrowLeft') {
+  if (event.key === arrow.left) {
     return focusCell({ x, y: y - 1 })
   }
 }
@@ -54,18 +63,20 @@ type KeyboardTypes = {
   selectedElements: Selected
   selectArea: (elFirst: HTMLCell, el?: HTMLCell) => void
   removeSelection: () => void
-  selectColumn: (index: number, el: HTMLHeader) => void
-  selectRow: (index: number, el: HTMLHeader) => void
+  selectByHeaderEvent: (el: HTMLHeader) => void
 }
 
 export function useKeyPress({
   selectedElements,
   selectArea,
   removeSelection,
+  selectByHeaderEvent,
 }: KeyboardTypes) {
   const firstSelection = useRef<HTMLCell | null>(null)
+
   const handleRemoveSelection = useCallback(() => {
     removeSelection()
+    // used to select area when shift key + arrow
     firstSelection.current = null
   }, [removeSelection])
 
@@ -86,8 +97,8 @@ export function useKeyPress({
     }
 
     const handleCtrlNavigationKey = () => {
-      const navigationUp = ['ArrowUp', 'ArrowRight']
-      const navigationDown = ['ArrowDown', 'ArrowLeft']
+      const navigationUp = [arrow.up, arrow.right]
+      const navigationDown = [arrow.down, arrow.left]
 
       const elements = {
         firstCell: getCell({ x: 0, y: 0 }),
@@ -208,6 +219,21 @@ export function useKeyPress({
     const key = event.key
     if (keyGroups.navigation.includes(key)) {
       handleNavigationKey(event, element)
+      return
+    }
+
+    if (keyGroups.execute.includes(key)) {
+      selectByHeaderEvent(element)
+      return
+    }
+  }
+
+  const menuHandler = (event: KeyboardEvent) => {
+    const element = document.activeElement as HTMLMenu
+    if (element.name !== menuBtnName) return
+    const key = event.key
+    if (keyGroups.execute.includes(key)) {
+      selectByHeaderEvent(element.parentElement as HTMLHeader)
     }
   }
 
@@ -219,6 +245,7 @@ export function useKeyPress({
       [inputTag]: inputHandler,
       [cellTag]: cellHandler,
       [headerTag]: headerHandler,
+      [menuTag]: menuHandler,
       always: generalHandler,
     }),
     [handleRemoveSelection, selectedElements, selectArea]
