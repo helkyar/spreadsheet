@@ -28,8 +28,6 @@ type TagsWithHandlers =
   | typeof inputTag
   | 'always'
 
-const allowedTagHandlers: TagsWithHandlers[] = [cellTag, inputTag, headerTag]
-
 const arrow = {
   down: 'ArrowDown',
   up: 'ArrowUp',
@@ -43,19 +41,17 @@ const arrowNavigation = (
 ) => {
   const { x, y } = getCellCoordinates(element)
 
-  if (event.key === arrow.down) {
-    const finalY = x < 0 ? y - 1 : y // header
-    return focusCell({ x: x + 1, y: finalY })
-  }
-  if (event.key === arrow.up) {
-    const finalY = x === 0 ? y + 1 : y // header
-    return focusCell({ x: x - 1, y: finalY })
-  }
-  if (event.key === arrow.right) {
-    return focusCell({ x, y: y + 1 })
-  }
-  if (event.key === arrow.left) {
-    return focusCell({ x, y: y - 1 })
+  switch (event.key) {
+    case arrow.down:
+      const dY = x < 0 ? y - 1 : y
+      return focusCell({ x: x + 1, y: dY })
+    case arrow.up:
+      const uY = x === 0 ? y + 1 : y
+      return focusCell({ x: x - 1, y: uY })
+    case arrow.right:
+      return focusCell({ x, y: y + 1 })
+    case arrow.left:
+      return focusCell({ x, y: y - 1 })
   }
 }
 
@@ -76,15 +72,14 @@ export function useKeyPress({
 
   const handleRemoveSelection = useCallback(() => {
     removeSelection()
-    // used to select area when shift key + arrow
     firstSelection.current = null
   }, [removeSelection])
 
+  // is called every time a key is pressed
   const generalHandler = (event: KeyboardEvent) => {
     const activeElement = document.activeElement as HTMLElement
 
     const handleTabKey = () => {
-      if (activeElement?.tagName === menuTag) return
       if (selectedElements) handleRemoveSelection()
     }
 
@@ -94,6 +89,26 @@ export function useKeyPress({
       const cell = activeElement.closest(cellTag) as HTMLCell
       header?.focus()
       cell?.focus()
+    }
+
+    const handleNavigationKey = () => {
+      const cell = activeElement as HTMLCell | HTMLHeader
+      if (event.shiftKey) {
+        handleSelectArea(event, cell as HTMLCell)
+      } else {
+        if (selectedElements) handleRemoveSelection()
+        arrowNavigation(event, cell)
+      }
+    }
+
+    const handleSelectArea = (event: KeyboardEvent, cell: HTMLCell) => {
+      if (!firstSelection.current) firstSelection.current = cell
+      const nextElement = arrowNavigation(event, cell)
+      if (nextElement?.tagName !== headerTag) {
+        selectArea(firstSelection.current, nextElement)
+      } else {
+        cell.focus()
+      }
     }
 
     const handleCtrlNavigationKey = () => {
@@ -138,28 +153,14 @@ export function useKeyPress({
       return
     }
 
+    if (keyGroups.navigation.includes(event.key)) {
+      handleNavigationKey()
+      return
+    }
+
     if (keyGroups.navigation.includes(event.key) && event.ctrlKey) {
       handleCtrlNavigationKey()
     }
-  }
-
-  const handleNavigationKey = (
-    event: KeyboardEvent,
-    cell: HTMLCell | HTMLHeader
-  ) => {
-    if (selectedElements) handleRemoveSelection()
-    arrowNavigation(event, cell)
-  }
-
-  const handleExecuteKey = (element: HTMLInput, cell: HTMLCell) => {
-    if (!selectedElements) {
-      const { x, y } = getCellCoordinates(cell)
-      // FIX_ME: double call to prevent out of bounds
-      focusCell({ x, y })
-      focusCell({ x: x + 1, y })
-      return
-    }
-    updateSelectedCellsValues(element.value, cell, selectedElements)
   }
 
   const inputHandler = (event: KeyboardEvent) => {
@@ -167,16 +168,22 @@ export function useKeyPress({
     const key = event.key
     const cell = element.parentElement as HTMLCell
 
+    const handleExecuteKey = (element: HTMLInput, cell: HTMLCell) => {
+      if (!selectedElements) {
+        const { x, y } = getCellCoordinates(cell)
+        focusCell({ x, y })
+        focusCell({ x: x + 1, y })
+        return
+      }
+      updateSelectedCellsValues(element.value, cell, selectedElements)
+    }
+
     if (keyGroups.execute.includes(key)) {
       handleExecuteKey(element, cell)
       return
     }
     if (keyGroups.escape.includes(key)) {
       element.parentElement!.focus()
-      return
-    }
-    if (keyGroups.navigation.includes(key)) {
-      handleNavigationKey(event, cell)
     }
   }
 
@@ -198,17 +205,6 @@ export function useKeyPress({
       return
     }
 
-    if (keyGroups.navigation.includes(key)) {
-      if (event.shiftKey) {
-        if (!firstSelection.current) firstSelection.current = element
-        const nextElement = arrowNavigation(event, element)
-        selectArea(firstSelection.current, nextElement)
-      } else {
-        handleNavigationKey(event, element)
-      }
-      return
-    }
-
     const input = getInput(element)
     input.value = ''
     input.focus()
@@ -216,23 +212,15 @@ export function useKeyPress({
 
   const headerHandler = (event: KeyboardEvent) => {
     const element = document.activeElement as HTMLHeader
-    const key = event.key
-    if (keyGroups.navigation.includes(key)) {
-      handleNavigationKey(event, element)
-      return
-    }
-
-    if (keyGroups.execute.includes(key)) {
+    if (keyGroups.execute.includes(event.key)) {
       selectByHeaderEvent(element)
-      return
     }
   }
 
   const menuHandler = (event: KeyboardEvent) => {
     const element = document.activeElement as HTMLMenu
     if (element.name !== menuBtnName) return
-    const key = event.key
-    if (keyGroups.execute.includes(key)) {
+    if (keyGroups.execute.includes(event.key)) {
       selectByHeaderEvent(element.parentElement as HTMLHeader)
     }
   }
@@ -242,11 +230,11 @@ export function useKeyPress({
     (event: KeyboardEvent) => void
   > = useMemo(
     () => ({
+      always: generalHandler,
       [inputTag]: inputHandler,
       [cellTag]: cellHandler,
       [headerTag]: headerHandler,
       [menuTag]: menuHandler,
-      always: generalHandler,
     }),
     [handleRemoveSelection, selectedElements, selectArea]
   )
@@ -258,10 +246,8 @@ export function useKeyPress({
       handleKeyboardEvent.always(event)
 
       const activeElement = document.activeElement.tagName as TagsWithHandlers
-      if (!allowedTagHandlers.includes(activeElement)) return
-
       const handleEvent = handleKeyboardEvent[activeElement]
-      handleEvent(event)
+      if (handleEvent) handleEvent(event)
     }
 
     document.addEventListener('keydown', keyDown)
