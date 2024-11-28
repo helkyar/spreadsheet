@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { useMatrix } from '@/context/matrix/useMatrix'
-
 import {
   HTMLCell,
   HTMLInput,
@@ -17,10 +16,12 @@ import {
 } from '@/components/Spreadsheet/utils/cell'
 import { parseFilesToMatrix } from '@/components/Spreadsheet/utils/file'
 
-export function useDraggable(
-  selectedElements: Selected,
+type DragTypes = {
+  selectedElements: Selected
   removeSelection: () => void
-) {
+}
+
+export function useDraggable({ selectedElements, removeSelection }: DragTypes) {
   const { createNewMatrix } = useMatrix()
 
   const updateAsyncCell = (

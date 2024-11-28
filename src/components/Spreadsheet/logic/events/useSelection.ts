@@ -82,7 +82,6 @@ export function useSelection() {
   )
 
   const selectColumn = (index: number, header: Element) => {
-    // removeSelection()
     const column = [header, ...$$(`tr td:nth-child(${index + 1})`)]
     const allElements = [header, ...$$(cellTag)]
 
@@ -91,8 +90,6 @@ export function useSelection() {
   }
 
   const selectRow = (index: number, header: Element) => {
-    // removeSelection()
-
     const rowCells = $$(`tr:nth-child(${index + 1}) td`)
     addSelection([header, ...rowCells])
   }
@@ -101,6 +98,7 @@ export function useSelection() {
     (firstElement: HTMLCell, currentElement?: HTMLCell) => {
       if (!currentElement) return
       removeSelection()
+
       const { x: x1, y: y1 } = getCellCoordinates(firstElement)
       const { x: x2, y: y2 } = getCellCoordinates(currentElement)
 
