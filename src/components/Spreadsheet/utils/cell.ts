@@ -30,7 +30,7 @@ export const getHeaderIndex = (element: HTMLHeader) => {
   return Number(i)
 }
 export const getCellCoordinates = (element: HTMLCell | HTMLHeader) => {
-  const { x: xString = -1, y: yString = -1 } = element.dataset
+  const { x: xString = -1, y: yString = -1 } = element?.dataset
   const x = Number(xString)
   const y = Number(yString)
   return { x, y }

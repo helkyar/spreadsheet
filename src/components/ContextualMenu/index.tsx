@@ -32,16 +32,21 @@ export function ContextualMenu({
   selectedItems,
   onClose,
 }: PropTypes) {
-  useOnClickOutside(onClose)
+  const handleClose = () => {
+    cellType?.focus()
+    onClose()
+  }
+
+  useOnClickOutside(handleClose)
   const clipboard = useClipboardContextMenu(selectedItems)
-  const { handleClick, handleKey } = useOnExecuteClipboardEvent(onClose)
+  const { handleClick, handleKey } = useOnExecuteClipboardEvent(handleClose)
 
   const { col, row, index } = getCellData(cellType)
 
   const closeOnEscape = (event: React.KeyboardEvent) => {
     event.stopPropagation() // avoid remove selection
     const closeKeys = [...keyGroups.escape, ...keyGroups.navigation]
-    if (closeKeys.includes(event.key)) onClose()
+    if (closeKeys.includes(event.key)) handleClose()
   }
 
   return (

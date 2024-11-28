@@ -38,11 +38,9 @@ export function useContextMenu({ open }: Params) {
   }
 
   const setMenuPosition = (event: React.KeyboardEvent | React.MouseEvent) => {
-    if (event instanceof KeyboardEvent) {
-      setCoordsByKey(event as React.KeyboardEvent)
-    } else {
-      setCoordsByClick(event as React.MouseEvent)
-    }
+    const { key } = event as React.KeyboardEvent
+    if (key) setCoordsByKey(event as React.KeyboardEvent)
+    else setCoordsByClick(event as React.MouseEvent)
   }
 
   const setCoordsByKey = (event: React.KeyboardEvent) => {
@@ -53,7 +51,7 @@ export function useContextMenu({ open }: Params) {
     }
     if (target.tagName === inputTag) return
     if (event.shiftKey && keyGroups.menu.includes(event.key)) {
-      event.preventDefault()
+      event.preventDefault() // prevent browser contextual menu
       updatePositionOnTarget(target)
     }
   }
@@ -104,7 +102,7 @@ export function useContextMenu({ open }: Params) {
   ) {
     const { isHeader } = getCellData(cellType.current)
     const menuWidth = 200 // precise approximation
-    const menuHeight = isHeader ? 700 : 350 // variable
+    const menuHeight = isHeader ? 650 : 350 // variable
 
     const maxRight = window.innerWidth - left < menuWidth
     const maxBottom = window.innerHeight - top < menuHeight
