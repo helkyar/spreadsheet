@@ -7,6 +7,7 @@ import {
   menuBtnName,
 } from '@/components/Spreadsheet/data/constants'
 import { HTMLHeader, HTMLMenu } from '@/components/Spreadsheet/data/types'
+import { getCellData } from '@/components/Spreadsheet/utils/cell'
 import { useRef, useState } from 'react'
 
 type Params = {
@@ -101,8 +102,9 @@ export function useContextMenu({ open }: Params) {
     top: number,
     bottom: number
   ) {
-    const menuWidth = 200 // exact
-    const menuHeight = 400 // FIX_ME: may cause errors (variable height)
+    const { isHeader } = getCellData(cellType.current)
+    const menuWidth = 200 // precise approximation
+    const menuHeight = isHeader ? 700 : 350 // variable
 
     const maxRight = window.innerWidth - left < menuWidth
     const maxBottom = window.innerHeight - top < menuHeight
