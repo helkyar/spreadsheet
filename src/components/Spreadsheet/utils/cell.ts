@@ -40,6 +40,15 @@ export const getCell = ({ x, y }: { x: number; y: number }) => {
   return $(`[data-x="${x}"][data-y="${y}"]`) as HTMLCell
 }
 
+export const getCellData = (cell: HTMLElement | null) => {
+  if (!cell) return { col: false, row: false, index: -1 }
+  const { x, y } = getCellCoordinates(cell as HTMLCell)
+  const index = x < 0 ? y : x
+  const isHeader = x === -1 || y === -1
+
+  return { col: x === -1, row: y === -1, index, isHeader }
+}
+
 export const focusCell = ({ x, y }: { x: number; y: number }) => {
   const cell = getCell({ x, y })
   cell?.focus()

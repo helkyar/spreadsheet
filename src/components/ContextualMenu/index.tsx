@@ -12,8 +12,8 @@ import { useClipboardContextMenu } from '@/components/ContextualMenu/logic/useCl
 import { useOnClickOutside } from '@/components/ContextualMenu/logic/useOnClickOutside'
 import { useOnExecuteClipboardEvent } from '@/components/ContextualMenu/logic/useOnExecuteClipboardEvent'
 import { keyGroups } from '@/components/Spreadsheet/data/constants'
-import { HTMLCell, Selected } from '@/components/Spreadsheet/data/types'
-import { getCellCoordinates } from '@/components/Spreadsheet/utils/cell'
+import { Selected } from '@/components/Spreadsheet/data/types'
+import { getCellData } from '@/components/Spreadsheet/utils/cell'
 
 type PropTypes = {
   readonly cellType: HTMLElement | null
@@ -22,13 +22,6 @@ type PropTypes = {
   readonly onClose: () => void
   readonly selectedItems: Selected
   readonly className: string | boolean
-}
-
-const getCellData = (cell: HTMLElement | null) => {
-  if (!cell) return { col: false, row: false, index: -1 }
-  const { x, y } = getCellCoordinates(cell as HTMLCell)
-  const index = x < 0 ? y : x
-  return { col: x === -1, row: y === -1, index }
 }
 
 export function ContextualMenu({
@@ -87,10 +80,11 @@ export function ContextualMenu({
           Icon={<PasteIcon />}
         />
       </section>
-      <section>
-        {col && <ColumnHeaderButtons col={index} />}
-        {row && <RowHeaderButtons row={index} />}
-      </section>
+
+      {col && <ColumnHeaderButtons col={index} />}
+
+      {row && <RowHeaderButtons row={index} />}
+
       {children}
     </div>
   )
