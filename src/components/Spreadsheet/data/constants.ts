@@ -14,6 +14,7 @@ export const selectedL = 'selected-left'
 export const selectedR = 'selected-right'
 
 export const supportedFileTypes = ['text/plain', 'text/csv']
+
 export const keyGroups = {
   skip: ['Control', 'Alt', 'Shift', 'Escape', 'Tab'],
   skipCombination: ['c', 'C', 'z', 'Z', 'v', 'V', 'x', 'X'],

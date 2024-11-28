@@ -12,40 +12,30 @@ import {
   HTMLMenu,
   Selected,
 } from '@/components/Spreadsheet/data/types'
-import { getCellCoordinates } from '@/components/Spreadsheet/utils/cell'
 import { useEffect, useRef } from 'react'
 
 type MouseTypes = {
   selectedElements: Selected
   selectArea: (elFirst: HTMLCell, el: HTMLCell) => void
   removeSelection: () => void
-  selectColumn: (index: number, el: HTMLHeader) => void
-  selectRow: (index: number, el: HTMLHeader) => void
+  selectByHeaderEvent: (el: HTMLHeader) => void
 }
 
 export function useMouse({
   selectedElements,
   selectArea,
   removeSelection,
-  selectColumn,
-  selectRow,
+  selectByHeaderEvent,
 }: MouseTypes) {
   useEffect(() => {
-    const selectByHeaderClick = (element: HTMLHeader) => {
-      const { x, y } = getCellCoordinates(element)
-      if (x < 0 && y < 0) selectColumn(y, element)
-      else if (x < 0) selectColumn(y, element)
-      else if (y < 0) selectRow(x, element)
-    }
-
     const handleClickByTagName: Record<string, (element: HTMLElement) => void> =
       {
         [headerTag]: (element: HTMLElement) => {
-          selectByHeaderClick(element as HTMLHeader)
+          selectByHeaderEvent(element as HTMLHeader)
         },
         [menuTag]: (element: HTMLElement) => {
           if ((element as HTMLMenu)?.name !== menuBtnName) return
-          selectByHeaderClick(element.parentElement as HTMLHeader)
+          selectByHeaderEvent(element.parentElement as HTMLHeader)
         },
       }
 

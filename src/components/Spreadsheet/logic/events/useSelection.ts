@@ -3,7 +3,11 @@ import {
   drag,
   selected,
 } from '@/components/Spreadsheet/data/constants'
-import { HTMLCell, Selected } from '@/components/Spreadsheet/data/types'
+import {
+  HTMLCell,
+  HTMLHeader,
+  Selected,
+} from '@/components/Spreadsheet/data/types'
 import {
   $$,
   getCell,
@@ -120,12 +124,17 @@ export function useSelection() {
     },
     [removeSelection, addSelection]
   )
+  const selectByHeaderEvent = (element: HTMLHeader) => {
+    const { x, y } = getCellCoordinates(element)
+    if (x < 0 && y < 0) selectColumn(y, element)
+    else if (x < 0) selectColumn(y, element)
+    else if (y < 0) selectRow(x, element)
+  }
 
   return {
     removeSelection,
     selectArea,
     selectedElements,
-    selectColumn,
-    selectRow,
+    selectByHeaderEvent,
   }
 }
