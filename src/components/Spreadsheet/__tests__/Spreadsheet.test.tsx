@@ -28,20 +28,9 @@ describe('Spreadsheet component with context', () => {
     expect(screen.queryByText('11')).toBeFalsy()
   })
   it('should allow tab creation', async () => {
-    // const activeElement = () => document.activeElement as HTMLElement
-
-    // modify cell values & check that they are filled
-    // fireEvent.click(screen.getByText('A'))
-    // fireEvent.keyDown(document, { key: 'Enter' })
-    // fireEvent.change(activeElement(), { target: { value: 'c' } })
-    // fireEvent.keyDown(document, { key: 'Enter' })
-
-    // await new Promise((resolve) => setTimeout(resolve, 50))
-    // expect(screen.getAllByText('c').length).toBe(10)
-
-    // check tab values
+    // check initial tabs
     expect(screen.getByText('Sheet 1')).toBeTruthy()
-    // expect(screen.queryByText('Sheet 2')).toBeFalsy()
+    expect(screen.queryByText('Sheet 2')).toBeFalsy()
 
     const create = screen.getByText('+')
     fireEvent.click(create)
@@ -62,7 +51,6 @@ describe('Spreadsheet component with context', () => {
       selectedClassName
     )
     expect(screen.getByText('Sheet 1').className).toContain(selectedClassName)
-    // expect(screen.getAllByText('c').length).toBe(10)
   })
   it('should allow tab deletion', () => {
     const removeButton = document.getElementsByClassName('remove-tab')[1]

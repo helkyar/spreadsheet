@@ -14,11 +14,12 @@ export function Table({ children, onClick }: PropTypes) {
 
   return (
     <section
+      role='none'
       className='table-wrapper'
+      // listeners to determine contextual menu behavior
       onContextMenu={handleContextMenu}
       onMouseUp={onClick}
       onKeyDown={onClick}
-      role='application'
     >
       <table aria-label='spreadsheet'>{children}</table>
     </section>

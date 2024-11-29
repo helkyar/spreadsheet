@@ -10,10 +10,15 @@ type PropTypes = {
 export function Modal({ children, onClose, className }: PropTypes) {
   useOnClickOutside(onClose)
   const modalRoot = document.getElementById('root-modal')
+
   return createPortal(
-    <section className={`modal-wrapper flex-center ${className}`} role='none'>
+    <section className={`modal-wrapper flex-center ${className}`}>
       <div className={`${className} modal-content flex-center`}>
-        <button className='close-modal' onClick={() => onClose()}>
+        <button
+          className='close-modal'
+          onClick={() => onClose()}
+          name='close-modal'
+        >
           x
         </button>
         {children}

@@ -28,51 +28,53 @@ export function DownloadOptions({ onSubmit }: PropTypes) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className='download-form'>
-      <fieldset>
-        <legend>Export values</legend>
-        <label>
-          <input
-            type='radio'
-            name='exportValue'
-            value='expression'
-            defaultChecked
-          />
-          <span>Expression</span>
-        </label>
-        <label>
-          <input type='radio' name='exportValue' value='value' /> Value
-        </label>
-      </fieldset>
-      <fieldset>
-        <legend>File type</legend>
-        <label>
-          <input
-            type='radio'
-            name='fileType'
-            value='plain/text'
-            defaultChecked
-          />
-          <span>Plain Text</span>
-        </label>
-        <label>
-          {/* FIX_ME: block separation selection if csv */}
-          <input type='radio' name='fileType' value='csv' /> CSV
-        </label>
-      </fieldset>
-      <fieldset>
-        <legend>Separation</legend>
-        <label>
-          <input type='radio' name='separation' value='\t' defaultChecked />
-          <span>Tabs</span>
-        </label>
-        <label>
-          <input type='radio' name='separation' value=',' /> Comas
-        </label>
-      </fieldset>
-      <button className='action-button' type='submit'>
-        Download
-      </button>
-    </form>
+    <section className='download-form-wrapper'>
+      <h2>Download Current Sheet</h2>
+      <form onSubmit={handleSubmit} className='download-form'>
+        <fieldset>
+          <legend>Export values</legend>
+          <label>
+            <input
+              type='radio'
+              name='exportValue'
+              value='expression'
+              defaultChecked
+            />
+            <span>Expression</span>
+          </label>
+          <label>
+            <input type='radio' name='exportValue' value='value' /> Value
+          </label>
+        </fieldset>
+        <fieldset>
+          <legend>File type</legend>
+          <label>
+            <input
+              type='radio'
+              name='fileType'
+              value='plain/text'
+              defaultChecked
+            />
+            <span>Plain Text</span>
+          </label>
+          <label>
+            <input type='radio' name='fileType' value='csv' /> CSV
+          </label>
+        </fieldset>
+        <fieldset>
+          <legend>Separation</legend>
+          <label>
+            <input type='radio' name='separation' value='\t' defaultChecked />
+            <span>Tabs</span>
+          </label>
+          <label>
+            <input type='radio' name='separation' value=',' /> Comas
+          </label>
+        </fieldset>
+        <button className='action-button' type='submit'>
+          Download
+        </button>
+      </form>
+    </section>
   )
 }

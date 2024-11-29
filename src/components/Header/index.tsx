@@ -78,6 +78,7 @@ export function Header() {
             multiple
             accept='.csv, application/vnd.ms-excel, text/plain, .xlsx'
             type='file'
+            aria-label='upload'
             id='upload'
           />
         </label>

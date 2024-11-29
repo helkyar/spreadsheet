@@ -20,6 +20,11 @@
 }
 
 /* DOWNLOAD FORM ================================================== */
+.download-form-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 .download-form {
   width: 50vw;
   min-width: 300px;
@@ -68,7 +73,3 @@
 .space {
   width: 9rem;
 }
-/* .info {
-  outline: 1px solid var(--foreground);
-  outline-offset: -5px;
-} */

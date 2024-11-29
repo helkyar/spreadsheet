@@ -25,12 +25,9 @@ export const useClipboard = (selectedElements: Selected) => {
       const element = document.activeElement as HTMLCell
       const isCell = element.tagName === cellTag
 
-      if (!isCell && !selectedElements) return
+      if (!isCell) return
 
-      const cell = selectedElements![0]
-      const pasteElement = element.tagName === cellTag ? element : cell
-
-      addTextToCellValues(clipboardData, pasteElement)
+      addTextToCellValues(clipboardData, element)
 
       element.focus()
     }

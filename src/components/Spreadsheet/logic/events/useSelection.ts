@@ -51,15 +51,11 @@ export function useSelection() {
   }, [selectedElements])
 
   // selection functions
-  const focusFirstSelectedElement = useCallback(
-    (cell: HTMLCell) => {
-      const element = document.activeElement as HTMLCell
-      if (element.tagName === cellTag || !selectedElements) return
-
-      cell.focus()
-    },
-    [selectedElements]
-  )
+  const focusFirstSelectedElement = useCallback((cell: HTMLCell) => {
+    const element = document.activeElement as HTMLCell
+    if (element.tagName === cellTag) return
+    cell.focus()
+  }, [])
 
   const removeSelectedClass = useCallback(
     () => $$(`.${selected}`).forEach((el) => el.classList.remove(selected)),
@@ -83,7 +79,7 @@ export function useSelection() {
 
       elements.forEach((el) => el?.classList.add(selected))
       setSelectedElements(selectedArray)
-      focusFirstSelectedElement(elements[0] as HTMLCell)
+      focusFirstSelectedElement(selectedArray[0])
     },
     [removeSelectedClass, selectedElements, focusFirstSelectedElement]
   )

@@ -4,7 +4,8 @@ type PropTypes = HTMLAttributes<HTMLButtonElement> & {
   label: string
   Icon: JSX.Element
   onClick: (event: MouseEvent) => void
-  name?: string //FIX_ME: should't be necessary
+  name?: string
+  disabled?: boolean
 }
 
 export function MenuButton({ label, onClick, Icon, ...props }: PropTypes) {

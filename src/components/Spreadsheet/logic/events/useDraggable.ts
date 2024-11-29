@@ -15,6 +15,7 @@ import {
   updateCell,
 } from '@/components/Spreadsheet/utils/cell'
 import { parseFilesToMatrix } from '@/components/Spreadsheet/utils/file'
+import { debounce } from '@/components/Spreadsheet/utils/debounce'
 
 type DragTypes = {
   selectedElements: Selected
@@ -28,11 +29,11 @@ export function useDraggable({ selectedElements, removeSelection }: DragTypes) {
     { x, y }: { x: number; y: number },
     value: string
   ) => {
-    //FIX_ME: hack to wait for cell to update after drop before updating the cell value
-    setTimeout(() => {
+    // wait for dom to load
+    debounce(() => {
       const cell = getCell({ x, y })
       updateCell(cell, value)
-    }, 0)
+    })
   }
 
   useEffect(() => {
@@ -51,7 +52,7 @@ export function useDraggable({ selectedElements, removeSelection }: DragTypes) {
       if (addCellBoundary) addCellBoundary()
     }
 
-    function handleDragLeave(event: MouseEvent) {
+    function handleDragLeave(event: DragEvent) {
       event.preventDefault()
     }
 

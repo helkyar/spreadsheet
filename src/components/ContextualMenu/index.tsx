@@ -16,7 +16,7 @@ import { Selected } from '@/components/Spreadsheet/data/types'
 import { getCellData } from '@/components/Spreadsheet/utils/cell'
 
 type PropTypes = {
-  readonly cellType: HTMLElement | null
+  readonly origin: React.MutableRefObject<HTMLElement | null>
   readonly children?: React.ReactNode
   readonly coords?: Coords
   readonly onClose: () => void
@@ -27,21 +27,21 @@ type PropTypes = {
 export function ContextualMenu({
   children,
   coords,
-  cellType,
+  origin,
   className,
   selectedItems,
   onClose,
 }: PropTypes) {
   const handleClose = () => {
-    cellType?.focus()
+    origin.current?.focus()
     onClose()
   }
 
   useOnClickOutside(handleClose)
-  const clipboard = useClipboardContextMenu(selectedItems)
+  const clipboard = useClipboardContextMenu(selectedItems, origin)
   const { handleClick, handleKey } = useOnExecuteClipboardEvent(handleClose)
 
-  const { col, row, index } = getCellData(cellType)
+  const { col, row, index } = getCellData(origin?.current)
 
   const closeOnEscape = (event: React.KeyboardEvent) => {
     event.stopPropagation() // avoid remove selection
@@ -59,30 +59,34 @@ export function ContextualMenu({
     >
       <section onClick={handleClick} onKeyDown={handleKey} role='none'>
         <MenuButton
-          name='copy'
+          name='paste' // to focus on open
+          label='paste'
+          onClick={clipboard.paste}
+          Icon={<PasteIcon />}
+        />
+        <MenuButton
           label='copy expression'
           onClick={clipboard.copyExpression}
           Icon={<CopyIcon />}
+          disabled={!selectedItems}
         />
         <MenuButton
           label='copy value'
           onClick={clipboard.copyValue}
           Icon={<CopyIcon />}
+          disabled={!selectedItems}
         />
         <MenuButton
           label='cut expression'
           onClick={clipboard.cutExpression}
           Icon={<CutIcon />}
+          disabled={!selectedItems}
         />
         <MenuButton
           label='cut value'
           onClick={clipboard.cutValue}
           Icon={<CutIcon />}
-        />
-        <MenuButton
-          label='paste'
-          onClick={clipboard.paste}
-          Icon={<PasteIcon />}
+          disabled={!selectedItems}
         />
       </section>
 

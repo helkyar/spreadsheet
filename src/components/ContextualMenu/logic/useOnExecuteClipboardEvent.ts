@@ -1,5 +1,6 @@
 import { selector } from '@/components/ContextualMenu/data/constants'
 import { keyGroups } from '@/components/Spreadsheet/data/constants'
+import { debounce } from '@/components/Spreadsheet/utils/debounce'
 
 export function useOnExecuteClipboardEvent(onClose: () => void) {
   const getMenuElement = (event: React.MouseEvent | React.KeyboardEvent) => {
@@ -12,7 +13,7 @@ export function useOnExecuteClipboardEvent(onClose: () => void) {
   const handleKey = (event: React.KeyboardEvent) => {
     const menu = getMenuElement(event)
     if (keyGroups.execute.includes(event.key) && menu) {
-      onClose()
+      debounce(() => onClose()) // avoid closing before executing
     }
   }
 

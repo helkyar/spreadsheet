@@ -15,10 +15,10 @@ import {
 import { useEffect, useRef } from 'react'
 
 type MouseTypes = {
-  selectedElements: Selected
-  selectArea: (elFirst: HTMLCell, el: HTMLCell) => void
-  removeSelection: () => void
-  selectByHeaderEvent: (el: HTMLHeader) => void
+  readonly selectedElements: Selected
+  readonly selectArea: (elFirst: HTMLCell, el: HTMLCell) => void
+  readonly removeSelection: () => void
+  readonly selectByHeaderEvent: (el: HTMLHeader) => void
 }
 
 export function useMouse({

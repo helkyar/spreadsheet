@@ -1,4 +1,5 @@
 import { selector } from '@/components/ContextualMenu/data/constants'
+import { debounce } from '@/components/Spreadsheet/utils/debounce'
 import { useEffect } from 'react'
 
 export function useOnClickOutside(onClose: () => void) {
@@ -10,9 +11,7 @@ export function useOnClickOutside(onClose: () => void) {
       onClose()
     }
 
-    // avoid conflict while setting same event listener on document
-    const debounce = (fn: () => void) => setTimeout(() => fn(), 0)
-
+    // avoid conflict while setting same event listener on same element
     debounce(() => document.addEventListener('mousedown', handleClick))
     window.addEventListener('resize', () => onClose())
     return () => {
