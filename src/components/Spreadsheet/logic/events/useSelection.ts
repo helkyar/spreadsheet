@@ -51,12 +51,15 @@ export function useSelection() {
   }, [selectedElements])
 
   // selection functions
-  const focusFirstSelectedElement = (cell: HTMLCell) => {
-    const element = document.activeElement as HTMLCell
-    if (element.tagName === cellTag || !selectedElements) return
+  const focusFirstSelectedElement = useCallback(
+    (cell: HTMLCell) => {
+      const element = document.activeElement as HTMLCell
+      if (element.tagName === cellTag || !selectedElements) return
 
-    cell.focus()
-  }
+      cell.focus()
+    },
+    [selectedElements]
+  )
 
   const removeSelectedClass = useCallback(
     () => $$(`.${selected}`).forEach((el) => el.classList.remove(selected)),
@@ -82,7 +85,7 @@ export function useSelection() {
       setSelectedElements(selectedArray)
       focusFirstSelectedElement(elements[0] as HTMLCell)
     },
-    [removeSelectedClass]
+    [removeSelectedClass, selectedElements, focusFirstSelectedElement]
   )
 
   const selectColumn = (index: number, header: Element) => {

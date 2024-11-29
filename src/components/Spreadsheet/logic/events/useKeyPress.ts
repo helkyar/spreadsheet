@@ -42,12 +42,14 @@ const arrowNavigation = (
   const { x, y } = getCellCoordinates(element)
 
   switch (event.key) {
-    case arrow.down:
+    case arrow.down: {
       const dY = x < 0 ? y - 1 : y
       return focusCell({ x: x + 1, y: dY })
-    case arrow.up:
+    }
+    case arrow.up: {
       const uY = x === 0 ? y + 1 : y
       return focusCell({ x: x - 1, y: uY })
+    }
     case arrow.right:
       return focusCell({ x, y: y + 1 })
     case arrow.left:
@@ -75,155 +77,170 @@ export function useKeyPress({
     firstSelection.current = null
   }, [removeSelection])
 
-  // is called every time a key is pressed
-  const generalHandler = (event: KeyboardEvent) => {
-    const activeElement = document.activeElement as HTMLElement
+  const generalHandler = useCallback(
+    (event: KeyboardEvent) => {
+      const activeElement = document.activeElement as HTMLElement
 
-    const handleTabKey = () => {
-      if (selectedElements) handleRemoveSelection()
-    }
-
-    const handleEscapeKey = () => {
-      if (selectedElements) handleRemoveSelection()
-      const header = activeElement.closest(headerTag) as HTMLHeader
-      const cell = activeElement.closest(cellTag) as HTMLCell
-      header?.focus()
-      cell?.focus()
-    }
-
-    const handleNavigationKey = () => {
-      const cell = activeElement.closest(cellTag) as HTMLCell
-      const header = activeElement.closest(headerTag) as HTMLHeader
-
-      if (event.shiftKey) {
-        handleSelectArea(event, cell as HTMLCell)
-      } else if (event.ctrlKey) {
-        handleCtrlNavigationKey()
-      } else {
+      const handleTabKey = () => {
         if (selectedElements) handleRemoveSelection()
-        arrowNavigation(event, cell ?? header ?? {})
-      }
-    }
-
-    const handleSelectArea = (event: KeyboardEvent, cell: HTMLCell) => {
-      if (!firstSelection.current) firstSelection.current = cell
-      const nextElement = arrowNavigation(event, cell)
-      if (nextElement?.tagName !== headerTag) {
-        selectArea(firstSelection.current, nextElement)
-      } else {
-        cell.focus()
-      }
-    }
-
-    const handleCtrlNavigationKey = () => {
-      const navigationUp = [arrow.up, arrow.right]
-      const navigationDown = [arrow.down, arrow.left]
-
-      const elements = {
-        firstCell: getCell({ x: 0, y: 0 }),
-        headerButton: document.querySelector('.info') as HTMLButtonElement,
-        firstTab: document.querySelector('.selected-tab') as HTMLButtonElement,
       }
 
-      const selectors = {
-        isTable: activeElement.closest('table'),
-        isHeader: activeElement.closest('header'),
-        isTabs: activeElement
-          .closest('section')
-          ?.className.includes('tabs-wrapper'),
+      const handleEscapeKey = () => {
+        if (selectedElements) handleRemoveSelection()
+        const header = activeElement.closest(headerTag) as HTMLHeader
+        const cell = activeElement.closest(cellTag) as HTMLCell
+        header?.focus()
+        cell?.focus()
       }
 
-      const focusElement = (element: HTMLElement | null) => element?.focus()
+      const handleNavigationKey = () => {
+        const cell = activeElement.closest(cellTag) as HTMLCell
+        const header = activeElement.closest(headerTag) as HTMLHeader
 
-      if (navigationUp.includes(event.key)) {
-        if (selectors.isTable) focusElement(elements.headerButton)
-        else if (selectors.isHeader) focusElement(elements.firstTab)
-        else focusElement(elements.firstCell)
+        if (event.shiftKey) {
+          handleSelectArea(event, cell)
+        } else if (event.ctrlKey) {
+          handleCtrlNavigationKey()
+        } else {
+          if (selectedElements) handleRemoveSelection()
+          arrowNavigation(event, cell ?? header ?? {})
+        }
       }
-      if (navigationDown.includes(event.key)) {
-        if (selectors.isTable) focusElement(elements.firstTab)
-        else if (selectors.isTabs) focusElement(elements.headerButton)
-        else focusElement(elements.firstCell)
+
+      const handleSelectArea = (event: KeyboardEvent, cell: HTMLCell) => {
+        if (!firstSelection.current) firstSelection.current = cell
+        const nextElement = arrowNavigation(event, cell)
+        if (nextElement?.tagName !== headerTag) {
+          selectArea(firstSelection.current, nextElement)
+        } else {
+          cell.focus()
+        }
       }
-    }
 
-    if (keyGroups.tab.includes(event.key)) {
-      handleTabKey()
-      return
-    }
+      const handleCtrlNavigationKey = () => {
+        const navigationUp = [arrow.up, arrow.right]
+        const navigationDown = [arrow.down, arrow.left]
 
-    if (keyGroups.escape.includes(event.key)) {
-      handleEscapeKey()
-      return
-    }
+        const elements = {
+          firstCell: getCell({ x: 0, y: 0 }),
+          headerButton: document.querySelector('.info') as HTMLButtonElement,
+          firstTab: document.querySelector(
+            '.selected-tab'
+          ) as HTMLButtonElement,
+        }
 
-    if (keyGroups.navigation.includes(event.key)) {
-      handleNavigationKey()
-      return
-    }
-  }
+        const selectors = {
+          isTable: activeElement.closest('table'),
+          isHeader: activeElement.closest('header'),
+          isTabs: activeElement
+            .closest('section')
+            ?.className.includes('tabs-wrapper'),
+        }
 
-  const inputHandler = (event: KeyboardEvent) => {
-    const element = document.activeElement as HTMLInput
-    const key = event.key
-    const cell = element.parentElement as HTMLCell
+        const focusElement = (element: HTMLElement | null) => element?.focus()
 
-    const handleExecuteKey = (element: HTMLInput, cell: HTMLCell) => {
-      if (!selectedElements) {
-        const { x, y } = getCellCoordinates(cell)
-        focusCell({ x, y })
-        focusCell({ x: x + 1, y })
+        if (navigationUp.includes(event.key)) {
+          if (selectors.isTable) focusElement(elements.headerButton)
+          else if (selectors.isHeader) focusElement(elements.firstTab)
+          else focusElement(elements.firstCell)
+        }
+        if (navigationDown.includes(event.key)) {
+          if (selectors.isTable) focusElement(elements.firstTab)
+          else if (selectors.isTabs) focusElement(elements.headerButton)
+          else focusElement(elements.firstCell)
+        }
+      }
+
+      if (keyGroups.tab.includes(event.key)) {
+        handleTabKey()
         return
       }
-      updateSelectedCellsValues(element.value, cell, selectedElements)
-    }
 
-    if (keyGroups.execute.includes(key)) {
-      handleExecuteKey(element, cell)
-      return
-    }
-    if (keyGroups.escape.includes(key)) {
-      element.parentElement!.focus()
-    }
-  }
+      if (keyGroups.escape.includes(event.key)) {
+        handleEscapeKey()
+        return
+      }
 
-  const cellHandler = (event: KeyboardEvent) => {
-    const element = document.activeElement as HTMLCell
-    const key = event.key
+      if (keyGroups.navigation.includes(event.key)) {
+        handleNavigationKey()
+      }
+    },
+    [handleRemoveSelection, selectedElements, selectArea]
+  )
 
-    if (keyGroups.skipOnCellFocus.includes(key) || event.ctrlKey) {
-      return
-    }
+  const inputHandler = useCallback(
+    (event: KeyboardEvent) => {
+      const element = document.activeElement as HTMLInput
+      const key = event.key
+      const cell = element.parentElement as HTMLCell
 
-    if (keyGroups.execute.includes(key)) {
-      getInput(element).focus()
-      return
-    }
+      const handleExecuteKey = (element: HTMLInput, cell: HTMLCell) => {
+        if (!selectedElements) {
+          const { x, y } = getCellCoordinates(cell)
+          focusCell({ x, y })
+          focusCell({ x: x + 1, y })
+          return
+        }
+        updateSelectedCellsValues(element.value, cell, selectedElements)
+      }
 
-    if (keyGroups.delete.includes(key) && selectedElements) {
-      updateSelectedCellsValues('', element, selectedElements)
-      return
-    }
+      if (keyGroups.execute.includes(key)) {
+        handleExecuteKey(element, cell)
+        return
+      }
+      if (keyGroups.escape.includes(key)) {
+        element.parentElement!.focus()
+      }
+    },
+    [selectedElements]
+  )
 
-    const input = getInput(element)
-    input.value = ''
-    input.focus()
-  }
+  const cellHandler = useCallback(
+    (event: KeyboardEvent) => {
+      const element = document.activeElement as HTMLCell
+      const key = event.key
 
-  const headerHandler = (event: KeyboardEvent) => {
-    const element = document.activeElement as HTMLHeader
-    if (keyGroups.execute.includes(event.key)) {
-      selectByHeaderEvent(element)
-    }
-  }
+      if (keyGroups.skipOnCellFocus.includes(key) || event.ctrlKey) {
+        return
+      }
 
-  const menuHandler = (event: KeyboardEvent) => {
-    const element = document.activeElement as HTMLMenu
-    if (element.name !== menuBtnName) return
-    if (keyGroups.execute.includes(event.key)) {
-      selectByHeaderEvent(element.parentElement as HTMLHeader)
-    }
-  }
+      if (keyGroups.execute.includes(key)) {
+        getInput(element).focus()
+        return
+      }
+
+      if (keyGroups.delete.includes(key) && selectedElements) {
+        updateSelectedCellsValues('', element, selectedElements)
+        return
+      }
+
+      const input = getInput(element)
+      input.value = ''
+      input.focus()
+    },
+    [selectedElements]
+  )
+
+  const headerHandler = useCallback(
+    (event: KeyboardEvent) => {
+      const element = document.activeElement as HTMLHeader
+      if (keyGroups.execute.includes(event.key)) {
+        selectByHeaderEvent(element)
+      }
+    },
+    [selectByHeaderEvent]
+  )
+
+  const menuHandler = useCallback(
+    (event: KeyboardEvent) => {
+      const element = document.activeElement as HTMLMenu
+      if (element.name !== menuBtnName) return
+      if (keyGroups.execute.includes(event.key)) {
+        selectByHeaderEvent(element.parentElement as HTMLHeader)
+      }
+    },
+    [selectByHeaderEvent]
+  )
 
   const handleKeyboardEvent: Record<
     TagsWithHandlers,
@@ -236,7 +253,7 @@ export function useKeyPress({
       [headerTag]: headerHandler,
       [menuTag]: menuHandler,
     }),
-    [handleRemoveSelection, selectedElements, selectArea]
+    [cellHandler, generalHandler, headerHandler, inputHandler, menuHandler]
   )
 
   useEffect(() => {
