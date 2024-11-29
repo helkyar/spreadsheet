@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "test": "vitest",
+    "e2e": "npx playwright test",
+    "e2e-generate": "npx playwright codegen localhost:5173",
     "coverage": "vitest run --coverage",
     "build": "npm uninstall @types/css-font-loading-module && tsc -b && vite build",
     "lint": "eslint .",
@@ -20,6 +22,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
+    "@playwright/test": "^1.49.0",
     "@testing-library/react": "^16.0.1",
     "@types/node": "^22.8.6",
     "@types/react": "^18.3.12",

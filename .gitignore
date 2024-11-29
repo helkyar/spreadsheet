@@ -27,3 +27,9 @@ package-lock.json
 
 # Million Lint
 .million
+
+# Playwright Lint
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

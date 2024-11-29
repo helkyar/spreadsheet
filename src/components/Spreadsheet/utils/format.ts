@@ -33,7 +33,6 @@ export const formatCellValuesToText = ({
     return { value, x, y }
   })
 
-  // FIX_ME: try map
   const formattedValues = selectedValues.reduce((acc, curr) => {
     if (!curr) return acc
     const { value, x, y } = curr
@@ -48,6 +47,7 @@ export const formatCellValuesToText = ({
 
   return result
 }
+
 export const addTextToCellValues = (
   text: string,
   initialElement?: HTMLCell

@@ -38,4 +38,5 @@ describe('Header component with context', () => {
     expect(darkThemeEnabled.length).toBe(1)
     expect(storedTheme()).toBe('true')
   })
+  // TO_DO: Modals opens and closes
 })

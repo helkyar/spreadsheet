@@ -1,3 +1,4 @@
+import { firstBtnName } from '@/components/ContextualMenu/data/constants'
 import { Coords } from '@/components/ContextualMenu/data/types'
 import {
   cellTag,
@@ -8,6 +9,7 @@ import {
 } from '@/components/Spreadsheet/data/constants'
 import { HTMLHeader, HTMLMenu } from '@/components/Spreadsheet/data/types'
 import { getCellData } from '@/components/Spreadsheet/utils/cell'
+import { debounce } from '@/components/Spreadsheet/utils/debounce'
 import { useRef, useState } from 'react'
 
 type Params = {
@@ -22,11 +24,12 @@ export function useContextMenu({ open }: Params) {
     left: 'unset',
   })
 
-  const cellType = useRef<HTMLElement | null>(null)
+  const origin = useRef<HTMLElement | null>(null)
 
   const handleOpen = () => {
     open()
-    setTimeout(() => document.getElementsByName('copy')[0]?.focus(), 0)
+    // wait for dom to load
+    debounce(() => document.getElementsByName(firstBtnName)[0]?.focus())
   }
 
   const getEventData = (event: React.MouseEvent | React.KeyboardEvent) => {
@@ -52,12 +55,14 @@ export function useContextMenu({ open }: Params) {
 
     if (header && isMenu && execute.includes(event.key)) {
       updatePositionOnTarget(header)
+      origin.current = header
       return
     }
 
-    if (isInput && event.shiftKey && menu.includes(event.key)) {
+    if (!isInput && event.shiftKey && menu.includes(event.key)) {
       event.preventDefault() // prevent browser contextual menu
       updatePositionOnTarget(target)
+      origin.current = target
     }
   }
 
@@ -69,7 +74,7 @@ export function useContextMenu({ open }: Params) {
 
     if (header) {
       updatePositionOnTarget(header)
-      cellType.current = header
+      origin.current = header
     } else {
       const left = event.clientX + 10
       const right = window.innerWidth - event.clientX + 10
@@ -77,9 +82,8 @@ export function useContextMenu({ open }: Params) {
       const bottom = window.innerHeight - event.clientY + 10
 
       updateCoords(left, right, top, bottom)
-      cellType.current = target.closest(cellTag)
+      origin.current = target.closest(cellTag)
     }
-    handleOpen()
   }
 
   const updatePositionOnTarget = (element: HTMLElement) => {
@@ -98,7 +102,7 @@ export function useContextMenu({ open }: Params) {
     top: number,
     bottom: number
   ) => {
-    const { isHeader } = getCellData(cellType.current)
+    const { isHeader } = getCellData(origin.current)
     const menuWidth = 200
     const menuHeight = isHeader ? 650 : 350
 
@@ -120,11 +124,12 @@ export function useContextMenu({ open }: Params) {
     }
 
     setCoords(newCoords)
+    handleOpen()
   }
 
   return {
     coords,
-    cellType,
+    origin,
     setMenuPosition,
   }
 }

@@ -20,7 +20,7 @@ export function SpreadSheet() {
   const isMounted = useMountTransition(openMenu)
 
   const { selectedElements } = useTableEvents()
-  const { setMenuPosition, coords, cellType } = useContextMenu({ open })
+  const { setMenuPosition, coords, origin } = useContextMenu({ open })
 
   return (
     <>
@@ -34,7 +34,7 @@ export function SpreadSheet() {
           className={`${isMounted && 'in'} ${openMenu && 'visible'}`}
           onClose={close}
           coords={coords}
-          cellType={cellType.current}
+          origin={origin}
           selectedItems={selectedElements}
         />
       )}

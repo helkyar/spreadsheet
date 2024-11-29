@@ -1,7 +1,10 @@
 import { Selected } from '@/components/Spreadsheet/data/types'
 import { formatCellValuesToText } from '@/components/Spreadsheet/utils/format'
 
-export function useClipboardContextMenu(elements: Selected) {
+export function useClipboardContextMenu(
+  elements: Selected,
+  origin: React.MutableRefObject<HTMLElement | null>
+) {
   return {
     copyExpression: () => {
       navigator.clipboard.writeText(formatCellValuesToText({ elements }))
@@ -22,6 +25,7 @@ export function useClipboardContextMenu(elements: Selected) {
       document.dispatchEvent(new ClipboardEvent('cut'))
     },
     paste: () => {
+      if (!elements) origin.current?.focus()
       navigator.clipboard.readText().then((text) => {
         const event = new ClipboardEvent('paste', {
           clipboardData: new DataTransfer(),

@@ -39,7 +39,8 @@ div.visible.in {
   border-radius: 50%;
   font-size: 1rem;
   font-weight: bold;
-  &:hover {
+  &:hover,
+  &:focus-visible {
     background-color: var(--destructive);
     color: var(--destructive-foreground);
   }
