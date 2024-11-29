@@ -45,10 +45,9 @@ export function useMouse({
       if (handler) handler(element)
     }
 
-    // FIX_ME: affects contextual menu close
     document.addEventListener('mouseup', handleClick)
     return () => document.removeEventListener('mouseup', handleClick)
-  }, [])
+  }, [selectByHeaderEvent])
 
   // dynamically selects cells when mouse is down and moving
   const firstElement = useRef<HTMLCell | null>(null)

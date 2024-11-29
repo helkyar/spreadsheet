@@ -26,113 +26,102 @@ export function useContextMenu({ open }: Params) {
 
   const handleOpen = () => {
     open()
-    const copy = () => document.getElementsByName('copy')[0]
-    setTimeout(() => copy()?.focus(), 0)
+    setTimeout(() => document.getElementsByName('copy')[0]?.focus(), 0)
   }
 
   const getEventData = (event: React.MouseEvent | React.KeyboardEvent) => {
     const target = event.target as HTMLElement
     const header = target.closest(headerTag) as HTMLHeader
     const isMenu = (target as HTMLMenu).name === menuBtnName
-    return { header, isMenu, target }
+    const isInput = target.tagName === inputTag
+    return { header, isMenu, target, isInput }
+  }
+  const getMouseEventData = (event: React.MouseEvent) => {
+    const isLeftClick = event.button === 0
+    return { isLeftClick, ...getEventData(event) }
   }
 
   const setMenuPosition = (event: React.KeyboardEvent | React.MouseEvent) => {
-    const { key } = event as React.KeyboardEvent
-    if (key) setCoordsByKey(event as React.KeyboardEvent)
-    else setCoordsByClick(event as React.MouseEvent)
+    if ('key' in event) setCoordsByKey(event)
+    else setCoordsByClick(event)
   }
 
   const setCoordsByKey = (event: React.KeyboardEvent) => {
-    const { header, isMenu, target } = getEventData(event)
-    if (header && isMenu && keyGroups.execute.includes(event.key)) {
+    const { execute, menu } = keyGroups
+    const { header, isMenu, target, isInput } = getEventData(event)
+
+    if (header && isMenu && execute.includes(event.key)) {
       updatePositionOnTarget(header)
       return
     }
-    if (target.tagName === inputTag) return
-    if (event.shiftKey && keyGroups.menu.includes(event.key)) {
+
+    if (isInput && event.shiftKey && menu.includes(event.key)) {
       event.preventDefault() // prevent browser contextual menu
       updatePositionOnTarget(target)
     }
   }
 
   const setCoordsByClick = (event: React.MouseEvent) => {
-    const { header, isMenu, target } = getEventData(event)
+    const data = getMouseEventData(event)
+    const { header, isMenu, target, isInput, isLeftClick } = data
 
-    if (event.button === 0 && !isMenu) return
-    if (target.tagName === inputTag) return
+    if (isInput || (isLeftClick && !isMenu)) return
 
     if (header) {
       updatePositionOnTarget(header)
-      return
+      cellType.current = header
+    } else {
+      const left = event.clientX + 10
+      const right = window.innerWidth - event.clientX + 10
+      const top = event.clientY + 10
+      const bottom = window.innerHeight - event.clientY + 10
+
+      updateCoords(left, right, top, bottom)
+      cellType.current = target.closest(cellTag)
     }
-
-    const left = event.clientX + 10
-    const right = window.innerWidth - event.clientX + 10
-    const top = event.clientY + 10
-    const bottom = window.innerHeight - event.clientY + 10
-
-    updateCoords(left, right, top, bottom)
-
-    cellType.current = target.closest(cellTag)
     handleOpen()
   }
 
   const updatePositionOnTarget = (element: HTMLElement) => {
-    // ensures that is always in screen closest to element clicked
     const size = element.getBoundingClientRect()
-
     const left = size.x + size.width + 10
     const right = window.innerWidth - size.x + 10
     const top = size.y + size.height + 10
     const bottom = window.innerHeight - size.y + 10
 
     updateCoords(left, right, top, bottom)
-
-    cellType.current = element
-
-    handleOpen()
   }
 
-  function updateCoords(
+  const updateCoords = (
     left: number,
     right: number,
     top: number,
     bottom: number
-  ) {
+  ) => {
     const { isHeader } = getCellData(cellType.current)
-    const menuWidth = 200 // precise approximation
-    const menuHeight = isHeader ? 650 : 350 // variable
+    const menuWidth = 200
+    const menuHeight = isHeader ? 650 : 350
 
     const maxRight = window.innerWidth - left < menuWidth
     const maxBottom = window.innerHeight - top < menuHeight
-    const maxTop = top < menuHeight
-    const maxLeft = left < menuWidth
 
-    setCoords({
+    const newCoords: Coords = {
       right: maxRight ? right : 'unset',
       left: !maxRight ? left : 'unset',
       bottom: maxBottom ? bottom : 'unset',
       top: !maxBottom ? top : 'unset',
-    })
+    }
 
-    if (maxBottom && maxTop) {
-      setCoords((coords) => ({
-        ...coords,
-        top: 0,
-        bottom: 0,
-        margin: 'auto',
-      }))
+    if (maxBottom && top < menuHeight) {
+      Object.assign(newCoords, { top: 0, bottom: 0, margin: 'auto' })
     }
-    if (maxLeft && maxRight) {
-      setCoords((coords) => ({
-        ...coords,
-        left: 0,
-        right: 0,
-        margin: 'auto',
-      }))
+    if (maxRight && left < menuWidth) {
+      Object.assign(newCoords, { left: 0, right: 0, margin: 'auto' })
     }
+
+    setCoords(newCoords)
   }
+
   return {
     coords,
     cellType,
