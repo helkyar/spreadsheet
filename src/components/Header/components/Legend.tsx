@@ -7,6 +7,10 @@ export function Legend() {
       </p>
 
       <p>
+        <span>Shift</span> + <span>F10</span> : Open contextual menu
+      </p>
+
+      <p>
         <span>←</span> <span>↑</span> <span>↓</span> <span>→</span> : Move
         between cells
       </p>
