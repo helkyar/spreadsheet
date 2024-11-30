@@ -12,11 +12,7 @@ import { getCellData } from '@/components/Spreadsheet/utils/cell'
 import { debounce } from '@/components/Spreadsheet/utils/debounce'
 import { useRef, useState } from 'react'
 
-type Params = {
-  readonly open: () => void
-}
-
-export function useContextMenu({ open }: Params) {
+export function useMenu(open: () => void) {
   const [coords, setCoords] = useState<Coords>({
     top: 'unset',
     right: 'unset',
@@ -44,7 +40,7 @@ export function useContextMenu({ open }: Params) {
     return { isLeftClick, ...getEventData(event) }
   }
 
-  const setMenuPosition = (event: React.KeyboardEvent | React.MouseEvent) => {
+  const setPosition = (event: React.KeyboardEvent | React.MouseEvent) => {
     if ('key' in event) setCoordsByKey(event)
     else setCoordsByClick(event)
   }
@@ -130,6 +126,6 @@ export function useContextMenu({ open }: Params) {
   return {
     coords,
     origin,
-    setMenuPosition,
+    setPosition,
   }
 }
