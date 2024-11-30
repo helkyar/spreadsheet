@@ -12,7 +12,7 @@ import { Modal } from '@/components/Modal'
 import { DownloadOptions as DownloadOptionsType } from '@/components/Spreadsheet/data/types'
 import { useMatrix } from '@/context/matrix/useMatrix'
 import { ChangeEvent, useRef, useState } from 'react'
-import useMountTransition from '@/logic/useMountTransition'
+import { useMountTransition } from '@/logic/useMountTransition'
 import { Legend } from '@/components/Header/components/Legend'
 import { parseFilesToMatrix } from '@/components/Spreadsheet/utils/file'
 
