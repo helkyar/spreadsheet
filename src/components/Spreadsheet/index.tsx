@@ -3,6 +3,7 @@ import { Tabs } from '@/components/Spreadsheet/components/Tabs'
 import { TableWithMenu } from '@/components/Spreadsheet/components/Table'
 import { TableHead } from '@/components/Spreadsheet/components/TableHead'
 import { TableBody } from '@/components/Spreadsheet/components/TableBody'
+import ErrorBoundary from '@/components/ErrorBoundary'
 
 export function SpreadSheet() {
   const { currentMatrix } = useMatrix()
@@ -10,12 +11,15 @@ export function SpreadSheet() {
 
   return (
     <>
-      <TableWithMenu key={id}>
-        <TableHead length={matrix[0].length} />
-        <TableBody matrix={matrix} />
-      </TableWithMenu>
-
-      <Tabs />
+      <ErrorBoundary main>
+        <TableWithMenu key={id}>
+          <TableHead length={matrix[0].length} />
+          <TableBody matrix={matrix} />
+        </TableWithMenu>
+      </ErrorBoundary>
+      <ErrorBoundary>
+        <Tabs />
+      </ErrorBoundary>
     </>
   )
 }

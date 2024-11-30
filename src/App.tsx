@@ -1,3 +1,4 @@
+import ErrorBoundary from '@/components/ErrorBoundary'
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { SpreadSheet } from '@/components/Spreadsheet'
@@ -5,7 +6,9 @@ import { SpreadSheet } from '@/components/Spreadsheet'
 function App() {
   return (
     <>
-      <Header />
+      <ErrorBoundary>
+        <Header />
+      </ErrorBoundary>
       <main>
         <SpreadSheet />
       </main>

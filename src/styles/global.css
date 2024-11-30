@@ -72,7 +72,7 @@
   --input: hsl(240 3.7% 15.9%);
 
   --cell-outline: rgb(173, 192, 205);
-  --selected-cell-background: rgb(47, 113, 156);
+  --selected-cell-background: rgb(43, 100, 139);
   --selected-cell-foreground: var(--foreground);
   --selected-cell-accent: rgb(15, 81, 125);
 
