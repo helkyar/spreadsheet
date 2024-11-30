@@ -1,6 +1,7 @@
 #root {
   display: flex;
   height: 100dvh;
+  max-height: none;
   flex-direction: column;
   justify-content: space-between;
 }
@@ -48,6 +49,13 @@ main {
 }
 footer {
   padding: var(--padding-lg);
+}
+footer a {
+  color: var(--foreground);
+  &:hover,
+  &:focus-visible {
+    color: var(--muted-foreground);
+  }
 }
 
 /* Components ========================================================== */

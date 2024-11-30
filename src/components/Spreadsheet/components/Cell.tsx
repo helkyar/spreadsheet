@@ -15,6 +15,7 @@ export function Cell({ cellValues, x, y }: CellProps) {
     <td data-x={x} data-y={y} tabIndex={0} role='cell'>
       <span className='cell-text flex-center'>{cellValues.computedValue}</span>
       <input
+        aria-hidden='true'
         className='cell-input'
         tabIndex={-1}
         type='text'

@@ -44,3 +44,16 @@
     background-color: var(--selected-cell-background);
   }
 }
+
+/* Error ========================================================== */
+.error-boundary {
+  flex: 0;
+  padding: 1rem;
+}
+.error-boundary.main {
+  flex: 1;
+  flex-direction: column;
+}
+.error-boundary a {
+  padding: 0.2rem 05rem;
+}
