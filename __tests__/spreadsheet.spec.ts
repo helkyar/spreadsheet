@@ -17,6 +17,10 @@ test.describe('Header', () => {
     await expect(
       page.getByRole('heading', { name: 'Download Current Sheet' })
     ).toBeVisible()
+    await page.getByLabel('upload').click()
+    await expect(
+      page.getByRole('heading', { name: 'Upload Options' })
+    ).toBeVisible()
     await page.locator('#root-modal').getByRole('button', { name: 'x' }).click()
     await expect(
       page.getByRole('heading', { name: 'Computed File' })
@@ -35,6 +39,10 @@ test.describe('Header', () => {
       page.getByRole('heading', { name: 'Computed File' })
     ).toBeVisible()
     await page.getByLabel('information').press('Tab')
+    await page.getByLabel('upload').press('Enter')
+    await expect(
+      page.getByRole('heading', { name: 'Upload Options' })
+    ).toBeVisible()
     await page.getByLabel('upload', { exact: true }).press('Tab')
     await page.getByLabel('download').press('Enter')
     await expect(

@@ -13,7 +13,8 @@ import { Matrix } from '@/context/matrix/data/types'
 
 export const parseFilesToMatrix = (
   files: FileList,
-  createNewMatrix: (matrix: Matrix) => void
+  createNewMatrix: (matrix: Matrix) => void,
+  separation?: string
 ) => {
   if (!files || files.length === 0) return
 
@@ -26,7 +27,7 @@ export const parseFilesToMatrix = (
     const reader = new FileReader()
     reader.onload = (eventReader) => {
       const { result } = eventReader.target as FileReader
-      const matrix = formatTextToCellValues(result as string)
+      const matrix = formatTextToCellValues(result as string, separation)
       createNewMatrix(matrix)
     }
 

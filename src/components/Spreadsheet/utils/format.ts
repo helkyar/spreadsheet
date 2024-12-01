@@ -66,9 +66,11 @@ export const addTextToCellValues = (
   })
 }
 
-export const formatTextToCellValues = (text: string) => {
+export const formatTextToCellValues = (text: string, separation = '\t') => {
   const rows = text.split('\n')
   return rows.map((row) =>
-    row.split('\t').map((text) => ({ inputValue: text, computedValue: text }))
+    row
+      .split(separation)
+      .map((text) => ({ inputValue: text, computedValue: text }))
   ) as Matrix
 }

@@ -14,7 +14,6 @@ import {
   manageBoundaryClassName,
   updateCell,
 } from '@/components/Spreadsheet/utils/cell'
-import { parseFilesToMatrix } from '@/components/Spreadsheet/utils/file'
 import { debounce } from '@/components/Spreadsheet/utils/debounce'
 
 type DragTypes = {
@@ -58,7 +57,6 @@ export function useDraggable({ selectedElements, removeSelection }: DragTypes) {
 
     const handleDrop = (event: DragEvent) => {
       event.preventDefault()
-      handleDropFromDesktop(event)
 
       if (!selectedElements) return
 
@@ -83,15 +81,6 @@ export function useDraggable({ selectedElements, removeSelection }: DragTypes) {
         updateAsyncCell({ x, y }, value)
       })
       finalCell.focus()
-    }
-
-    const handleDropFromDesktop = (event: DragEvent) => {
-      const { dataTransfer } = event
-
-      if (dataTransfer?.types.includes('Files')) {
-        const { files } = dataTransfer
-        parseFilesToMatrix(files, createNewMatrix)
-      }
     }
 
     const handleDragStart = (event: DragEvent) => {
