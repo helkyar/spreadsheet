@@ -1,4 +1,19 @@
-export function Legend() {
+import { Modal } from '@/components/Modal'
+
+type ModalProps = {
+  readonly onClose: () => void
+  readonly className: string | boolean
+}
+
+export function LegendModal(props: ModalProps) {
+  return (
+    <Modal {...props}>
+      <Legend />
+    </Modal>
+  )
+}
+
+function Legend() {
   return (
     <section className='legend'>
       <h3>Key bindings</h3>

@@ -10,16 +10,15 @@
 .modal-wrapper.visible.in {
   opacity: 1;
 }
-.modal-wrapper div {
-  opacity: 0;
-  transform: scale(0.8);
-  transition: opacity 0.2s, transform 0.2s;
-}
-div.visible.in {
+
+.modal-content.visible.in {
   opacity: 1;
   transform: scale(1);
 }
 .modal-content {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.2s, transform 0.2s;
   position: relative;
   width: fit-content;
   background-color: var(--background);
