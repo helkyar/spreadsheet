@@ -38,7 +38,7 @@ export function ContextualMenu({
   }
 
   useOnClickOutside(handleClose)
-  const clipboard = useClipboardContextMenu(selectedItems, origin)
+  const clipboard = useClipboardContextMenu(selectedItems)
   const { handleClick, handleKey } = useOnExecuteClipboardEvent(handleClose)
 
   const { col, row, index } = getCellData(origin?.current)

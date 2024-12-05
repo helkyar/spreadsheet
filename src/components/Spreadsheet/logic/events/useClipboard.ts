@@ -22,13 +22,15 @@ export const useClipboard = (selectedElements: Selected) => {
       const clipboardData = event.clipboardData?.getData('text/plain')
       if (!clipboardData) return
 
-      const element = document.activeElement as HTMLCell
+      let element = document.activeElement as HTMLCell
       const isCell = element.tagName === cellTag
 
-      if (!isCell) return
+      if (!isCell && selectedElements) element = selectedElements[0]
+      else if (!isCell) return
 
       addTextToCellValues(clipboardData, element)
 
+      // FIX_ME: single responsibility
       element.focus()
     }
 
